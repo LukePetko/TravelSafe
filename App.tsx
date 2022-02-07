@@ -1,3 +1,5 @@
+import app from './Firebase';
+
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -8,6 +10,7 @@ import Navigation from './navigation';
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+  console.log(app);
 
   if (!isLoadingComplete) {
     return null;
@@ -19,4 +22,5 @@ export default function App() {
       </SafeAreaProvider>
     );
   }
+
 }
