@@ -73,3 +73,7 @@ web-build/
 dist/
 
 # @end expo-cli
+
+
+
+__snapshots__/
