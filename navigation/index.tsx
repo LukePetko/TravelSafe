@@ -140,6 +140,7 @@ export const BottomTabNavigator = () => {
         options={{
           title: "Map",
           tabBarIcon: ({ color }) => <Feather name="map" size={24} color={color} />,
+          headerShown: false,
         }}
       />
       <BottomTab.Screen
