@@ -6,7 +6,7 @@ type User = {
     gender: string;
     birth_date: Date;
 
-    last_location: {lat: string, long: string};
+    last_location: {lat: string, long: string} | null;
 
     followers: number[];
     following: number[];
