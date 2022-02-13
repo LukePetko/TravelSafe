@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 import { auth } from "../../Firebase";
 import { login } from "../../redux/stores/user";
@@ -24,9 +24,11 @@ export const Login = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text>Henlo</Text>
-            <Button title="Test" onPress={() => signIn()} />
+            <Pressable style={styles.button} onPress={() => signIn()}>
+                <Text style={styles.text}>Login</Text>
+            </Pressable>
         </View>
     );
 };

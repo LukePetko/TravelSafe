@@ -32,6 +32,11 @@ export type RootTabParamList = {
   ProfileTab: undefined;
 };
 
+export type LoginStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
+
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<RootTabParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
