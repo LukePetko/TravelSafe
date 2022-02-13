@@ -1,11 +1,7 @@
 import React from "react";
-import { configure, shallow } from "enzyme";
-
-import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
+import { shallow } from "enzyme";
 
 import { BottomTabNavigator } from "../index";
-
-configure({ adapter: new Adapter() });
 
 describe("Bottom navigation testing", () => {
     let wrapper;
