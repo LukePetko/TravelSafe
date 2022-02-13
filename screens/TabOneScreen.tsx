@@ -7,7 +7,7 @@ import { logout } from '../redux/stores/user';
 import { styles } from '../styles/global';
 import { RootTabScreenProps } from '../types';
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+export default function TabOneScreen({ navigation }: RootTabScreenProps<'HomeTab'>) {
   const dispatch = useDispatch();
   return (
     <View style={styles.container}>
