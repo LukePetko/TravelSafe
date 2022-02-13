@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, TextInput } from "react-native";
+import { Pressable, TextInput } from "react-native";
 import { useDispatch } from "react-redux";
 import { auth } from "../../Firebase";
 import { login } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
-// import { TextField } from "react-native-ios-kit";
+
+import { View, Text } from "../../components/Themed";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { loginStyles } from "../../styles/login.styles";
@@ -35,15 +36,22 @@ export const Login = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={[styles.logoLarge, { marginBottom: 50 }]}>
+                TravelSafe
+            </Text>
             <ThemedTextInput
                 value={email}
                 onChangeText={(text) => setEmail(text)}
                 placeholder={"Enter Email"}
+                keyboardType={"email-address"}
             />
             <ThemedTextInput
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 placeholder={"Enter Password"}
+                secureTextEntry={true}
+                keyboardType={"default"}
+                style={{ marginBottom: 20 }}
             />
             <Pressable style={loginStyles.button} onPress={() => signIn()}>
                 <Text style={loginStyles.text}>Log In</Text>

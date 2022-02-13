@@ -1,5 +1,9 @@
 import { Platform, StyleSheet } from "react-native";
 import { tintColorLight } from "../constants/Colors";
+import { Appearance } from "react-native";
+
+const colorScheme = Appearance.getColorScheme();
+console.log("colorScheme: ", colorScheme);
 
 export const styles = StyleSheet.create({
     container: {
@@ -23,5 +27,9 @@ export const styles = StyleSheet.create({
     linkText: {
         fontSize: 14,
         color: "#2e78b7",
+    },
+    logoLarge: {
+        fontFamily: "Bilbo",
+        fontSize: 64,
     },
 });
