@@ -1,47 +1,23 @@
-import { View, TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet } from "react-native";
 import React from "react";
-import useColorScheme from "../hooks/useColorScheme";
+import { ThemeProps, useThemeColor } from "./Themed";
 
-interface Props {
-    placeholder: string | null;
-    value: string;
-    onChangeText: (text: string) => void;
-    autoCapitalize?: "none" | "sentences" | "words" | "characters";
-    keyboardType: "default" | "email-address" | "numeric" | "phone-pad";
-    secureTextEntry?: boolean;
-    autoCorrect?: boolean;
+type TextFiendProps = TextField["props"] & ThemeProps;
 
-    style?: any;
-}
+const ThemedTextInput = (props: TextFiendProps) => {
+    const { style, lightColor, darkColor, ...otherProps } = props;
 
-const ThemedTextInput = ({
-    value,
-    onChangeText,
-    placeholder = null,
-    autoCapitalize = "none",
-    keyboardType = "default",
-    secureTextEntry = false,
-    autoCorrect = false,
-    style,
-}: Props) => {
-    const theme = useColorScheme();
+    const backgroundColor = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "fieldColor",
+    );
+
+    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
     return (
         <TextInput
-            style={[
-                style,
-                localStyles.input,
-                {
-                    backgroundColor: theme === "light" ? "white" : "#1C1C1E",
-                },
-            ]}
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            autoCapitalize={autoCapitalize}
-            keyboardType={keyboardType}
-            secureTextEntry={secureTextEntry}
-            autoCorrect={autoCorrect}
+            style={[style, localStyles.input, { backgroundColor, color }]}
+            {...otherProps}
         />
     );
 };

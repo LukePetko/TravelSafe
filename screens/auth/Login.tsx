@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, TextInput } from "react-native";
 import { useDispatch } from "react-redux";
 import { auth } from "../../Firebase";
 import { login } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
 
-import { View, Text } from "../../components/Themed";
+import { View, Text, Pressable } from "../../components/Themed";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { loginStyles } from "../../styles/login.styles";
