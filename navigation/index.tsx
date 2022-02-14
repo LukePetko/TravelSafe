@@ -30,11 +30,7 @@ import {
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
 
-export default function Navigation({
-    colorScheme,
-}: {
-    colorScheme: ColorSchemeName;
-}) {
+const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
     const { user } = useStoreSelector((state) => state.user);
     return (
         <NavigationContainer
@@ -44,7 +40,7 @@ export default function Navigation({
             {user ? <RootNavigator /> : <AuthNavigator />}
         </NavigationContainer>
     );
-}
+};
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -186,9 +182,11 @@ export const BottomTabNavigator = () => {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
+const TabBarIcon = (props: {
     name: React.ComponentProps<typeof FontAwesome>["name"];
     color: string;
-}) {
+}) => {
     return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}
+};
+
+export default Navigation;
