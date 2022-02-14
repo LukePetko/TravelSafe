@@ -1,4 +1,4 @@
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, Animated } from "react-native";
 import React from "react";
 import { ThemeProps, useThemeColor } from "./Themed";
 

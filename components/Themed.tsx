@@ -7,6 +7,7 @@ import {
     Text as DefaultText,
     View as DefaultView,
     Pressable as DefaultPressable,
+    Animated,
 } from "react-native";
 
 import Colors from "../constants/Colors";
@@ -53,7 +54,24 @@ export const View = (props: ViewProps) => {
 };
 
 export const Pressable = (props: PressableProps) => {
-    const { style, lightColor, darkColor, ...otherProps } = props;
+    const { style, lightColor, darkColor, onPress, ...otherProps } = props;
+
+    const animated = new Animated.Value(1);
+    const fadeIn = () => {
+        Animated.timing(animated, {
+            toValue: 0.4,
+            duration: 100,
+            useNativeDriver: true,
+        }).start();
+    };
+    const fadeOut = () => {
+        Animated.timing(animated, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+    };
+
     const backgroundColor = useThemeColor(
         { light: lightColor, dark: darkColor },
         "fieldColor",
@@ -61,8 +79,12 @@ export const Pressable = (props: PressableProps) => {
 
     return (
         <DefaultPressable
+            onPressIn={fadeIn}
+            onPressOut={fadeOut}
             style={[{ backgroundColor }, style]}
-            {...otherProps}
-        />
+            onPress={onPress}
+        >
+            <Animated.View style={{ opacity: animated }} {...otherProps} />
+        </DefaultPressable>
     );
 };

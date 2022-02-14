@@ -29,6 +29,7 @@ import {
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
+import MapScreen from "../screens/MapScreen";
 
 const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
     const { user } = useStoreSelector((state) => state.user);
@@ -156,7 +157,7 @@ export const BottomTabNavigator = () => {
             />
             <BottomTab.Screen
                 name="MapTab"
-                component={TabTwoScreen}
+                component={MapScreen}
                 options={{
                     title: "Map",
                     tabBarIcon: ({ color }) => (

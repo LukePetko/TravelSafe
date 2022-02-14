@@ -21,6 +21,7 @@ export const Login = () => {
     const dispatch = useDispatch();
 
     const signIn = () => {
+        console.log("sign in");
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
                 dispatch(login(user.user.uid));
@@ -40,16 +41,20 @@ export const Login = () => {
             </Text>
             <ThemedTextInput
                 value={email}
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={(text: string) => setEmail(text)}
                 placeholder={"Enter Email"}
                 keyboardType={"email-address"}
+                autoCapitalize={"none"}
+                autoCorrect={false}
             />
             <ThemedTextInput
                 value={password}
-                onChangeText={(text) => setPassword(text)}
+                onChangeText={(text: string) => setPassword(text)}
                 placeholder={"Enter Password"}
                 secureTextEntry={true}
                 keyboardType={"default"}
+                autoCapitalize={"none"}
+                autoCorrect={false}
                 style={{ marginBottom: 20 }}
             />
             <Pressable style={loginStyles.button} onPress={() => signIn()}>
