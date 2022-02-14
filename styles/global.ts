@@ -1,9 +1,4 @@
-import { Platform, StyleSheet } from "react-native";
-import { tintColorLight } from "../constants/Colors";
-import { Appearance } from "react-native";
-
-const colorScheme = Appearance.getColorScheme();
-console.log("colorScheme: ", colorScheme);
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     container: {
