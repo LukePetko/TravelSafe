@@ -2,7 +2,7 @@ import { TextInput, StyleSheet, Animated } from "react-native";
 import React from "react";
 import { ThemeProps, useThemeColor } from "./Themed";
 
-type TextFiendProps = TextField["props"] & ThemeProps;
+type TextFiendProps = TextInput["props"] & ThemeProps;
 
 const ThemedTextInput = (props: TextFiendProps) => {
     const { style, lightColor, darkColor, ...otherProps } = props;
