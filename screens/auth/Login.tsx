@@ -9,14 +9,11 @@ import { View, Text, Pressable } from "../../components/Themed";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { loginStyles } from "../../styles/login.styles";
 import ThemedTextInput from "../../components/ThemedTextInput";
+import ThemedListItem from "../../components/ThemedListItem";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    useEffect(() => {
-        console.log(email);
-    }, [email]);
 
     const dispatch = useDispatch();
 
