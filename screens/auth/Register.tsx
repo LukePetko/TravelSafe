@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Text, Pressable, View } from "../../components/Themed";
 import ThemedListItem from "../../components/ListLabel";
 import { styles } from "../../styles/global";
 import { loginStyles } from "../../styles/login.styles";
 import ListInput from "../../components/ListInput";
 import { KeyboardAvoidingView } from "react-native";
+import ListCalendar from "../../components/ListCalendar";
 
 type RegisterProps = {
     navigation: any;
 };
 
 const Register = ({ navigation }: RegisterProps) => {
+    const [date, setDate] = useState(new Date());
+
     return (
         <KeyboardAvoidingView
             behavior={"padding"}
@@ -73,19 +76,19 @@ const Register = ({ navigation }: RegisterProps) => {
                         borderRadius={{ bottom: true }}
                         style={{ marginBottom: 50 }}
                     />
-                    {/* TODO multi-choice selector */}
-                    <ListInput
-                        placeholder={"Choose a gender"}
-                        keyboardType={"default"}
-                        autoCapitalize={"none"}
-                        autoCorrect={false}
+                    <ListCalendar
                         borderRadius={{ top: true }}
                         separator={true}
-                    />
+                        showDatePicker={true}
+                        date={date}
+                        setDate={(date) => setDate(date)}
+                    >
+                        Choose a birthdate
+                    </ListCalendar>
 
-                    {/* TODO date selector */}
+                    {/* TODO multi selector */}
                     <ListInput
-                        placeholder={"Choose a birthdate"}
+                        placeholder={"Choose a gender"}
                         keyboardType={"default"}
                         autoCapitalize={"none"}
                         autoCorrect={false}

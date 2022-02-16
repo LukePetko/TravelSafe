@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "../../Firebase";
 import { login } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
 
-import { View, Text, Pressable } from "../../components/Themed";
+import { View, Text } from "../../components/Themed";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { loginStyles } from "../../styles/login.styles";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
-import { Feather } from "@expo/vector-icons";
-import Colors, { tintColorLight } from "../../constants/Colors";
+import { tintColorLight } from "../../constants/Colors";
+import ListCalendar from "../../components/ListCalendar";
 
 type LoginProps = {
     navigation: any;
