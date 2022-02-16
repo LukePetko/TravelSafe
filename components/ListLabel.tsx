@@ -1,6 +1,12 @@
 import { View, Text as DefaultText, StyleSheet } from "react-native";
 import React from "react";
-import { Text, ThemeProps, useThemeColor } from "./Themed";
+import {
+    Pressable,
+    PressableProps,
+    Text,
+    ThemeProps,
+    useThemeColor,
+} from "./Themed";
 import { Feather } from "@expo/vector-icons";
 
 type ListItemProps = {
@@ -11,9 +17,14 @@ type ListItemProps = {
     separator?: boolean;
     showChevron?: boolean;
     fieldValue?: string;
+    icon?: any;
+    textStyles?: any;
 };
 
-type TextProps = DefaultText["props"] & ThemeProps & ListItemProps;
+type TextProps = DefaultText["props"] &
+    ThemeProps &
+    ListItemProps &
+    PressableProps;
 
 const ThemedListItem = (props: TextProps) => {
     const {
@@ -21,9 +32,13 @@ const ThemedListItem = (props: TextProps) => {
         separator,
         showChevron,
         fieldValue,
+        icon,
+        textStyles,
         style,
         lightColor,
         darkColor,
+        disabled,
+        onPress,
         ...otherProps
     } = props;
 
@@ -51,46 +66,70 @@ const ThemedListItem = (props: TextProps) => {
     });
 
     return (
-        <View
+        <Pressable
+            onPress={onPress}
             style={[
-                localStyles.outerContainer,
+                localStyles.pressable,
                 propStyles.border,
                 {
                     backgroundColor,
                 },
             ]}
         >
-            <View style={[localStyles.innerContainer, propStyles.separator]}>
-                <Text style={localStyles.text} {...otherProps} />
-                <View style={localStyles.value}>
-                    {!!fieldValue && (
-                        <Text
-                            style={[
-                                localStyles.text,
-                                {
-                                    color: grey,
-                                },
-                            ]}
-                        >
-                            {fieldValue}
-                        </Text>
-                    )}
-                    {showChevron && (
-                        <Feather name="chevron-right" color={grey} size={19} />
-                    )}
+            <View style={[localStyles.outerContainer]}>
+                {!!icon && (
+                    <View style={localStyles.iconContainer}>{icon}</View>
+                )}
+                <View
+                    style={[localStyles.innerContainer, propStyles.separator]}
+                >
+                    <Text
+                        style={[localStyles.text, textStyles]}
+                        {...otherProps}
+                    />
+                    <View style={localStyles.value}>
+                        {!!fieldValue && (
+                            <Text
+                                style={[
+                                    localStyles.text,
+                                    {
+                                        color: grey,
+                                    },
+                                ]}
+                            >
+                                {fieldValue}
+                            </Text>
+                        )}
+                        {showChevron && (
+                            <Feather
+                                name="chevron-right"
+                                color={grey}
+                                size={19}
+                            />
+                        )}
+                    </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     );
 };
 
 const localStyles = StyleSheet.create({
-    outerContainer: {
+    pressable: {
         width: "90%",
-        paddingLeft: 15,
         backgroundColor: "#fff",
     },
+    outerContainer: {
+        width: "100%",
+        paddingLeft: 15,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    iconContainer: {
+        paddingRight: 15,
+    },
     innerContainer: {
+        flex: 1,
         paddingVertical: 15,
         paddingLeft: 0,
         paddingRight: 8,

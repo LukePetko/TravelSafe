@@ -10,6 +10,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { loginStyles } from "../../styles/login.styles";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
+import { Feather } from "@expo/vector-icons";
+import Colors, { tintColorLight } from "../../constants/Colors";
 
 type LoginProps = {
     navigation: any;
@@ -61,17 +63,21 @@ export const Login = ({ navigation }: LoginProps) => {
                 style={{ marginBottom: 20 }}
                 borderRadius={{ bottom: true }}
             />
-            <Pressable style={loginStyles.button} onPress={() => signIn()}>
-                <Text style={loginStyles.text}>Log In</Text>
-            </Pressable>
-            <Pressable
-                style={loginStyles.button}
-                onPress={() => navigation.navigate("Register")}
+            <ListLabel
+                borderRadius={{ top: true }}
+                separator={true}
+                onPress={() => signIn()}
+                textStyles={{ color: tintColorLight, fontWeight: "bold" }}
             >
-                <Text style={[loginStyles.text, { fontWeight: "bold" }]}>
-                    Register
-                </Text>
-            </Pressable>
+                Log In
+            </ListLabel>
+            <ListLabel
+                borderRadius={{ bottom: true }}
+                onPress={() => navigation.navigate("Register")}
+                textStyles={{ color: tintColorLight }}
+            >
+                Register
+            </ListLabel>
         </View>
     );
 };
