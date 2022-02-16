@@ -1,7 +1,6 @@
-import { View, Text as DefaultText, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, Animated } from "react-native";
 import React from "react";
-import { Text, ThemeProps, useThemeColor } from "./Themed";
-import { Feather } from "@expo/vector-icons";
+import { ThemeProps, useThemeColor, View } from "./Themed";
 
 type ListItemProps = {
     borderRadius?: {
@@ -9,16 +8,14 @@ type ListItemProps = {
         bottom?: boolean;
     };
     separator?: boolean;
-    showChevron?: boolean;
 };
 
-type TextProps = DefaultText["props"] & ThemeProps & ListItemProps;
+type TextFiendProps = TextInput["props"] & ThemeProps & ListItemProps;
 
-const ThemedListItem = (props: TextProps) => {
+const ListInput = (props: TextFiendProps) => {
     const {
         borderRadius,
         separator,
-        showChevron,
         style,
         lightColor,
         darkColor,
@@ -48,6 +45,8 @@ const ThemedListItem = (props: TextProps) => {
         },
     });
 
+    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+
     return (
         <View
             style={[
@@ -56,13 +55,23 @@ const ThemedListItem = (props: TextProps) => {
                 {
                     backgroundColor,
                 },
+                style,
             ]}
         >
             <View style={[localStyles.innerContainer, propStyles.separator]}>
-                <Text style={localStyles.text} {...otherProps} />
-                {showChevron && (
-                    <Feather name="chevron-right" color={grey} size={19} />
-                )}
+                <TextInput
+                    style={[
+                        localStyles.input,
+                        propStyles.border,
+                        {
+                            backgroundColor,
+                            color,
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                        },
+                    ]}
+                    {...otherProps}
+                />
             </View>
         </View>
     );
@@ -72,19 +81,19 @@ const localStyles = StyleSheet.create({
     outerContainer: {
         width: "90%",
         paddingLeft: 15,
-        backgroundColor: "#fff",
     },
     innerContainer: {
-        paddingVertical: 15,
-        paddingLeft: 0,
-        paddingRight: 8,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
-    text: {
+    input: {
+        width: "100%",
+        paddingVertical: 15,
+        paddingLeft: 0,
+        paddingRight: 8,
         fontSize: 17,
     },
 });
 
-export default ThemedListItem;
+export default ListInput;

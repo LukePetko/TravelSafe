@@ -30,6 +30,7 @@ import {
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
 import MapScreen from "../screens/MapScreen";
+import Register from "../screens/auth/Register";
 
 const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
     const { user } = useStoreSelector((state) => state.user);
@@ -72,12 +73,14 @@ const RootNavigator = () => {
 const LoginStack = createNativeStackNavigator<LoginStackParamList>();
 
 const AuthNavigator = () => {
+    const colorScheme = useColorScheme();
+
     return (
         <LoginStack.Navigator
             initialRouteName="Login"
             screenOptions={{
-                headerShown: false,
-                gestureEnabled: false,
+                gestureEnabled: true,
+                headerTintColor: Colors[colorScheme].tint,
             }}
         >
             <LoginStack.Screen
@@ -87,8 +90,8 @@ const AuthNavigator = () => {
             />
             <LoginStack.Screen
                 name="Register"
-                component={NotFoundScreen}
-                options={{ title: "Oops!" }}
+                component={Register}
+                // options={{ title: "Oops!" }}
             />
         </LoginStack.Navigator>
     );

@@ -8,10 +8,14 @@ import { View, Text, Pressable } from "../../components/Themed";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { loginStyles } from "../../styles/login.styles";
-import ThemedTextInput from "../../components/ThemedTextInput";
-import ThemedListItem from "../../components/ThemedListItem";
+import ListInput from "../../components/ListInput";
+import ListLabel from "../../components/ListLabel";
 
-export const Login = () => {
+type LoginProps = {
+    navigation: any;
+};
+
+export const Login = ({ navigation }: LoginProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -36,15 +40,17 @@ export const Login = () => {
             <Text style={[styles.logoLarge, { marginBottom: 50 }]}>
                 TravelSafe
             </Text>
-            <ThemedTextInput
+            <ListInput
                 value={email}
                 onChangeText={(text: string) => setEmail(text)}
                 placeholder={"Enter Email"}
                 keyboardType={"email-address"}
                 autoCapitalize={"none"}
                 autoCorrect={false}
+                borderRadius={{ top: true }}
+                separator={true}
             />
-            <ThemedTextInput
+            <ListInput
                 value={password}
                 onChangeText={(text: string) => setPassword(text)}
                 placeholder={"Enter Password"}
@@ -53,11 +59,15 @@ export const Login = () => {
                 autoCapitalize={"none"}
                 autoCorrect={false}
                 style={{ marginBottom: 20 }}
+                borderRadius={{ bottom: true }}
             />
             <Pressable style={loginStyles.button} onPress={() => signIn()}>
                 <Text style={loginStyles.text}>Log In</Text>
             </Pressable>
-            <Pressable style={loginStyles.button} onPress={() => signIn()}>
+            <Pressable
+                style={loginStyles.button}
+                onPress={() => navigation.navigate("Register")}
+            >
                 <Text style={[loginStyles.text, { fontWeight: "bold" }]}>
                     Register
                 </Text>

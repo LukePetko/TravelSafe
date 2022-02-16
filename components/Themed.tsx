@@ -6,6 +6,7 @@
 import {
     Text as DefaultText,
     View as DefaultView,
+    ScrollView as DefaultScrollView,
     Pressable as DefaultPressable,
     Animated,
 } from "react-native";
@@ -34,6 +35,7 @@ export type ThemeProps = {
 
 export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
+export type ScrollViewProps = ThemeProps & DefaultScrollView["props"];
 export type PressableProps = ThemeProps & DefaultPressable["props"];
 
 export const Text = (props: TextProps) => {
@@ -51,6 +53,21 @@ export const View = (props: ViewProps) => {
     );
 
     return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+};
+
+export const ScrollView = (props: ScrollViewProps) => {
+    const { style, lightColor, darkColor, ...otherProps } = props;
+    const backgroundColor = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "background",
+    );
+
+    return (
+        <DefaultScrollView
+            contentContainerStyle={[{ backgroundColor }, style]}
+            {...otherProps}
+        />
+    );
 };
 
 export const Pressable = (props: PressableProps) => {
