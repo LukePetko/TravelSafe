@@ -13,6 +13,7 @@ import {
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
+import DefaultDatePicker from "react-native-date-picker";
 
 export const useThemeColor = (
     props: { light?: string; dark?: string },
@@ -37,6 +38,7 @@ export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
 export type ScrollViewProps = ThemeProps & DefaultScrollView["props"];
 export type PressableProps = ThemeProps & DefaultPressable["props"];
+export type DatePickerProps = ThemeProps & DefaultDatePicker["props"];
 
 export const Text = (props: TextProps) => {
     const { style, lightColor, darkColor, ...otherProps } = props;
