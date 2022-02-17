@@ -217,7 +217,7 @@ const ListCalendar = (props: CalendarProps) => {
                         propStyles.border,
                         {
                             backgroundColor,
-                            paddingLeft: 15,
+                            paddingLeft: 26,
                             borderTopLeftRadius: 0,
                             borderTopRightRadius: 0,
                         },
@@ -244,7 +244,12 @@ const ListCalendar = (props: CalendarProps) => {
                     style={[
                         localStyles.datePicker,
                         propStyles.border,
-                        { backgroundColor, paddingLeft: 15 },
+                        {
+                            backgroundColor,
+                            paddingLeft: 26,
+                            borderTopLeftRadius: 0,
+                            borderTopRightRadius: 0,
+                        },
                     ]}
                 >
                     <View

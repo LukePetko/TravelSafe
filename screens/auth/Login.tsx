@@ -11,6 +11,7 @@ import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import { tintColorLight } from "../../constants/Colors";
 import ListCalendar from "../../components/ListCalendar";
+import { Alert } from "react-native";
 
 type LoginProps = {
     navigation: any;
@@ -23,7 +24,6 @@ export const Login = ({ navigation }: LoginProps) => {
     const dispatch = useDispatch();
 
     const signIn = () => {
-        console.log("sign in");
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
                 dispatch(login(user.user.uid));
@@ -33,8 +33,17 @@ export const Login = ({ navigation }: LoginProps) => {
                 const errorMessage = error.message;
                 console.log(errorCode);
                 console.log(errorMessage);
+                createTwoButtonAlert();
             });
     };
+
+    const createTwoButtonAlert = () =>
+        Alert.alert("Verification failed", "Invalid email or password", [
+            {
+                text: "OK",
+                style: "cancel",
+            },
+        ]);
 
     return (
         <View style={styles.container}>
