@@ -27,8 +27,8 @@ const MapScreen = () => {
             setmapRegion({
                 latitude,
                 longitude,
-                latitudeDelta: 0.002,
-                longitudeDelta: 0.002,
+                latitudeDelta: 0.00001,
+                longitudeDelta: 0.00001,
             });
             setIsLoading(false);
         })();
@@ -42,6 +42,7 @@ const MapScreen = () => {
                     style={{ alignSelf: "stretch", height: "100%" }}
                     region={mapRegion}
                     showsUserLocation={true}
+                    followsUserLocation={true}
                 />
             )}
         </View>

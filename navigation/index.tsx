@@ -31,6 +31,7 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
 import MapScreen from "../screens/MapScreen";
 import Register from "../screens/auth/Register";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
     const { user } = useStoreSelector((state) => state.user);
@@ -171,7 +172,7 @@ export const BottomTabNavigator = () => {
             />
             <BottomTab.Screen
                 name="ProfileTab"
-                component={TabTwoScreen}
+                component={ProfileScreen}
                 options={{
                     title: "Profile",
                     tabBarIcon: ({ color }) => (
