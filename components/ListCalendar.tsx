@@ -105,7 +105,7 @@ const ListCalendar = (props: CalendarProps) => {
     });
 
     return (
-        <>
+        <View style={style}>
             <Pressable
                 onPress={() => {
                     setDateOpen(!dateOpen);
@@ -262,7 +262,7 @@ const ListCalendar = (props: CalendarProps) => {
                     </View>
                 </View>
             )}
-        </>
+        </View>
     );
 };
 

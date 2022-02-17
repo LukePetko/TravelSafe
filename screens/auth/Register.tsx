@@ -19,6 +19,7 @@ const Register = ({ navigation }: RegisterProps) => {
             behavior={"padding"}
             style={{
                 flex: 1,
+                height: "100%",
             }}
             enabled
             keyboardVerticalOffset={90}
@@ -29,6 +30,7 @@ const Register = ({ navigation }: RegisterProps) => {
                         styles.container,
                         {
                             paddingVertical: 50,
+                            height: "100%",
                         },
                     ]}
                 >
@@ -77,24 +79,16 @@ const Register = ({ navigation }: RegisterProps) => {
                         style={{ marginBottom: 50 }}
                     />
                     <ListCalendar
-                        borderRadius={{ top: true }}
-                        separator={true}
+                        borderRadius={{ top: true, bottom: true }}
                         showDatePicker={true}
                         date={date}
                         setDate={(date) => setDate(date)}
+                        style={{
+                            marginBottom: 50,
+                        }}
                     >
                         Choose a birthdate
                     </ListCalendar>
-
-                    {/* TODO multi selector */}
-                    <ListInput
-                        placeholder={"Choose a gender"}
-                        keyboardType={"default"}
-                        autoCapitalize={"none"}
-                        autoCorrect={false}
-                        borderRadius={{ bottom: true }}
-                        style={{ marginBottom: 50 }}
-                    />
 
                     <Pressable style={loginStyles.button}>
                         <Text style={loginStyles.text}>Register</Text>
