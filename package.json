@@ -22,6 +22,7 @@
         "@types/react-redux": "^7.1.22",
         "expo": "~44.0.0",
         "expo-asset": "~8.4.6",
+        "expo-camera": "~12.1.2",
         "expo-constants": "~13.0.1",
         "expo-dev-client": "^0.8.4",
         "expo-font": "~10.0.4",

@@ -12,6 +12,7 @@ import ListLabel from "../../components/ListLabel";
 import { tintColorLight } from "../../constants/Colors";
 import ListCalendar from "../../components/ListCalendar";
 import { Alert } from "react-native";
+import CameraModule from "../../components/CameraModule";
 
 type LoginProps = {
     navigation: any;

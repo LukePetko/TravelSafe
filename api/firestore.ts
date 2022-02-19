@@ -1,4 +1,11 @@
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    doc,
+    GeoPoint,
+    getDoc,
+    setDoc,
+} from "firebase/firestore";
 import { db } from "../Firebase";
 import { BasicUserInfo } from "../utils/types/basicUserInfo";
 
@@ -9,11 +16,6 @@ export const createUserAccount = async (
     const user = {
         id,
         ...userInfo,
-
-        lastLocation: {
-            lat: 0,
-            lng: 0,
-        },
 
         followers: [],
         following: [],
@@ -31,16 +33,18 @@ export const createUserAccount = async (
     };
 
     const userDoc = doc(db, "users", id);
-    const newUser = await setDoc(userDoc, user);
-
-    // console.log("Created user:", newUser.id);
-
-    return newUser;
+    return await setDoc(userDoc, user)
+        .then(() => true)
+        .catch(() => false);
 };
 
 export const getUserById = async (id: string) => {
     const userDoc = doc(db, "users", id);
-    const user = await getDoc(userDoc);
+    const userSnap = await getDoc(userDoc);
 
-    return user.data();
+    if (userSnap.exists()) {
+        return userSnap.data();
+    } else {
+        return null;
+    }
 };

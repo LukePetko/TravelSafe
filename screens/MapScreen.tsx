@@ -42,7 +42,7 @@ const MapScreen = () => {
                     style={{ alignSelf: "stretch", height: "100%" }}
                     region={mapRegion}
                     showsUserLocation={true}
-                    followsUserLocation={true}
+                    // followsUserLocation={true}
                 />
             )}
         </View>
