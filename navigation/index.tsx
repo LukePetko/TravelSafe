@@ -12,7 +12,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import { ColorSchemeName } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -23,6 +23,7 @@ import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import {
     LoginStackParamList,
+    ProfileStackParamList,
     RootStackParamList,
     RootTabParamList,
     RootTabScreenProps,
@@ -32,6 +33,8 @@ import { Login } from "../screens/auth/Login";
 import MapScreen from "../screens/MapScreen";
 import Register from "../screens/auth/Register";
 import ProfileScreen from "../screens/ProfileScreen";
+import CameraModal from "../screens/CameraModal";
+import { Text, Pressable } from "../components/Themed";
 
 const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
     const { user } = useStoreSelector((state) => state.user);
@@ -95,6 +98,48 @@ const AuthNavigator = () => {
                 // options={{ title: "Oops!" }}
             />
         </LoginStack.Navigator>
+    );
+};
+
+const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+
+export const ProfileStackNavigator = () => {
+    const colorScheme = useColorScheme();
+
+    return (
+        <ProfileStack.Navigator
+            initialRouteName="Profile"
+            screenOptions={{
+                gestureEnabled: true,
+                headerTintColor: Colors[colorScheme].tint,
+            }}
+        >
+            <ProfileStack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ headerShown: false }}
+            />
+            <ProfileStack.Screen
+                name="CameraModal"
+                component={CameraModal}
+                options={({ navigation }) => ({
+                    title: "",
+                    presentation: "fullScreenModal",
+                    headerRight: () => (
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <Text
+                                style={{
+                                    color: Colors[colorScheme].tint,
+                                    fontSize: 17,
+                                }}
+                            >
+                                Done
+                            </Text>
+                        </Pressable>
+                    ),
+                })}
+            />
+        </ProfileStack.Navigator>
     );
 };
 
@@ -172,7 +217,7 @@ export const BottomTabNavigator = () => {
             />
             <BottomTab.Screen
                 name="ProfileTab"
-                component={ProfileScreen}
+                component={ProfileStackNavigator}
                 options={{
                     title: "Profile",
                     tabBarIcon: ({ color }) => (
@@ -180,6 +225,11 @@ export const BottomTabNavigator = () => {
                     ),
                 }}
             />
+            {/* <BottomTab.Group screenOptions={{
+                presentation: "modal",
+            }}>
+                <BottomTab.Screen name="CameraModal" component={CameraModal} />
+            </BottomTab.Group> */}
         </BottomTab.Navigator>
     );
 };

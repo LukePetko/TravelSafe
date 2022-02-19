@@ -4,7 +4,7 @@ import { styles } from "../styles/global";
 import { useSelector } from "react-redux";
 import { getUserById } from "../api/firestore";
 import ProfilePicture from "../components/ProfilePicture";
-import { StyleSheet } from "react-native";
+import { ActionSheetIOS, StyleSheet } from "react-native";
 
 type ProfileProps = {
     navigation: any;
@@ -18,6 +18,26 @@ const ProfileScreen = (props: ProfileProps) => {
         (state: { user: any }) => state.user.user.payload,
     );
     const [user, setUser] = useState<any>({});
+
+    const onPress = () =>
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: ["Cancel", "Take A Photo", "Choose From Library"],
+                // destructiveButtonIndex: 2,
+                cancelButtonIndex: 0,
+                userInterfaceStyle: "dark",
+            },
+            (buttonIndex) => {
+                if (buttonIndex === 0) {
+                    // cancel action
+                } else if (buttonIndex === 1) {
+                    console.log(Math.floor(Math.random() * 100) + 1);
+                    navigation.navigate("CameraModal");
+                } else if (buttonIndex === 2) {
+                    console.log("🔮");
+                }
+            },
+        );
 
     useEffect(() => {
         getUserById(userID).then((user) => {
@@ -39,9 +59,7 @@ const ProfileScreen = (props: ProfileProps) => {
                     user?.profilePicture ||
                     "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
                 }
-                onPress={() => {
-                    console.log("Henlo!");
-                }}
+                onPress={onPress}
             />
             <Text>email: {user?.email}</Text>
             <Text>followers: {user?.followerCount}</Text>
