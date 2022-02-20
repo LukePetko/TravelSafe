@@ -35,6 +35,7 @@ import Register from "../screens/auth/Register";
 import ProfileScreen from "../screens/ProfileScreen";
 import CameraModal from "../screens/CameraModal";
 import { Text, Pressable } from "../components/Themed";
+import SettingsModal from "../screens/SettingsModal";
 
 type UserState = {
     user: string;
@@ -131,7 +132,22 @@ export const ProfileStackNavigator = (): JSX.Element => {
             <ProfileStack.Screen
                 name="Profile"
                 component={ProfileScreen}
-                options={{ headerShown: false }}
+                options={({ navigation }) => ({
+                    // headerTitle: "Profile",
+                    headerRight: () => (
+                        <Pressable
+                            onPress={() => {
+                                navigation.navigate("SettingsModal");
+                            }}
+                        >
+                            <Feather
+                                name="settings"
+                                size={24}
+                                color={Colors[colorScheme].tint}
+                            />
+                        </Pressable>
+                    ),
+                })}
             />
             <ProfileStack.Screen
                 name="CameraModal"
@@ -139,6 +155,26 @@ export const ProfileStackNavigator = (): JSX.Element => {
                 options={({ navigation }) => ({
                     title: "",
                     presentation: "fullScreenModal",
+                    headerRight: () => (
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <Text
+                                style={{
+                                    color: Colors[colorScheme].tint,
+                                    fontSize: 17,
+                                }}
+                            >
+                                Done
+                            </Text>
+                        </Pressable>
+                    ),
+                })}
+            />
+            <ProfileStack.Screen
+                name="SettingsModal"
+                component={SettingsModal}
+                options={({ navigation }) => ({
+                    title: "Settings",
+                    presentation: "modal",
                     headerRight: () => (
                         <Pressable onPress={() => navigation.goBack()}>
                             <Text
@@ -237,6 +273,7 @@ export const BottomTabNavigator = (): JSX.Element => {
                     tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="user" size={24} color={color} />
                     ),
+                    headerShown: false,
                 }}
             />
         </BottomTab.Navigator>
