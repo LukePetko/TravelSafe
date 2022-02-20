@@ -32,10 +32,10 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
 import MapScreen from "../screens/MapScreen";
 import Register from "../screens/auth/Register";
-import ProfileScreen from "../screens/ProfileScreen";
-import CameraModal from "../screens/CameraModal";
+import ProfileScreen from "../screens/profile/ProfileScreen";
+import CameraModal from "../screens/profile/CameraModal";
 import { Text, Pressable } from "../components/Themed";
-import SettingsModal from "../screens/SettingsModal";
+import SettingsModal from "../screens/profile/SettingsModal";
 
 type UserState = {
     user: string;
@@ -126,7 +126,7 @@ export const ProfileStackNavigator = (): JSX.Element => {
             initialRouteName="Profile"
             screenOptions={{
                 gestureEnabled: true,
-                headerTintColor: Colors[colorScheme].tint,
+                // headerTintColor: Colors[colorScheme].tint,
             }}
         >
             <ProfileStack.Screen
