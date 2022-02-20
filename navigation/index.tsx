@@ -36,8 +36,22 @@ import ProfileScreen from "../screens/ProfileScreen";
 import CameraModal from "../screens/CameraModal";
 import { Text, Pressable } from "../components/Themed";
 
-const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
-    const { user } = useStoreSelector((state) => state.user);
+type UserState = {
+    user: string;
+};
+
+type ColorSchemeEnum = "light" | "dark";
+
+type ColorType = {
+    color: string;
+};
+
+const Navigation = ({
+    colorScheme,
+}: {
+    colorScheme: ColorSchemeName;
+}): JSX.Element => {
+    const { user }: UserState = useStoreSelector((state) => state.user);
     return (
         <NavigationContainer
             linking={LinkingConfiguration}
@@ -54,7 +68,7 @@ const Navigation = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const RootNavigator = () => {
+const RootNavigator = (): JSX.Element => {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -76,8 +90,8 @@ const RootNavigator = () => {
 
 const LoginStack = createNativeStackNavigator<LoginStackParamList>();
 
-const AuthNavigator = () => {
-    const colorScheme = useColorScheme();
+const AuthNavigator = (): JSX.Element => {
+    const colorScheme: ColorSchemeEnum = useColorScheme();
 
     return (
         <LoginStack.Navigator
@@ -103,8 +117,8 @@ const AuthNavigator = () => {
 
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
-export const ProfileStackNavigator = () => {
-    const colorScheme = useColorScheme();
+export const ProfileStackNavigator = (): JSX.Element => {
+    const colorScheme: ColorSchemeEnum = useColorScheme();
 
     return (
         <ProfileStack.Navigator
@@ -149,8 +163,8 @@ export const ProfileStackNavigator = () => {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-export const BottomTabNavigator = () => {
-    const colorScheme = useColorScheme();
+export const BottomTabNavigator = (): JSX.Element => {
+    const colorScheme: ColorSchemeEnum = useColorScheme();
 
     return (
         <BottomTab.Navigator
@@ -164,13 +178,13 @@ export const BottomTabNavigator = () => {
                 component={TabOneScreen}
                 options={({ navigation }: RootTabScreenProps<"HomeTab">) => ({
                     title: "Home",
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="home" size={24} color={color} />
                     ),
                     headerRight: () => (
                         <Pressable
                             onPress={() => navigation.navigate("Modal")}
-                            style={({ pressed }) => ({
+                            style={({ pressed }: { pressed: boolean }) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}
                         >
@@ -189,7 +203,7 @@ export const BottomTabNavigator = () => {
                 component={TabTwoScreen}
                 options={{
                     title: "Search",
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="search" size={24} color={color} />
                     ),
                 }}
@@ -199,7 +213,7 @@ export const BottomTabNavigator = () => {
                 component={TabTwoScreen}
                 options={{
                     title: "Trip",
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="plus" size={24} color={color} />
                     ),
                 }}
@@ -209,7 +223,7 @@ export const BottomTabNavigator = () => {
                 component={MapScreen}
                 options={{
                     title: "Map",
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="map" size={24} color={color} />
                     ),
                     headerShown: false,
@@ -220,28 +234,13 @@ export const BottomTabNavigator = () => {
                 component={ProfileStackNavigator}
                 options={{
                     title: "Profile",
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="user" size={24} color={color} />
                     ),
                 }}
             />
-            {/* <BottomTab.Group screenOptions={{
-                presentation: "modal",
-            }}>
-                <BottomTab.Screen name="CameraModal" component={CameraModal} />
-            </BottomTab.Group> */}
         </BottomTab.Navigator>
     );
-};
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-const TabBarIcon = (props: {
-    name: React.ComponentProps<typeof FontAwesome>["name"];
-    color: string;
-}) => {
-    return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 };
 
 export default Navigation;

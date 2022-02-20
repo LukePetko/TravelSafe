@@ -1,27 +1,30 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Camera } from "expo-camera";
-import { Pressable, useThemeColor } from "../components/Themed";
+import { Pressable } from "../components/Themed";
 import { SFSymbol } from "react-native-sfsymbols";
-import useColorScheme from "../hooks/useColorScheme";
 import Svg, { Circle } from "react-native-svg";
+import { CameraType } from "expo-camera/build/Camera.types";
 
 type Props = {
     navigation: any;
 };
 
-const CameraModal = (props: Props) => {
+const CameraModal = (props: Props): JSX.Element => {
     const { navigation } = props;
-    const [hasPermission, setHasPermission] = React.useState<
-        string | boolean | null
-    >(null);
-    const [type, setType] = React.useState(Camera.Constants.Type.back);
+    const [hasPermission, setHasPermission] = React.useState<boolean | null>(
+        null,
+    );
+    const [type, setType] = React.useState<CameraType>(
+        Camera.Constants.Type.back,
+    );
 
-    let camera: any = null;
+    let camera: Camera | null = null;
 
-    React.useEffect(() => {
-        (async () => {
-            const { status } = await Camera.requestCameraPermissionsAsync();
+    React.useEffect((): void => {
+        (async (): Promise<void> => {
+            const { status }: { status: string } =
+                await Camera.requestCameraPermissionsAsync();
             setHasPermission(status === "granted");
         })();
     }, []);
@@ -45,7 +48,7 @@ const CameraModal = (props: Props) => {
                     <View style={{ width: 52 }}></View>
                     <Pressable
                         style={styles.button}
-                        onPress={() => {
+                        onPress={(): void => {
                             camera
                                 ?.takePictureAsync({
                                     quality: 1,

@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, Text, Pressable, View } from "../../components/Themed";
-import ThemedListItem from "../../components/ListLabel";
+import React, { useState } from "react";
+import { ScrollView, Text, View } from "../../components/Themed";
 import { styles } from "../../styles/global";
-import { loginStyles } from "../../styles/login.styles";
 import ListInput from "../../components/ListInput";
 import { KeyboardAvoidingView } from "react-native";
 import ListCalendar from "../../components/ListCalendar";
@@ -14,6 +12,8 @@ import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { createUserAccount } from "../../api/firestore";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/stores/user";
+import { Dispatch } from "@reduxjs/toolkit";
+import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 
 type RegisterProps = {
     navigation: any;
@@ -28,8 +28,10 @@ export type RegisterState = {
     birthDate: Date;
 };
 
-const Register = ({ navigation }: RegisterProps) => {
-    const [time, setTime] = useState(new Date());
+const Register = (props: RegisterProps): JSX.Element => {
+    const { navigation } = props;
+
+    const [time, setTime] = useState<Date>(new Date());
     const [state, setState] = useState<RegisterState>({
         username: "",
         email: "",
@@ -39,16 +41,16 @@ const Register = ({ navigation }: RegisterProps) => {
         birthDate: new Date(),
     });
 
-    const dispatch = useDispatch();
+    const dispatch: Dispatch<any> = useDispatch<any>();
 
-    const onChange = (key: keyof RegisterState, value: string | Date) => {
+    const onChange = (key: keyof RegisterState, value: string | Date): void => {
         setState({
             ...state,
             [key]: value,
         });
     };
 
-    const onSubmit = async () => {
+    const onSubmit = async (): Promise<void> => {
         const errors = registerValidation(state);
         if (errors.isValid) {
             const user: UserCredential = await createUserWithEmailAndPassword(
@@ -57,14 +59,14 @@ const Register = ({ navigation }: RegisterProps) => {
                 state.password,
             );
 
-            const userId = user.user.uid;
-            const userData = {
+            const userId: string = user.user.uid;
+            const userData: BasicUserInfo = {
                 username: state.username,
                 email: state.email,
                 birthDate: state.birthDate,
             };
 
-            const userDoc = await createUserAccount(userId, userData);
+            const userDoc: boolean = await createUserAccount(userId, userData);
 
             if (userDoc) {
                 dispatch(login(userId));
@@ -101,7 +103,9 @@ const Register = ({ navigation }: RegisterProps) => {
                     </Text>
                     <ListInput
                         value={state.username}
-                        onChangeText={(value) => onChange("username", value)}
+                        onChangeText={(value: string): void =>
+                            onChange("username", value)
+                        }
                         placeholder={"Enter username"}
                         keyboardType={"default"}
                         autoCapitalize={"none"}
@@ -111,7 +115,9 @@ const Register = ({ navigation }: RegisterProps) => {
                     />
                     <ListInput
                         value={state.email}
-                        onChangeText={(value) => onChange("email", value)}
+                        onChangeText={(value: string): void =>
+                            onChange("email", value)
+                        }
                         placeholder={"Enter email"}
                         keyboardType={"email-address"}
                         autoCapitalize={"none"}
@@ -120,7 +126,7 @@ const Register = ({ navigation }: RegisterProps) => {
                     />
                     <ListInput
                         value={state.confirmEmail}
-                        onChangeText={(value) =>
+                        onChangeText={(value: string): void =>
                             onChange("confirmEmail", value)
                         }
                         placeholder={"Confirm email"}
@@ -132,7 +138,9 @@ const Register = ({ navigation }: RegisterProps) => {
                     />
                     <ListInput
                         value={state.password}
-                        onChangeText={(value) => onChange("password", value)}
+                        onChangeText={(value: string): void =>
+                            onChange("password", value)
+                        }
                         placeholder={"Enter password"}
                         keyboardType={"default"}
                         secureTextEntry={true}
@@ -143,7 +151,7 @@ const Register = ({ navigation }: RegisterProps) => {
                     />
                     <ListInput
                         value={state.confirmPassword}
-                        onChangeText={(value) =>
+                        onChangeText={(value: string): void =>
                             onChange("confirmPassword", value)
                         }
                         placeholder={"Confirm password"}
@@ -159,7 +167,9 @@ const Register = ({ navigation }: RegisterProps) => {
                         showDatePicker={true}
                         // showTimePicker={true}
                         date={state.birthDate}
-                        setDate={(value) => onChange("birthDate", value)}
+                        setDate={(value: Date): void =>
+                            onChange("birthDate", value)
+                        }
                         // time={time}
                         // setTime={(value) => setTime(value)}
                         style={{

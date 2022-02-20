@@ -5,25 +5,37 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
 
-const MapScreen = () => {
-    const [mapRegion, setmapRegion] = useState({
+type MapCoords = {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+};
+
+const MapScreen = (): JSX.Element => {
+    const [mapRegion, setmapRegion] = useState<MapCoords>({
         latitude: 37.78825,
         longitude: -122.4324,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+    useEffect((): void => {
+        (async (): Promise<void> => {
+            let { status }: { status: string } =
+                await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
                 return;
             }
 
-            let location = await Location.getCurrentPositionAsync({});
-            const { latitude, longitude } = location.coords;
+            let location: Location.LocationObject =
+                await Location.getCurrentPositionAsync({});
+            const {
+                latitude,
+                longitude,
+            }: { latitude: number; longitude: number } = location.coords;
             setmapRegion({
                 latitude,
                 longitude,

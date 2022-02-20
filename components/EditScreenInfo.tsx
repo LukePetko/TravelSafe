@@ -5,12 +5,18 @@ import Colors from "../constants/Colors";
 import { MonoText } from "./StyledText";
 import { Text, View } from "./Themed";
 
-const EditScreenInfo = ({ path }: { path: string }) => {
+type EditScreenInfoProps = {
+    path: string;
+};
+
+const EditScreenInfo = (props: EditScreenInfoProps): JSX.Element => {
+    const { path } = props;
+
     return (
         <View>
-            <View style={styles.getStartedContainer}>
+            <View style={localStyles.getStartedContainer}>
                 <Text
-                    style={styles.getStartedText}
+                    style={localStyles.getStartedText}
                     lightColor="rgba(0,0,0,0.8)"
                     darkColor="rgba(255,255,255,0.8)"
                 >
@@ -19,8 +25,8 @@ const EditScreenInfo = ({ path }: { path: string }) => {
 
                 <View
                     style={[
-                        styles.codeHighlightContainer,
-                        styles.homeScreenFilename,
+                        localStyles.codeHighlightContainer,
+                        localStyles.homeScreenFilename,
                     ]}
                     darkColor="rgba(255,255,255,0.05)"
                     lightColor="rgba(0,0,0,0.05)"
@@ -29,7 +35,7 @@ const EditScreenInfo = ({ path }: { path: string }) => {
                 </View>
 
                 <Text
-                    style={styles.getStartedText}
+                    style={localStyles.getStartedText}
                     lightColor="rgba(0,0,0,0.8)"
                     darkColor="rgba(255,255,255,0.8)"
                 >
@@ -38,13 +44,13 @@ const EditScreenInfo = ({ path }: { path: string }) => {
                 </Text>
             </View>
 
-            <View style={styles.helpContainer}>
+            <View style={localStyles.helpContainer}>
                 <TouchableOpacity
                     onPress={handleHelpPress}
-                    style={styles.helpLink}
+                    style={localStyles.helpLink}
                 >
                     <Text
-                        style={styles.helpLinkText}
+                        style={localStyles.helpLinkText}
                         lightColor={Colors.light.tint}
                     >
                         Tap here if your app doesn't automatically update after
@@ -62,7 +68,7 @@ const handleHelpPress = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
     getStartedContainer: {
         alignItems: "center",
         marginHorizontal: 50,

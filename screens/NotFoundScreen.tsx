@@ -4,7 +4,12 @@ import { Text, View } from "../components/Themed";
 import { styles } from "../styles/global";
 import { RootStackScreenProps } from "../types";
 
-const NotFoundScreen = ({ navigation }: RootStackScreenProps<"NotFound">) => {
+type NotFoundScreenProps = {
+    navigation: any;
+};
+
+const NotFoundScreen = (props: NotFoundScreenProps): JSX.Element => {
+    const { navigation } = props;
     return (
         <View style={styles.container}>
             <Text style={styles.title}>This screen doesn't exist.</Text>

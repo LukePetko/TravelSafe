@@ -1,4 +1,4 @@
-import { CaseReducer, createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface UserState {
@@ -19,9 +19,9 @@ export const userSlice: Slice = createSlice({
         logout: (state) => {
             state.user = null;
         },
-    }
+    },
 });
 
 export const { login, logout } = userSlice.actions;
-export const getUserId = (state: RootState) => state.user.user;
+export const getUserId = (state: RootState): string => state.user.user;
 export default userSlice.reducer;

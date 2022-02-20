@@ -26,7 +26,7 @@ type TextProps = DefaultText["props"] &
     ListItemProps &
     PressableProps;
 
-const ThemedListItem = (props: TextProps) => {
+const ThemedListItem = (props: TextProps): JSX.Element => {
     const {
         borderRadius,
         separator,
@@ -42,12 +42,12 @@ const ThemedListItem = (props: TextProps) => {
         ...otherProps
     } = props;
 
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "fieldColor",
     );
 
-    const grey = useThemeColor(
+    const grey: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "greyElement",
     );

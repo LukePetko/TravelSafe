@@ -1,4 +1,4 @@
-import { TextInput, StyleSheet, Animated } from "react-native";
+import { TextInput, StyleSheet } from "react-native";
 import React from "react";
 import { ThemeProps, useThemeColor, View } from "./Themed";
 
@@ -12,7 +12,7 @@ type ListItemProps = {
 
 type TextFiendProps = TextInput["props"] & ThemeProps & ListItemProps;
 
-const ListInput = (props: TextFiendProps) => {
+const ListInput = (props: TextFiendProps): JSX.Element => {
     const {
         borderRadius,
         separator,
@@ -22,14 +22,19 @@ const ListInput = (props: TextFiendProps) => {
         ...otherProps
     } = props;
 
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "fieldColor",
     );
 
-    const grey = useThemeColor(
+    const grey: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "greyElement",
+    );
+
+    const color: string = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "text",
     );
 
     const propStyles = StyleSheet.create({
@@ -44,8 +49,6 @@ const ListInput = (props: TextFiendProps) => {
             borderBottomColor: grey,
         },
     });
-
-    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
     return (
         <View

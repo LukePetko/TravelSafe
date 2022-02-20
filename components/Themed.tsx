@@ -40,16 +40,19 @@ export type ScrollViewProps = ThemeProps & DefaultScrollView["props"];
 export type PressableProps = ThemeProps & DefaultPressable["props"];
 export type DatePickerProps = ThemeProps & DefaultDatePicker["props"];
 
-export const Text = (props: TextProps) => {
+export const Text = (props: TextProps): JSX.Element => {
     const { style, lightColor, darkColor, ...otherProps } = props;
-    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+    const color: string = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "text",
+    );
 
     return <DefaultText style={[{ color }, style]} {...otherProps} />;
 };
 
 export const View = (props: ViewProps) => {
     const { style, lightColor, darkColor, ...otherProps } = props;
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "background",
     );
@@ -57,9 +60,9 @@ export const View = (props: ViewProps) => {
     return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 };
 
-export const ScrollView = (props: ScrollViewProps) => {
+export const ScrollView = (props: ScrollViewProps): JSX.Element => {
     const { style, lightColor, darkColor, ...otherProps } = props;
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "background",
     );
@@ -72,18 +75,18 @@ export const ScrollView = (props: ScrollViewProps) => {
     );
 };
 
-export const Pressable = (props: PressableProps) => {
+export const Pressable = (props: PressableProps): JSX.Element => {
     const { style, lightColor, darkColor, onPress, ...otherProps } = props;
 
-    const animated = new Animated.Value(1);
-    const fadeIn = () => {
+    const animated: Animated.Value = new Animated.Value(1);
+    const fadeIn = (): void => {
         Animated.timing(animated, {
             toValue: 0.4,
             duration: 100,
             useNativeDriver: true,
         }).start();
     };
-    const fadeOut = () => {
+    const fadeOut = (): void => {
         Animated.timing(animated, {
             toValue: 1,
             duration: 200,
@@ -91,7 +94,7 @@ export const Pressable = (props: PressableProps) => {
         }).start();
     };
 
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "fieldColor",
     );

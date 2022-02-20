@@ -2,15 +2,14 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Camera } from "expo-camera";
 import { styles } from "../styles/global";
+import { CameraType } from "expo-camera/build/Camera.types";
 
-const CameraModule = () => {
-    const [hasPermission, setHasPermission] = useState<string | boolean | null>(
-        null,
-    );
-    const [type, setType] = useState(Camera.Constants.Type.back);
+const CameraModule = (): JSX.Element => {
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+    const [type, setType] = useState<CameraType>(Camera.Constants.Type.back);
 
-    useEffect(() => {
-        (async () => {
+    useEffect((): void => {
+        (async (): Promise<void> => {
             const { status } = await Camera.requestCameraPermissionsAsync();
             setHasPermission(status === "granted");
         })();

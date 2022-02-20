@@ -3,12 +3,12 @@ import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
-const useCachedResources = () => {
-    const [isLoadingComplete, setLoadingComplete] = useState(false);
+const useCachedResources = (): boolean => {
+    const [isLoadingComplete, setLoadingComplete] = useState<boolean>(false);
 
     // Load any resources or data that we need prior to rendering the app
-    useEffect(() => {
-        const loadResourcesAndDataAsync = async () => {
+    useEffect((): void => {
+        const loadResourcesAndDataAsync = async (): Promise<void> => {
             try {
                 SplashScreen.preventAutoHideAsync();
 

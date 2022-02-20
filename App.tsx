@@ -1,4 +1,3 @@
-import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -8,7 +7,7 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import store from "./redux/store";
 
-const App = () => {
+const App = (): JSX.Element | null => {
     const isLoadingComplete = useCachedResources();
     const colorScheme = useColorScheme();
 

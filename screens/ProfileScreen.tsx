@@ -1,6 +1,5 @@
 import { View, Text } from "../components/Themed";
 import React, { useEffect, useState } from "react";
-import { styles } from "../styles/global";
 import { useSelector } from "react-redux";
 import { getUserById } from "../api/firestore";
 import ProfilePicture from "../components/ProfilePicture";
@@ -11,11 +10,17 @@ type ProfileProps = {
     editable?: boolean;
 };
 
-const ProfileScreen = (props: ProfileProps) => {
+type UserStatePayload = {
+    user: {
+        payload: string;
+    };
+};
+
+const ProfileScreen = (props: ProfileProps): JSX.Element => {
     const { navigation, editable } = props;
 
-    const userID = useSelector(
-        (state: { user: any }) => state.user.user.payload,
+    const userID: string = useSelector(
+        (state: { user: UserStatePayload }) => state.user.user.payload,
     );
     const [user, setUser] = useState<any>({});
 
@@ -27,7 +32,7 @@ const ProfileScreen = (props: ProfileProps) => {
                 cancelButtonIndex: 0,
                 userInterfaceStyle: "dark",
             },
-            (buttonIndex) => {
+            (buttonIndex: number): void => {
                 if (buttonIndex === 0) {
                     // cancel action
                 } else if (buttonIndex === 1) {
@@ -39,7 +44,7 @@ const ProfileScreen = (props: ProfileProps) => {
             },
         );
 
-    useEffect(() => {
+    useEffect((): void => {
         getUserById(userID).then((user) => {
             setUser(user);
             navigation.setOptions({

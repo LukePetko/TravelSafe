@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Pressable, View, Text, useThemeColor, TextProps } from "./Themed";
 
 import { StyleSheet } from "react-native";
 import { tintColorLight } from "../constants/Colors";
 import DatePicker from "react-native-date-picker";
 
-type ListCalendarProps = {
+type CalendarProps = {
     borderRadius?: {
         top?: boolean;
         bottom?: boolean;
@@ -22,9 +22,19 @@ type ListCalendarProps = {
     setTime?: (time: Date) => void;
 };
 
-type CalendarProps = TextProps & ListCalendarProps;
+type ListCalendarProps = TextProps & CalendarProps;
 
-const ListCalendar = (props: CalendarProps) => {
+type SeparatorStyle = {
+    borderBottomWidth?: number;
+    borderBottomColor?: string;
+};
+
+type BorderBottomStyle = {
+    borderBottomLeftRadius: number;
+    borderBottomRightRadius: number;
+};
+
+const ListCalendar = (props: ListCalendarProps): JSX.Element => {
     const {
         borderRadius,
         separator,
@@ -42,27 +52,30 @@ const ListCalendar = (props: CalendarProps) => {
         ...otherProps
     } = props;
 
-    const [dateOpen, setDateOpen] = useState(false);
-    const [timeOpen, setTimeOpen] = useState(false);
+    const [dateOpen, setDateOpen] = useState<boolean>(false);
+    const [timeOpen, setTimeOpen] = useState<boolean>(false);
 
-    const backgroundColor = useThemeColor(
+    const backgroundColor: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "fieldColor",
     );
 
-    const grey = useThemeColor(
+    const grey: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "greyElement",
     );
 
-    const secondaryGrey = useThemeColor(
+    const secondaryGrey: string = useThemeColor(
         { light: lightColor, dark: darkColor },
         "secondaryGreyElement",
     );
 
-    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+    const color: string = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "text",
+    );
 
-    const setSeparator = () => {
+    const setSeparator = (): SeparatorStyle => {
         if (!separator) {
             if (dateOpen || timeOpen) {
                 return {
@@ -75,7 +88,7 @@ const ListCalendar = (props: CalendarProps) => {
         return { borderBottomWidth: 1, borderBottomColor: grey };
     };
 
-    const setBorderBottomRadius = () => {
+    const setBorderBottomRadius = (): BorderBottomStyle => {
         if (borderRadius?.bottom) {
             if (dateOpen || timeOpen) {
                 return {

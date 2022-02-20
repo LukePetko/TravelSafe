@@ -50,7 +50,7 @@ const checkEmail = (value: string): string => {
     return "";
 };
 
-export const registerValidation = (state: RegisterState) => {
+export const registerValidation = (state: RegisterState): RegisterErrors => {
     const errors: RegisterErrors = {
         fields: {
             username: "",

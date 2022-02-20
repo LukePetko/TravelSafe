@@ -1,21 +1,21 @@
-type User = {
-    id: number;
-    name: string;
-    email: string;
+// type User = {
+//     id: number;
+//     name: string;
+//     email: string;
 
-    gender: string;
-    birth_date: Date;
+//     gender: string;
+//     birth_date: Date;
 
-    last_location: {lat: string, long: string} | null;
+//     last_location: {lat: string, long: string} | null;
 
-    followers: number[];
-    following: number[];
-    close_contacts: number[];
+//     followers: number[];
+//     following: number[];
+//     close_contacts: number[];
 
-    post_count: number;
+//     post_count: number;
 
-    profile_picture: string;
+//     profile_picture: string;
 
-    created_at: Date;
-    updated_at: Date;
-}
+//     created_at: Date;
+//     updated_at: Date;
+// }

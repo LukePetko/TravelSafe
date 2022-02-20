@@ -1,19 +1,19 @@
 import {
-    addDoc,
-    collection,
     doc,
-    GeoPoint,
+    DocumentData,
+    DocumentReference,
     getDoc,
     setDoc,
 } from "firebase/firestore";
 import { db } from "../Firebase";
 import { BasicUserInfo } from "../utils/types/basicUserInfo";
+import { User } from "../utils/types/user";
 
 export const createUserAccount = async (
     id: string,
     userInfo: BasicUserInfo,
-) => {
-    const user = {
+): Promise<boolean> => {
+    const user: User = {
         id,
         ...userInfo,
 
@@ -32,15 +32,15 @@ export const createUserAccount = async (
         updatedAt: new Date(),
     };
 
-    const userDoc = doc(db, "users", id);
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
     return await setDoc(userDoc, user)
         .then(() => true)
         .catch(() => false);
 };
 
-export const getUserById = async (id: string) => {
-    const userDoc = doc(db, "users", id);
-    const userSnap = await getDoc(userDoc);
+export const getUserById = async (id: string): Promise<DocumentData | null> => {
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
+    const userSnap: DocumentData = await getDoc(userDoc);
 
     if (userSnap.exists()) {
         return userSnap.data();

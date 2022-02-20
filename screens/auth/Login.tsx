@@ -10,21 +10,22 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import { tintColorLight } from "../../constants/Colors";
-import ListCalendar from "../../components/ListCalendar";
 import { Alert } from "react-native";
-import CameraModule from "../../components/CameraModule";
+import { Dispatch } from "@reduxjs/toolkit";
 
 type LoginProps = {
     navigation: any;
 };
 
-export const Login = ({ navigation }: LoginProps) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+export const Login = (props: LoginProps): JSX.Element => {
+    const { navigation } = props;
 
-    const dispatch = useDispatch();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
-    const signIn = () => {
+    const dispatch: Dispatch<any> = useDispatch<any>();
+
+    const signIn = (): void => {
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
                 dispatch(login(user.user.uid));
@@ -38,7 +39,7 @@ export const Login = ({ navigation }: LoginProps) => {
             });
     };
 
-    const createTwoButtonAlert = () =>
+    const createTwoButtonAlert = (): void =>
         Alert.alert("Verification failed", "Invalid email or password", [
             {
                 text: "OK",
@@ -53,7 +54,7 @@ export const Login = ({ navigation }: LoginProps) => {
             </Text>
             <ListInput
                 value={email}
-                onChangeText={(text: string) => setEmail(text)}
+                onChangeText={(text: string): void => setEmail(text)}
                 placeholder={"Enter Email"}
                 keyboardType={"email-address"}
                 autoCapitalize={"none"}
@@ -63,7 +64,7 @@ export const Login = ({ navigation }: LoginProps) => {
             />
             <ListInput
                 value={password}
-                onChangeText={(text: string) => setPassword(text)}
+                onChangeText={(text: string): void => setPassword(text)}
                 placeholder={"Enter Password"}
                 secureTextEntry={true}
                 keyboardType={"default"}
@@ -75,14 +76,14 @@ export const Login = ({ navigation }: LoginProps) => {
             <ListLabel
                 borderRadius={{ top: true }}
                 separator={true}
-                onPress={() => signIn()}
+                onPress={(): void => signIn()}
                 textStyles={{ color: tintColorLight, fontWeight: "bold" }}
             >
                 Log In
             </ListLabel>
             <ListLabel
                 borderRadius={{ bottom: true }}
-                onPress={() => navigation.navigate("Register")}
+                onPress={(): void => navigation.navigate("Register")}
                 textStyles={{ color: tintColorLight }}
             >
                 Register

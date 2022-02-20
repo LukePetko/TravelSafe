@@ -1,13 +1,13 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import React from "react";
 import { Pressable } from "./Themed";
 
-type Props = {
+type ProfilePictureProps = {
     photoURL: string;
     onPress: () => void;
 };
 
-const ProfilePicture = (props: Props) => {
+const ProfilePicture = (props: ProfilePictureProps): JSX.Element => {
     const { photoURL, onPress } = props;
 
     if (!onPress) {
