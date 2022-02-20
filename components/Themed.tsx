@@ -8,6 +8,7 @@ import {
     View as DefaultView,
     ScrollView as DefaultScrollView,
     Pressable as DefaultPressable,
+    KeyboardAvoidingView as DefaultKeyboardAvoidingView,
     Animated,
 } from "react-native";
 
@@ -38,6 +39,8 @@ export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
 export type ScrollViewProps = ThemeProps & DefaultScrollView["props"];
 export type PressableProps = ThemeProps & DefaultPressable["props"];
+export type KeyboardAvoidingViewProps = ThemeProps &
+    DefaultKeyboardAvoidingView["props"];
 export type DatePickerProps = ThemeProps & DefaultDatePicker["props"];
 
 export const Text = (props: TextProps): JSX.Element => {
@@ -70,6 +73,23 @@ export const ScrollView = (props: ScrollViewProps): JSX.Element => {
     return (
         <DefaultScrollView
             contentContainerStyle={[{ backgroundColor }, style]}
+            {...otherProps}
+        />
+    );
+};
+
+export const KeyboardAvoidingView = (
+    props: KeyboardAvoidingViewProps,
+): JSX.Element => {
+    const { style, lightColor, darkColor, ...otherProps } = props;
+    const backgroundColor: string = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "background",
+    );
+
+    return (
+        <DefaultKeyboardAvoidingView
+            style={[{ backgroundColor }, style]}
             {...otherProps}
         />
     );

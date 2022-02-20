@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Camera } from "expo-camera";
-import { Pressable } from "../components/Themed";
+import { Pressable } from "../../components/Themed";
 import { SFSymbol } from "react-native-sfsymbols";
 import Svg, { Circle } from "react-native-svg";
 import { CameraType } from "expo-camera/build/Camera.types";
@@ -19,7 +19,7 @@ const CameraModal = (props: Props): JSX.Element => {
         Camera.Constants.Type.back,
     );
 
-    let camera: Camera | null = null;
+    let camera: Camera | null;
 
     React.useEffect((): void => {
         (async (): Promise<void> => {

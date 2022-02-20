@@ -1,8 +1,8 @@
-import { View, Text } from "../components/Themed";
+import { View, Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getUserById } from "../api/firestore";
-import ProfilePicture from "../components/ProfilePicture";
+import { getUserById } from "../../api/firestore";
+import ProfilePicture from "../../components/ProfilePicture";
 import { ActionSheetIOS, StyleSheet } from "react-native";
 
 type ProfileProps = {

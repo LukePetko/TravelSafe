@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { ScrollView, Text, View } from "../../components/Themed";
+import {
+    ScrollView,
+    Text,
+    View,
+    KeyboardAvoidingView,
+} from "../../components/Themed";
 import { styles } from "../../styles/global";
 import ListInput from "../../components/ListInput";
-import { KeyboardAvoidingView } from "react-native";
 import ListCalendar from "../../components/ListCalendar";
 import { registerValidation } from "../../utils/validations";
 import ListLabel from "../../components/ListLabel";
