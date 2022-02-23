@@ -1,10 +1,20 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import {
+    View,
+    StyleSheet,
+    ImageBackground,
+    TouchableOpacity,
+} from "react-native";
+import React, { useEffect } from "react";
 import { Camera } from "expo-camera";
-import { Pressable } from "../../components/Themed";
+import { Pressable, Text } from "../../components/Themed";
 import { SFSymbol } from "react-native-sfsymbols";
 import Svg, { Circle } from "react-native-svg";
-import { CameraType } from "expo-camera/build/Camera.types";
+import { tintColorLight } from "../../constants/Colors";
+import {
+    CameraCapturedPicture,
+    CameraType,
+} from "expo-camera/build/Camera.types";
+import * as ImagePicker from "expo-image-picker";
 
 type Props = {
     navigation: any;
@@ -18,10 +28,33 @@ const CameraModal = (props: Props): JSX.Element => {
     const [type, setType] = React.useState<CameraType>(
         Camera.Constants.Type.back,
     );
+    const [photo, setPhoto] = React.useState<CameraCapturedPicture | null>(
+        null,
+    );
 
     let camera: Camera | null;
 
-    React.useEffect((): void => {
+    const takePicture = async () => {
+        if (camera) {
+            const photo: CameraCapturedPicture =
+                await camera.takePictureAsync();
+            setPhoto(photo);
+        }
+    };
+
+    // TODO!!!
+    const savePicture = async () => {
+        navigation.goBack();
+    };
+
+    const retakePicture = () => {
+        navigation.setOptions({
+            headerLeft: () => {},
+        });
+        setPhoto(null);
+    };
+
+    useEffect((): void => {
         (async (): Promise<void> => {
             const { status }: { status: string } =
                 await Camera.requestCameraPermissionsAsync();
@@ -38,68 +71,130 @@ const CameraModal = (props: Props): JSX.Element => {
     }
 
     return (
-        <View style={styles.container}>
-            <Camera
-                style={styles.camera}
-                type={type}
-                ref={(ref) => (camera = ref)}
-            >
-                <View style={styles.buttonContainer}>
-                    <View style={{ width: 52 }}></View>
-                    <Pressable
-                        style={styles.button}
-                        onPress={(): void => {
-                            camera
-                                ?.takePictureAsync({
-                                    quality: 1,
-                                    base64: true,
-                                    exif: true,
-                                })
-                                .then((data: any) => {
-                                    console.log(data);
-                                });
-                        }}
-                    >
-                        <Svg width="80" height="80">
-                            <Circle cx="40" cy="40" r="33.5" fill="white" />
-                            <Circle
-                                cx="40"
-                                cy="40"
-                                r="37.5"
-                                fill="transparent"
-                                stroke="white"
-                                strokeWidth="3"
+        <View style={localStyles.container}>
+            {photo ? (
+                <CameraPreview
+                    photo={photo}
+                    retakePicture={retakePicture}
+                    savePicture={savePicture}
+                    navigation={navigation}
+                />
+            ) : (
+                <Camera
+                    style={localStyles.camera}
+                    type={type}
+                    ref={(ref) => (camera = ref)}
+                >
+                    <View style={localStyles.buttonContainer}>
+                        <View style={{ width: 52 }}></View>
+                        <Pressable
+                            style={localStyles.button}
+                            onPress={(): void => {
+                                takePicture();
+                            }}
+                        >
+                            <Svg width="80" height="80">
+                                <Circle cx="40" cy="40" r="33.5" fill="white" />
+                                <Circle
+                                    cx="40"
+                                    cy="40"
+                                    r="37.5"
+                                    fill="transparent"
+                                    stroke="white"
+                                    strokeWidth="3"
+                                />
+                            </Svg>
+                        </Pressable>
+                        <Pressable
+                            style={localStyles.flipButton}
+                            onPress={() => {
+                                setType(
+                                    type === Camera.Constants.Type.back
+                                        ? Camera.Constants.Type.front
+                                        : Camera.Constants.Type.back,
+                                );
+                            }}
+                        >
+                            <SFSymbol
+                                name="arrow.2.circlepath"
+                                weight="semibold"
+                                scale="large"
+                                color="white"
+                                size={18}
+                                resizeMode="center"
+                                multicolor={false}
+                                style={{ width: 32, height: 32 }}
                             />
-                        </Svg>
-                    </Pressable>
-                    <Pressable
-                        style={styles.flipButton}
-                        onPress={() => {
-                            setType(
-                                type === Camera.Constants.Type.back
-                                    ? Camera.Constants.Type.front
-                                    : Camera.Constants.Type.back,
-                            );
-                        }}
-                    >
-                        <SFSymbol
-                            name="arrow.2.circlepath"
-                            weight="semibold"
-                            scale="large"
-                            color="white"
-                            size={18}
-                            resizeMode="center"
-                            multicolor={false}
-                            style={{ width: 32, height: 32 }}
-                        />
-                    </Pressable>
-                </View>
-            </Camera>
+                        </Pressable>
+                    </View>
+                </Camera>
+            )}
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const CameraPreview = ({
+    photo,
+    retakePicture,
+    savePicture,
+    navigation,
+}: any): JSX.Element => {
+    useEffect((): void => {
+        navigation.setOptions({
+            headerLeft: (): JSX.Element => (
+                <Pressable
+                    onPress={(): void => {
+                        retakePicture();
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 17,
+                        }}
+                    >
+                        Re-Take
+                    </Text>
+                </Pressable>
+            ),
+            headerRight: (): JSX.Element => (
+                <Pressable
+                    onPress={(): void => {
+                        savePicture();
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 17,
+                            color: tintColorLight,
+                        }}
+                    >
+                        Done
+                    </Text>
+                </Pressable>
+            ),
+        });
+    }, []);
+
+    return (
+        <View
+            style={{
+                backgroundColor: "transparent",
+                flex: 1,
+                width: "100%",
+                height: "100%",
+            }}
+        >
+            <ImageBackground
+                source={{ uri: photo && photo.uri }}
+                style={{
+                    flex: 1,
+                }}
+            />
+        </View>
+    );
+};
+
+const localStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "black",
@@ -122,10 +217,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(68, 68, 78, 0.8)",
         padding: 10,
         borderRadius: 50,
-    },
-    text: {
-        fontSize: 20,
-        color: "black",
     },
 });
 

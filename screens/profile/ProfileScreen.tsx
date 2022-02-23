@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { getUserById } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import { ActionSheetIOS, StyleSheet } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 type ProfileProps = {
     navigation: any;
@@ -24,6 +25,22 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     );
     const [user, setUser] = useState<any>({});
 
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+            // TODO!!! upload image to firebase
+        }
+    };
+
     const onPress = () =>
         ActionSheetIOS.showActionSheetWithOptions(
             {
@@ -36,10 +53,9 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                 if (buttonIndex === 0) {
                     // cancel action
                 } else if (buttonIndex === 1) {
-                    console.log(Math.floor(Math.random() * 100) + 1);
                     navigation.navigate("CameraModal");
                 } else if (buttonIndex === 2) {
-                    console.log("🔮");
+                    pickImage();
                 }
             },
         );
