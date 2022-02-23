@@ -5,6 +5,10 @@ import { getUserById } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import { ActionSheetIOS, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { uploadProfileImage } from "../../api/storage";
+import { readFile } from "react-native-fs";
+import RNFetchBlob from "rn-fetch-blob";
+import { getPictureBlob } from "../../utils/files";
 
 type ProfileProps = {
     navigation: any;
@@ -31,13 +35,21 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 1,
+            quality: 0.2,
         });
 
         console.log(result);
 
         if (!result.cancelled) {
-            // TODO!!! upload image to firebase
+            const blob = await getPictureBlob(result.uri);
+            const response = await uploadProfileImage(blob, userID);
+
+            // console.log(response);
+
+            // setUser({
+            //     ...user,
+            //     profileImage: response.downloadURL,
+            // });
         }
     };
 
