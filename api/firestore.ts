@@ -59,3 +59,37 @@ export const getUserById = async (id: string): Promise<DocumentData | null> => {
         return null;
     }
 };
+
+export const getUserDocById = (id: string): DocumentReference<DocumentData> => {
+    return doc(db, "users", id);
+};
+
+/**
+ * Updates a user doc in the users collection based on the user's ID
+ * @param id
+ * @param field
+ * @param data
+ * @returns
+ */
+export const updateUserFile = async (
+    id: string,
+    field: keyof User,
+    data: any,
+): Promise<boolean> => {
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        const user: User = userSnap.data() as User;
+        const updatedUser: User = {
+            ...user,
+            [field]: data,
+            updatedAt: new Date(),
+        };
+        return await setDoc(userDoc, updatedUser)
+            .then(() => true)
+            .catch(() => false);
+    } else {
+        return false;
+    }
+};

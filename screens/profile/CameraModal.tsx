@@ -1,9 +1,4 @@
-import {
-    View,
-    StyleSheet,
-    ImageBackground,
-    TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, ImageBackground } from "react-native";
 import React, { useEffect } from "react";
 import { Camera } from "expo-camera";
 import { Pressable, Text } from "../../components/Themed";
@@ -14,10 +9,19 @@ import {
     CameraCapturedPicture,
     CameraType,
 } from "expo-camera/build/Camera.types";
-import * as ImagePicker from "expo-image-picker";
+import { getPictureBlob } from "../../utils/files";
+import { uploadProfileImage } from "../../api/storage";
+import { updateUserFile } from "../../api/firestore";
+import { useSelector } from "react-redux";
 
 type Props = {
     navigation: any;
+};
+
+type UserStatePayload = {
+    user: {
+        payload: string;
+    };
 };
 
 const CameraModal = (props: Props): JSX.Element => {
@@ -32,18 +36,28 @@ const CameraModal = (props: Props): JSX.Element => {
         null,
     );
 
+    const userID: string = useSelector(
+        (state: { user: UserStatePayload }) => state.user.user.payload,
+    );
+
     let camera: Camera | null;
 
     const takePicture = async () => {
         if (camera) {
-            const photo: CameraCapturedPicture =
-                await camera.takePictureAsync();
+            const photo: CameraCapturedPicture = await camera.takePictureAsync({
+                quality: 0.1,
+            });
             setPhoto(photo);
         }
     };
 
-    // TODO!!!
     const savePicture = async () => {
+        if (photo) {
+            const blob = await getPictureBlob(photo.uri);
+            const response = await uploadProfileImage(blob, userID);
+
+            updateUserFile(userID, "profilePicture", response);
+        }
         navigation.goBack();
     };
 

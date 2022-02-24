@@ -1,14 +1,17 @@
 import { View, Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getUserById } from "../../api/firestore";
+import {
+    getUserById,
+    getUserDocById,
+    updateUserFile,
+} from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import { ActionSheetIOS, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
-import { readFile } from "react-native-fs";
-import RNFetchBlob from "rn-fetch-blob";
 import { getPictureBlob } from "../../utils/files";
+import { onSnapshot } from "firebase/firestore";
 
 type ProfileProps = {
     navigation: any;
@@ -35,7 +38,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 0.2,
+            quality: 0.1,
         });
 
         console.log(result);
@@ -44,12 +47,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             const blob = await getPictureBlob(result.uri);
             const response = await uploadProfileImage(blob, userID);
 
-            // console.log(response);
-
-            // setUser({
-            //     ...user,
-            //     profileImage: response.downloadURL,
-            // });
+            updateUserFile(userID, "profilePicture", response);
         }
     };
 
@@ -73,11 +71,15 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         );
 
     useEffect((): void => {
-        getUserById(userID).then((user) => {
-            setUser(user);
-            navigation.setOptions({
-                title: user?.username,
-            });
+        // getUserById(userID).then((user) => {
+        //     setUser(user);
+        //     navigation.setOptions({
+        //         title: user?.username,
+        //     });
+        // });
+
+        const unSub = onSnapshot(getUserDocById(userID), (doc) => {
+            setUser(doc.data());
         });
     }, []);
 
