@@ -18,7 +18,10 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifier": "com.lukaspetko.travelsafe"
+            "bundleIdentifier": "com.lukaspetko.travelsafe",
+            "infoPlist": {
+                "UIBackgroundModes": ["location", "fetch"]
+            }
         },
         "android": {
             "adaptiveIcon": {

@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../Firebase";
 import { BasicUserInfo } from "../utils/types/basicUserInfo";
-import { User } from "../utils/types/user";
+import { PublicUser, User } from "../utils/types/user";
 
 /**
  * Creates a new user doc in the users collection after a first registration
@@ -38,10 +38,41 @@ export const createUserAccount = async (
         updatedAt: new Date(),
     };
 
+    const publicUser: PublicUser = {
+        id,
+        username: userInfo.username,
+        email: userInfo.email,
+
+        followers: [],
+        following: [],
+
+        postCount: 0,
+        followerCount: 0,
+        followingCount: 0,
+
+        profilePicture: "",
+
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    };
+
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
-    return await setDoc(userDoc, user)
+    const publicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "profile",
+    );
+    const result = await setDoc(userDoc, user)
         .then(() => true)
         .catch(() => false);
+
+    if (result) {
+        await setDoc(publicUserDoc, publicUser);
+    }
+
+    return result;
 };
 
 /**

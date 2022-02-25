@@ -23,3 +23,21 @@ export type User = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type PublicUser = {
+    id: string;
+    username: string;
+    email: string;
+
+    followers: string[];
+    following: string[];
+
+    postCount: number;
+    followerCount: number;
+    followingCount: number;
+
+    profilePicture: string;
+
+    createdAt: Date;
+    updatedAt: Date;
+};

@@ -7,6 +7,8 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import store from "./redux/store";
 
+import "./utils/location";
+
 const App = (): JSX.Element | null => {
     const isLoadingComplete = useCachedResources();
     const colorScheme = useColorScheme();
