@@ -1,9 +1,11 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styles } from "../styles/global";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
+import { useSelector } from "react-redux";
+import { getUserById } from "../api/firestore";
 
 type MapCoords = {
     latitude: number;
@@ -21,6 +23,26 @@ const MapScreen = (): JSX.Element => {
     });
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [contactLocation, setContactLocation] = useState<any>({});
+    const [contactUsername, setContactUsername] = useState<string>("");
+
+    const userId = useSelector((state: any) => state.user.user.payload);
+
+    useEffect(() => {
+        (async () => {
+            const userData = await getUserById(userId);
+            const contactId = userData?.closeContacts[0].id;
+            const contactData = await getUserById(contactId);
+            console.log(contactData);
+            setContactLocation({
+                latitude: contactData?.lastLocation.latitude,
+                longitude: contactData?.lastLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            });
+            setContactUsername(contactData?.username);
+        })();
+    }, [userId]);
 
     useEffect((): void => {
         (async (): Promise<void> => {
@@ -55,7 +77,12 @@ const MapScreen = (): JSX.Element => {
                     region={mapRegion}
                     showsUserLocation={true}
                     // followsUserLocation={true}
-                />
+                >
+                    <Marker
+                        coordinate={contactLocation}
+                        title={contactUsername}
+                    />
+                </MapView>
             )}
         </View>
     );

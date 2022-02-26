@@ -87,6 +87,8 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         return <View />;
     }
 
+    console.log(user?.closeContacts);
+
     return (
         <View style={localStyles.container}>
             <ProfilePicture
@@ -99,6 +101,11 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             <Text>email: {user?.email}</Text>
             <Text>followers: {user?.followerCount}</Text>
             <Text>following: {user?.followingCount}</Text>
+            {user?.closeContacts?.map((contact: any) => (
+                <Text key={contact.id}>
+                    {contact.id} {contact.username}
+                </Text>
+            ))}
         </View>
     );
 };
