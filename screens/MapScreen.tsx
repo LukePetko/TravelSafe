@@ -4,8 +4,17 @@ import { styles } from "../styles/global";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
+import * as TaskManager from "expo-task-manager";
 import { useSelector } from "react-redux";
-import { getUserById } from "../api/firestore";
+import {
+    getLocationById,
+    getPublicUserById,
+    getUserById,
+} from "../api/firestore";
+import {
+    BACKGROUND_LOCATION_TASK,
+    saveLocationToFirestore,
+} from "../utils/location";
 
 type MapCoords = {
     latitude: number;
@@ -32,16 +41,34 @@ const MapScreen = (): JSX.Element => {
         (async () => {
             const userData = await getUserById(userId);
             const contactId = userData?.closeContacts[0].id;
-            const contactData = await getUserById(contactId);
+            const contactData = await getPublicUserById(contactId);
+            const locationData = await getLocationById(contactId);
             console.log(contactData);
             setContactLocation({
-                latitude: contactData?.lastLocation.latitude,
-                longitude: contactData?.lastLocation.longitude,
+                latitude: locationData?.location.latitude,
+                longitude: locationData?.location.longitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             });
             setContactUsername(contactData?.username);
         })();
+
+        if (userId) {
+            TaskManager.defineTask(
+                BACKGROUND_LOCATION_TASK,
+                saveLocationToFirestore,
+            );
+
+            Location.startLocationUpdatesAsync(BACKGROUND_LOCATION_TASK, {
+                accuracy: Location.Accuracy.Highest,
+                distanceInterval: 200,
+                foregroundService: {
+                    notificationTitle: "Using your location",
+                    notificationBody:
+                        "To turn off, go back to the app and switch something off.",
+                },
+            });
+        }
     }, [userId]);
 
     useEffect((): void => {
@@ -78,10 +105,12 @@ const MapScreen = (): JSX.Element => {
                     showsUserLocation={true}
                     // followsUserLocation={true}
                 >
-                    <Marker
-                        coordinate={contactLocation}
-                        title={contactUsername}
-                    />
+                    {contactLocation && (
+                        <Marker
+                            coordinate={contactLocation}
+                            title={contactUsername}
+                        />
+                    )}
                 </MapView>
             )}
         </View>

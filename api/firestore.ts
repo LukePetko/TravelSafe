@@ -2,6 +2,7 @@ import {
     doc,
     DocumentData,
     DocumentReference,
+    GeoPoint,
     getDoc,
     setDoc,
 } from "firebase/firestore";
@@ -64,12 +65,23 @@ export const createUserAccount = async (
         "public",
         "profile",
     );
+    const locationDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "location",
+    );
     const result = await setDoc(userDoc, user)
         .then(() => true)
         .catch(() => false);
 
     if (result) {
         await setDoc(publicUserDoc, publicUser);
+        await setDoc(locationDoc, {
+            location: null,
+            updatedAt: new Date(),
+        });
     }
 
     return result;
@@ -95,6 +107,45 @@ export const getUserDocById = (id: string): DocumentReference<DocumentData> => {
     return doc(db, "users", id);
 };
 
+export const getPublicUserById = async (
+    id: string,
+): Promise<DocumentData | null> => {
+    const userDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "profile",
+    );
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        return userSnap.data();
+    } else {
+        return null;
+    }
+};
+
+export const getLocationById = async (
+    id: string,
+): Promise<DocumentData | null> => {
+    const userDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "location",
+    );
+
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        return userSnap.data();
+    } else {
+        return null;
+    }
+};
+
 /**
  * Updates a user doc in the users collection based on the user's ID
  * @param id
@@ -118,6 +169,32 @@ export const updateUserFile = async (
             updatedAt: new Date(),
         };
         return await setDoc(userDoc, updatedUser)
+            .then(() => true)
+            .catch(() => false);
+    } else {
+        return false;
+    }
+};
+
+export const updateLocation = async (
+    id: string,
+    location: GeoPoint,
+): Promise<boolean> => {
+    const locationDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "location",
+    );
+    const locationSnap: DocumentData = await getDoc(locationDoc);
+
+    if (locationSnap.exists()) {
+        const updatedLocation: DocumentData = {
+            location,
+            updatedAt: new Date(),
+        };
+        return await setDoc(locationDoc, updatedLocation)
             .then(() => true)
             .catch(() => false);
     } else {

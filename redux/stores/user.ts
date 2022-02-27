@@ -23,5 +23,5 @@ export const userSlice: Slice = createSlice({
 });
 
 export const { login, logout } = userSlice.actions;
-export const getUserId = (state: RootState): string => state.user.user;
+export const getUserId = (state: RootState): string => state.user.user.payload;
 export default userSlice.reducer;

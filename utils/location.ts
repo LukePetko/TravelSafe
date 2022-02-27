@@ -1,17 +1,37 @@
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { GeoPoint } from "firebase/firestore";
-import { updateUserFile } from "../api/firestore";
+import { updateLocation, updateUserFile } from "../api/firestore";
 import store from "../redux/store";
 import { getUserId } from "../redux/stores/user";
 
-type Object = {
-    [key: string]: any;
+export const BACKGROUND_LOCATION_TASK = "background-location-task";
+
+export const saveLocationToFirestore = async ({ data, error }: any) => {
+    if (error) {
+        console.log("Error in background location task: ", error);
+        return;
+    }
+
+    console.log(data);
+
+    const userId = getUserId(store.getState());
+    if (userId) {
+        await updateLocation(
+            userId,
+            new GeoPoint(
+                data.locations[0].coords.latitude,
+                data.locations[0].coords.longitude,
+            ),
+        );
+    }
+
+    console.log("Location saved to firestore!!!!!!!!!!!!");
+    console.log(await TaskManager.getRegisteredTasksAsync());
+    TaskManager.unregisterTaskAsync(BACKGROUND_LOCATION_TASK);
 };
 
-// export const BACKGROUND_LOCATION_TASK = "background-location-task";
-
-// TaskManager.unregisterAllTasksAsync();
+//
 
 // TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
 //     if (error) {
@@ -24,7 +44,7 @@ type Object = {
 //     console.log(data);
 //     console.log("heelo");
 //     updateUserFile(
-//         getUserId(store.getState()).payload,
+//         getUserId(store.getState()),
 //         "lastLocation",
 //         new GeoPoint(
 //             newData.locations[0].coords.latitude,
