@@ -1,5 +1,11 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { styles } from "../styles/global";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
@@ -15,6 +21,8 @@ import {
     BACKGROUND_LOCATION_TASK,
     saveLocationToFirestore,
 } from "../utils/location";
+import { Pressable, BottomSheet, Text } from "../components/Themed";
+import DefaultBottomSheet from "@gorhom/bottom-sheet";
 
 type MapCoords = {
     latitude: number;
@@ -47,28 +55,28 @@ const MapScreen = (): JSX.Element => {
             setContactLocation({
                 latitude: locationData?.location.latitude,
                 longitude: locationData?.location.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
+                latitudeDelta: 0.0001,
+                longitudeDelta: 0.0001,
             });
             setContactUsername(contactData?.username);
         })();
 
-        if (userId) {
-            TaskManager.defineTask(
-                BACKGROUND_LOCATION_TASK,
-                saveLocationToFirestore,
-            );
+        // if (userId) {
+        //     TaskManager.defineTask(
+        //         BACKGROUND_LOCATION_TASK,
+        //         saveLocationToFirestore,
+        //     );
 
-            Location.startLocationUpdatesAsync(BACKGROUND_LOCATION_TASK, {
-                accuracy: Location.Accuracy.Highest,
-                distanceInterval: 200,
-                foregroundService: {
-                    notificationTitle: "Using your location",
-                    notificationBody:
-                        "To turn off, go back to the app and switch something off.",
-                },
-            });
-        }
+        //     Location.startLocationUpdatesAsync(BACKGROUND_LOCATION_TASK, {
+        //         accuracy: Location.Accuracy.Highest,
+        //         distanceInterval: 200,
+        //         foregroundService: {
+        //             notificationTitle: "Using your location",
+        //             notificationBody:
+        //                 "To turn off, go back to the app and switch something off.",
+        //         },
+        //     });
+        // }
     }, [userId]);
 
     useEffect((): void => {
@@ -95,23 +103,49 @@ const MapScreen = (): JSX.Element => {
         })();
     }, []);
 
+    const bottomSheetRef = useRef<DefaultBottomSheet>(null);
+
+    // variables
+    const snapPoints = useMemo(() => ["5%", "50%"], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log("handleSheetChanges", index);
+    }, []);
+
     return (
         <View style={styles.container}>
             {!isLoading && (
-                <MapView
-                    // provider={PROVIDER_GOOGLE}
-                    style={{ alignSelf: "stretch", height: "100%" }}
-                    region={mapRegion}
-                    showsUserLocation={true}
-                    // followsUserLocation={true}
-                >
-                    {contactLocation && (
-                        <Marker
-                            coordinate={contactLocation}
-                            title={contactUsername}
-                        />
-                    )}
-                </MapView>
+                <>
+                    <MapView
+                        // provider={PROVIDER_GOOGLE}
+                        style={{ alignSelf: "stretch", height: "100%" }}
+                        region={mapRegion}
+                        showsUserLocation={true}
+                        // followsUserLocation={true}
+                    >
+                        {contactLocation && (
+                            <Marker
+                                coordinate={contactLocation}
+                                title={contactUsername}
+                            />
+                        )}
+                    </MapView>
+                    <BottomSheet
+                        ref={bottomSheetRef}
+                        index={1}
+                        snapPoints={snapPoints}
+                        onChange={handleSheetChanges}
+                    >
+                        <View>
+                            <Pressable
+                                onPress={() => setmapRegion(contactLocation)}
+                            >
+                                <Text>{contactUsername}</Text>
+                            </Pressable>
+                        </View>
+                    </BottomSheet>
+                </>
             )}
         </View>
     );

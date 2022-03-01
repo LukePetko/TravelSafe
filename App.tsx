@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 
@@ -17,12 +18,14 @@ const App = (): JSX.Element | null => {
         return null;
     } else {
         return (
+            // <GestureHandlerRootView>
             <Provider store={store}>
                 <SafeAreaProvider>
                     <Navigation colorScheme={colorScheme} />
                     <StatusBar />
                 </SafeAreaProvider>
             </Provider>
+            // </GestureHandlerRootView>
         );
     }
 };

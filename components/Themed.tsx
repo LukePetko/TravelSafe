@@ -11,6 +11,7 @@ import {
     KeyboardAvoidingView as DefaultKeyboardAvoidingView,
     Animated,
 } from "react-native";
+import DefaultBottomSheet from "@gorhom/bottom-sheet";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -42,6 +43,7 @@ export type PressableProps = ThemeProps & DefaultPressable["props"];
 export type KeyboardAvoidingViewProps = ThemeProps &
     DefaultKeyboardAvoidingView["props"];
 export type DatePickerProps = ThemeProps & DefaultDatePicker["props"];
+export type BottomSheetProps = ThemeProps & DefaultBottomSheet["props"];
 
 export const Text = (props: TextProps): JSX.Element => {
     const { style, lightColor, darkColor, ...otherProps } = props;
@@ -128,5 +130,21 @@ export const Pressable = (props: PressableProps): JSX.Element => {
         >
             <Animated.View style={{ opacity: animated }} {...otherProps} />
         </DefaultPressable>
+    );
+};
+
+export const BottomSheet = (props: BottomSheetProps) => {
+    const { style, lightColor, darkColor, ...otherProps } = props;
+    const backgroundColor: string = useThemeColor(
+        { light: lightColor, dark: darkColor },
+        "fieldColor",
+    );
+
+    return (
+        <DefaultBottomSheet
+            style={style}
+            backgroundStyle={{ backgroundColor }}
+            {...otherProps}
+        />
     );
 };
