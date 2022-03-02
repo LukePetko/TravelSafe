@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import {
     getUserById,
     getUserDocById,
+    updateProfilePicture,
     updateUserFile,
 } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -47,7 +48,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             const blob = await getPictureBlob(result.uri);
             const response = await uploadProfileImage(blob, userID);
 
-            updateUserFile(userID, "profilePicture", response);
+            updateProfilePicture(userID, response);
         }
     };
 

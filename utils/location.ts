@@ -27,7 +27,7 @@ export const saveLocationToFirestore = async ({ data, error }: any) => {
     }
 
     console.log("Location saved to firestore!!!!!!!!!!!!");
-    console.log(await TaskManager.getRegisteredTasksAsync());
+    // console.log(await TaskManager.getRegisteredTasksAsync());
     TaskManager.unregisterTaskAsync(BACKGROUND_LOCATION_TASK);
 };
 

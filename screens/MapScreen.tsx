@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Image } from "react-native";
 import React, {
     useCallback,
     useEffect,
@@ -13,7 +13,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { useSelector } from "react-redux";
 import {
-    getLocationById,
+    getUserTripData,
     getPublicUserById,
     getUserById,
 } from "../api/firestore";
@@ -40,25 +40,51 @@ const MapScreen = (): JSX.Element => {
     });
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [contactLocation, setContactLocation] = useState<any>({});
-    const [contactUsername, setContactUsername] = useState<string>("");
+    const [contactsTripInfo, setContactsTripInfo] = useState<any>([]);
 
     const userId = useSelector((state: any) => state.user.user.payload);
 
     useEffect(() => {
         (async () => {
+            // const userData = await getUserById(userId);
+            // const contactId = userData?.closeContacts[0].id;
+            // const contactData = await getPublicUserById(contactId);
+            // const locationData = await getUserTripData(contactId);
+            // console.log(contactData);
+            // setContactLocation({
+            //     latitude: locationData?.location.latitude,
+            //     longitude: locationData?.location.longitude,
+            //     latitudeDelta: 0.0001,
+            //     longitudeDelta: 0.0001,
+            // });
+            // setContactUsername(contactData?.username);
             const userData = await getUserById(userId);
-            const contactId = userData?.closeContacts[0].id;
-            const contactData = await getPublicUserById(contactId);
-            const locationData = await getLocationById(contactId);
-            console.log(contactData);
-            setContactLocation({
-                latitude: locationData?.location.latitude,
-                longitude: locationData?.location.longitude,
-                latitudeDelta: 0.0001,
-                longitudeDelta: 0.0001,
-            });
-            setContactUsername(contactData?.username);
+            const contacts = userData?.closeContacts;
+            setContactsTripInfo([]);
+            contacts.forEach(
+                async (contact: { id: string; username: string }) => {
+                    const tripData = await getUserTripData(contact.id);
+                    const closeContacts = {
+                        username: tripData?.username,
+                        location: tripData?.location
+                            ? {
+                                  latitude: tripData?.location.latitude,
+                                  longitude: tripData?.location.longitude,
+                                  latitudeDelta: 0.0001,
+                                  longitudeDelta: 0.0001,
+                              }
+                            : null,
+                        profilePicture: tripData?.profilePicture,
+                        createdAt: tripData?.createdAt,
+                        updatedAt: tripData?.updatedAt,
+                    };
+
+                    setContactsTripInfo((prevState: any) => [
+                        ...prevState,
+                        closeContacts,
+                    ]);
+                },
+            );
         })();
 
         // if (userId) {
@@ -124,11 +150,30 @@ const MapScreen = (): JSX.Element => {
                         showsUserLocation={true}
                         // followsUserLocation={true}
                     >
-                        {contactLocation && (
-                            <Marker
-                                coordinate={contactLocation}
-                                title={contactUsername}
-                            />
+                        {contactsTripInfo.map(
+                            (contact: any) =>
+                                contact.location && (
+                                    <Marker
+                                        key={contact.username}
+                                        coordinate={contact.location}
+                                        title={contact.username}
+                                    >
+                                        <Image
+                                            source={{
+                                                uri:
+                                                    contact.profilePicture ||
+                                                    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+                                            }}
+                                            style={{
+                                                width: 50,
+                                                height: 50,
+                                                borderRadius: 25,
+                                                borderColor: "white",
+                                                borderWidth: 2,
+                                            }}
+                                        />
+                                    </Marker>
+                                ),
                         )}
                     </MapView>
                     <BottomSheet
@@ -138,11 +183,17 @@ const MapScreen = (): JSX.Element => {
                         onChange={handleSheetChanges}
                     >
                         <View>
-                            <Pressable
-                                onPress={() => setmapRegion(contactLocation)}
-                            >
-                                <Text>{contactUsername}</Text>
-                            </Pressable>
+                            {contactsTripInfo.map((contact: any) => (
+                                <Pressable
+                                    key={contact.username}
+                                    onPress={() =>
+                                        contact.location &&
+                                        setmapRegion(contact.location)
+                                    }
+                                >
+                                    <Text>{contact.username}</Text>
+                                </Pressable>
+                            ))}
                         </View>
                     </BottomSheet>
                 </>

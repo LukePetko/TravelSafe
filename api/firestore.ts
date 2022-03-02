@@ -57,6 +57,15 @@ export const createUserAccount = async (
         updatedAt: new Date(),
     };
 
+    const currentTrip = {
+        location: null,
+        username: userInfo.username,
+        profilePicture: "",
+
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    };
+
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
     const publicUserDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -65,12 +74,12 @@ export const createUserAccount = async (
         "public",
         "profile",
     );
-    const locationDoc: DocumentReference<DocumentData> = doc(
+    const currentTripDoc: DocumentReference<DocumentData> = doc(
         db,
         "users",
         id,
         "public",
-        "location",
+        "currentTrip",
     );
     const result = await setDoc(userDoc, user)
         .then(() => true)
@@ -78,10 +87,7 @@ export const createUserAccount = async (
 
     if (result) {
         await setDoc(publicUserDoc, publicUser);
-        await setDoc(locationDoc, {
-            location: null,
-            updatedAt: new Date(),
-        });
+        await setDoc(currentTripDoc, currentTrip);
     }
 
     return result;
@@ -126,7 +132,7 @@ export const getPublicUserById = async (
     }
 };
 
-export const getLocationById = async (
+export const getUserTripData = async (
     id: string,
 ): Promise<DocumentData | null> => {
     const userDoc: DocumentReference<DocumentData> = doc(
@@ -134,7 +140,7 @@ export const getLocationById = async (
         "users",
         id,
         "public",
-        "location",
+        "currentTrip",
     );
 
     const userSnap: DocumentData = await getDoc(userDoc);
@@ -176,25 +182,89 @@ export const updateUserFile = async (
     }
 };
 
-export const updateLocation = async (
+export const updateProfilePicture = async (
     id: string,
-    location: GeoPoint,
+    profilePicture: string,
 ): Promise<boolean> => {
-    const locationDoc: DocumentReference<DocumentData> = doc(
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
+    const publicUserDoc: DocumentReference<DocumentData> = doc(
         db,
         "users",
         id,
         "public",
-        "location",
+        "profile",
     );
-    const locationSnap: DocumentData = await getDoc(locationDoc);
+    const currentTripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "currentTrip",
+    );
+
+    const userSnap: DocumentData = await getDoc(userDoc);
+    const publicUserSnap: DocumentData = await getDoc(publicUserDoc);
+    const currentTripSnap: DocumentData = await getDoc(currentTripDoc);
+
+    if (
+        userSnap.exists() &&
+        publicUserSnap.exists() &&
+        currentTripSnap.exists()
+    ) {
+        const user: User = userSnap.data() as User;
+        const publicUser: PublicUser = publicUserSnap.data() as PublicUser;
+        const currentTrip: DocumentData = currentTripSnap.data();
+
+        const updatedUser: User = {
+            ...user,
+            profilePicture,
+            updatedAt: new Date(),
+        };
+        const updatedPublicUser: PublicUser = {
+            ...publicUser,
+            profilePicture,
+            updatedAt: new Date(),
+        };
+        const updatedCurrentTrip: DocumentData = {
+            ...currentTrip,
+            profilePicture,
+            updatedAt: new Date(),
+        };
+
+        const result = await setDoc(userDoc, updatedUser)
+            .then(() => true)
+            .then(() => setDoc(publicUserDoc, updatedPublicUser))
+            .then(() => setDoc(currentTripDoc, updatedCurrentTrip))
+            .then(() => true)
+            .catch(() => false);
+
+        return result;
+    } else {
+        return false;
+    }
+};
+
+export const updateLocation = async (
+    id: string,
+    location: GeoPoint,
+): Promise<boolean> => {
+    const currentTripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "currentTrip",
+    );
+    const locationSnap: DocumentData = await getDoc(currentTripDoc);
 
     if (locationSnap.exists()) {
+        const currentTrip: DocumentData = locationSnap.data();
         const updatedLocation: DocumentData = {
+            ...currentTrip,
             location,
             updatedAt: new Date(),
         };
-        return await setDoc(locationDoc, updatedLocation)
+        return await setDoc(currentTripDoc, updatedLocation)
             .then(() => true)
             .catch(() => false);
     } else {

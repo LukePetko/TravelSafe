@@ -11,7 +11,7 @@ import {
 } from "expo-camera/build/Camera.types";
 import { getPictureBlob } from "../../utils/files";
 import { uploadProfileImage } from "../../api/storage";
-import { updateUserFile } from "../../api/firestore";
+import { updateProfilePicture, updateUserFile } from "../../api/firestore";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -56,7 +56,7 @@ const CameraModal = (props: Props): JSX.Element => {
             const blob = await getPictureBlob(photo.uri);
             const response = await uploadProfileImage(blob, userID);
 
-            updateUserFile(userID, "profilePicture", response);
+            updateProfilePicture(userID, response);
         }
         navigation.goBack();
     };
