@@ -30,7 +30,7 @@ import {
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
-import MapScreen from "../screens/MapScreen";
+import MapScreen from "../screens/map/MapScreen";
 import Register from "../screens/auth/Register";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import CameraModal from "../screens/profile/CameraModal";

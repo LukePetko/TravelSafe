@@ -6,7 +6,7 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { styles } from "../styles/global";
+import { styles } from "../../styles/global";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
@@ -16,13 +16,15 @@ import {
     getUserTripData,
     getPublicUserById,
     getUserById,
-} from "../api/firestore";
+} from "../../api/firestore";
 import {
     BACKGROUND_LOCATION_TASK,
     saveLocationToFirestore,
-} from "../utils/location";
-import { Pressable, BottomSheet, Text } from "../components/Themed";
+} from "../../utils/location";
+import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import DefaultBottomSheet from "@gorhom/bottom-sheet";
+import ContactDetail from "./ContactDetail";
+import { CloseContact } from "../../utils/types/closeContact";
 
 type MapCoords = {
     latitude: number;
@@ -46,25 +48,13 @@ const MapScreen = (): JSX.Element => {
 
     useEffect(() => {
         (async () => {
-            // const userData = await getUserById(userId);
-            // const contactId = userData?.closeContacts[0].id;
-            // const contactData = await getPublicUserById(contactId);
-            // const locationData = await getUserTripData(contactId);
-            // console.log(contactData);
-            // setContactLocation({
-            //     latitude: locationData?.location.latitude,
-            //     longitude: locationData?.location.longitude,
-            //     latitudeDelta: 0.0001,
-            //     longitudeDelta: 0.0001,
-            // });
-            // setContactUsername(contactData?.username);
             const userData = await getUserById(userId);
             const contacts = userData?.closeContacts;
             setContactsTripInfo([]);
             contacts.forEach(
                 async (contact: { id: string; username: string }) => {
                     const tripData = await getUserTripData(contact.id);
-                    const closeContacts = {
+                    const closeContacts: CloseContact = {
                         username: tripData?.username,
                         location: tripData?.location
                             ? {
@@ -129,7 +119,11 @@ const MapScreen = (): JSX.Element => {
         })();
     }, []);
 
-    const bottomSheetRef = useRef<DefaultBottomSheet>(null);
+    useEffect(() => {
+        console.log(mapRegion);
+    }, [mapRegion]);
+
+    // const bottomSheetRef = useRef<DefaultBottomSheet>(null);
 
     // variables
     const snapPoints = useMemo(() => ["5%", "50%"], []);
@@ -177,12 +171,21 @@ const MapScreen = (): JSX.Element => {
                         )}
                     </MapView>
                     <BottomSheet
-                        ref={bottomSheetRef}
+                        // ref={bottomSheetRef}
                         index={1}
                         snapPoints={snapPoints}
                         onChange={handleSheetChanges}
                     >
                         <View>
+                            <Text
+                                style={{
+                                    fontWeight: "bold",
+                                    fontSize: 32,
+                                    padding: 10,
+                                }}
+                            >
+                                Close Contacts
+                            </Text>
                             {contactsTripInfo.map((contact: any) => (
                                 <Pressable
                                     key={contact.username}
@@ -191,8 +194,21 @@ const MapScreen = (): JSX.Element => {
                                         setmapRegion(contact.location)
                                     }
                                 >
-                                    <Text>{contact.username}</Text>
+                                    <ContactDetail
+                                        contact={contact}
+                                        userLocation={async () =>
+                                            await Location.getBackgroundPermissionsAsync()
+                                        }
+                                    />
                                 </Pressable>
+                                // <Pressable
+                                //     key={contact.username}
+                                //     onPress={() =>
+                                //         contact.location &&
+                                //         setmapRegion(contact.location)
+                                //     }
+                                // >
+                                //     <Text>{contact.username}</Text>
                             ))}
                         </View>
                     </BottomSheet>
