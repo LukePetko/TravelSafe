@@ -65,6 +65,7 @@ const MapScreen = (): JSX.Element => {
                               }
                             : null,
                         profilePicture: tripData?.profilePicture,
+                        tripName: tripData?.tripName,
                         createdAt: tripData?.createdAt,
                         updatedAt: tripData?.updatedAt,
                     };
@@ -197,7 +198,7 @@ const MapScreen = (): JSX.Element => {
                                     <ContactDetail
                                         contact={contact}
                                         userLocation={async () =>
-                                            await Location.getBackgroundPermissionsAsync()
+                                            await Location.getLastKnownPositionAsync()
                                         }
                                     />
                                 </Pressable>

@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type CloseContact = {
     username: string;
     location: {
@@ -7,6 +9,7 @@ export type CloseContact = {
         longitudeDelta: number;
     } | null;
     profilePicture: string;
-    createdAt: Date;
-    updatedAt: Date;
+    tripName: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };

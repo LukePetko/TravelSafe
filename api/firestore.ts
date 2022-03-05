@@ -61,6 +61,7 @@ export const createUserAccount = async (
         location: null,
         username: userInfo.username,
         profilePicture: "",
+        tripName: "",
 
         createdAt: new Date(),
         updatedAt: new Date(),

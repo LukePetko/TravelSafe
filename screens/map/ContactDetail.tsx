@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Text } from "../../components/Themed";
 import { CloseContact } from "../../utils/types/closeContact";
 import { Image, StyleSheet, View } from "react-native";
+import { distanceText } from "../../utils/distance";
+import { getTimeDifference } from "../../utils/time";
 
 type ContactDetailProps = {
     contact: CloseContact;
@@ -12,9 +14,28 @@ type ContactDetailProps = {
 const ContactDetail = (props: ContactDetailProps): JSX.Element => {
     const { contact, userLocation } = props;
 
-    const [distance, setDistance] = useState<number>(0);
+    const [distance, setDistance] = useState<number | null>(null);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        if (contact.location) {
+            (async () => {
+                const _userLocation = await userLocation();
+                const contactLocation = contact.location;
+                const distance = getDistance(
+                    {
+                        latitude: _userLocation.coords.latitude,
+                        longitude: _userLocation.coords.longitude,
+                    },
+                    {
+                        latitude: contactLocation?.latitude || 0,
+                        longitude: contactLocation?.longitude || 0,
+                    },
+                );
+
+                setDistance(distance);
+            })();
+        }
+    }, []);
 
     return (
         <View style={localStyles.container}>
@@ -36,7 +57,13 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
             </View>
             <View style={localStyles.textContainer}>
                 <Text style={{ fontWeight: "bold" }}>{contact.username}</Text>
-                <Text>{distance}</Text>
+                {distance && (
+                    <Text>
+                        {distanceText(distance)} ⦁ {contact.tripName} ⦁{" "}
+                        {getTimeDifference(contact.updatedAt.toDate())}
+                    </Text>
+                )}
+                {!distance && <Text>No active trip</Text>}
             </View>
         </View>
     );
