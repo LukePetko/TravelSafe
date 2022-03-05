@@ -1,4 +1,7 @@
 import {
+    addDoc,
+    collection,
+    CollectionReference,
     doc,
     DocumentData,
     DocumentReference,
@@ -8,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../Firebase";
 import { BasicUserInfo } from "../utils/types/basicUserInfo";
+import { Trip } from "../utils/types/trip";
 import { PublicUser, User } from "../utils/types/user";
 
 /**
@@ -245,6 +249,62 @@ export const updateProfilePicture = async (
     }
 };
 
+export const startTrip = async (
+    id: string,
+    location: GeoPoint,
+    tripName: string,
+): Promise<boolean> => {
+    const currentTripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "currentTrip",
+    );
+    const locationSnap: DocumentData = await getDoc(currentTripDoc);
+
+    if (locationSnap.exists()) {
+        const currentTrip: DocumentData = locationSnap.data();
+        const updatedLocation: DocumentData = {
+            ...currentTrip,
+            location,
+            tripName,
+            updatedAt: new Date(),
+        };
+        return await setDoc(currentTripDoc, updatedLocation)
+            .then(() => true)
+            .catch(() => false);
+    } else {
+        return false;
+    }
+};
+
+export const endTrip = async (id: string): Promise<boolean> => {
+    const currentTripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "public",
+        "currentTrip",
+    );
+    const locationSnap: DocumentData = await getDoc(currentTripDoc);
+
+    if (locationSnap.exists()) {
+        const currentTrip: DocumentData = locationSnap.data();
+        const updatedLocation: DocumentData = {
+            ...currentTrip,
+            location: null,
+            tripName: null,
+            updatedAt: new Date(),
+        };
+
+        return await setDoc(currentTripDoc, updatedLocation)
+            .then(() => true)
+            .catch(() => false);
+    }
+    return false;
+};
+
 export const updateLocation = async (
     id: string,
     location: GeoPoint,
@@ -271,4 +331,25 @@ export const updateLocation = async (
     } else {
         return false;
     }
+};
+
+export const createTrip = async (trip: Trip): Promise<string> => {
+    const tripDoc: CollectionReference<DocumentData> = collection(
+        db,
+        "users",
+        trip.userId,
+        "trips",
+    );
+
+    console.log(tripDoc.id);
+
+    const result = await addDoc(tripDoc, trip).then((docRef) => {
+        return docRef.id;
+    });
+
+    // const result = await setDoc(tripDoc, trip)
+    //     .then(() => true)
+    //     .catch(() => false);
+
+    return result;
 };

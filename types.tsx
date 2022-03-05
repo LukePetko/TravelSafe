@@ -38,6 +38,10 @@ export type LoginStackParamList = {
     Register: undefined;
 };
 
+export type TripStackParamList = {
+    Trips: undefined;
+};
+
 export type ProfileStackParamList = {
     Profile: undefined;
     CameraModal: undefined;

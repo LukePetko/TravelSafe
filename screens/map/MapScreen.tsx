@@ -54,6 +54,7 @@ const MapScreen = (): JSX.Element => {
             contacts.forEach(
                 async (contact: { id: string; username: string }) => {
                     const tripData = await getUserTripData(contact.id);
+                    console.log(tripData);
                     const closeContacts: CloseContact = {
                         username: tripData?.username,
                         location: tripData?.location

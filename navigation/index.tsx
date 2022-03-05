@@ -27,6 +27,7 @@ import {
     RootStackParamList,
     RootTabParamList,
     RootTabScreenProps,
+    TripStackParamList,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Login } from "../screens/auth/Login";
@@ -36,6 +37,7 @@ import ProfileScreen from "../screens/profile/ProfileScreen";
 import CameraModal from "../screens/profile/CameraModal";
 import { Text, Pressable } from "../components/Themed";
 import SettingsModal from "../screens/profile/SettingsModal";
+import TripScreen from "../screens/trip/TripScreen";
 
 type UserState = {
     user: string;
@@ -113,6 +115,16 @@ const AuthNavigator = (): JSX.Element => {
                 // options={{ title: "Oops!" }}
             />
         </LoginStack.Navigator>
+    );
+};
+
+const TripStack = createNativeStackNavigator<TripStackParamList>();
+
+export const TripStackNavigator = (): JSX.Element => {
+    return (
+        <TripStack.Navigator>
+            <TripStack.Screen name="Trips" component={TripScreen} />
+        </TripStack.Navigator>
     );
 };
 
@@ -246,12 +258,13 @@ export const BottomTabNavigator = (): JSX.Element => {
             />
             <BottomTab.Screen
                 name="TripTab"
-                component={TabTwoScreen}
+                component={TripStackNavigator}
                 options={{
                     title: "Trip",
                     tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="plus" size={24} color={color} />
                     ),
+                    headerShown: false,
                 }}
             />
             <BottomTab.Screen
