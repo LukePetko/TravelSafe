@@ -43,6 +43,7 @@ const MapScreen = (): JSX.Element => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [contactsTripInfo, setContactsTripInfo] = useState<any>([]);
+    const [userTripInfo, setUserTripInfo] = useState<CloseContact | null>(null);
 
     const userId = useSelector((state: any) => state.user.user.payload);
 
@@ -77,6 +78,31 @@ const MapScreen = (): JSX.Element => {
                     ]);
                 },
             );
+        })();
+
+        (async () => {
+            const tripData = await getUserTripData(userId);
+            const userTripInfo: CloseContact = {
+                username: tripData?.username,
+                location: tripData?.location
+                    ? {
+                          latitude: tripData?.location.latitude,
+                          longitude: tripData?.location.longitude,
+                          latitudeDelta: 0.0001,
+                          longitudeDelta: 0.0001,
+                      }
+                    : null,
+                profilePicture: tripData?.profilePicture,
+                tripName: tripData?.tripName,
+                createdAt: tripData?.createdAt,
+                updatedAt: tripData?.updatedAt,
+            };
+
+            if (!userTripInfo.location) {
+                setUserTripInfo(null);
+            } else {
+                setUserTripInfo(userTripInfo);
+            }
         })();
 
         // if (userId) {
@@ -179,6 +205,32 @@ const MapScreen = (): JSX.Element => {
                         onChange={handleSheetChanges}
                     >
                         <View>
+                            {!!userTripInfo && (
+                                <>
+                                    <Text
+                                        style={{
+                                            fontWeight: "bold",
+                                            fontSize: 32,
+                                            padding: 10,
+                                        }}
+                                    >
+                                        Your active trip
+                                    </Text>
+                                    <Pressable
+                                        key={userTripInfo.username}
+                                        onPress={() =>
+                                            userTripInfo.location &&
+                                            setmapRegion(userTripInfo.location)
+                                        }
+                                    >
+                                        <ContactDetail
+                                            contact={userTripInfo}
+                                            userLocation={async () => null}
+                                            isOwn={true}
+                                        />
+                                    </Pressable>
+                                </>
+                            )}
                             <Text
                                 style={{
                                     fontWeight: "bold",

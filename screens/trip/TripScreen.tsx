@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
 import ListInput from "../../components/ListInput";
@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { end, start } from "../../redux/stores/trip";
+import { endTrip, startNewQuickTrip } from "../../utils/trip";
 
 const TripScreen = (): JSX.Element => {
     const [userId, setUserId] = useState<string>("");
@@ -19,32 +20,24 @@ const TripScreen = (): JSX.Element => {
 
     const dispatch: Dispatch<any> = useDispatch<any>();
 
+    const createAlertButton = (): void =>
+        Alert.alert(
+            "Cannot start two trips at the same time",
+            "If you want to start new trip end the running one",
+            [
+                {
+                    text: "OK",
+                    style: "cancel",
+                },
+            ],
+        );
+
     const createQuckTrip = async () => {
         if (!tripId) {
-            const location = await Location.getCurrentPositionAsync({});
-            const trip: Trip = {
-                userId,
-                name: "Quick Trip",
-                startTime: new Date(),
-                startPlace: new GeoPoint(
-                    location.coords.latitude,
-                    location.coords.longitude,
-                ),
-
-                notifyCloseContacts: false,
-
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            };
-
-            const tripId = await createTrip(trip);
+            const tripId = await startNewQuickTrip();
             setTripId(tripId);
-            dispatch(start(tripId));
-            console.log("tripId", tripId);
         } else {
-            setTripId("");
-            dispatch(end());
-            console.log("tripId", tripId);
+            createAlertButton();
         }
     };
 
@@ -64,6 +57,14 @@ const TripScreen = (): JSX.Element => {
                 onPress={() => createQuckTrip()}
             >
                 New Quick Trip
+            </ListLabel>
+            <ListLabel
+                borderRadius={{ top: true, bottom: true }}
+                onPress={async () => {
+                    setTripId((await endTrip()) ? "" : tripId);
+                }}
+            >
+                End Trip
             </ListLabel>
         </View>
     );

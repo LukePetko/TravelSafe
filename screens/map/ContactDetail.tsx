@@ -9,10 +9,11 @@ import { getTimeDifference } from "../../utils/time";
 type ContactDetailProps = {
     contact: CloseContact;
     userLocation: any;
+    isOwn?: boolean;
 };
 
 const ContactDetail = (props: ContactDetailProps): JSX.Element => {
-    const { contact, userLocation } = props;
+    const { contact, userLocation, isOwn } = props;
 
     const [distance, setDistance] = useState<number | null>(null);
 
@@ -63,7 +64,13 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
                         {getTimeDifference(contact.updatedAt.toDate())}
                     </Text>
                 )}
-                {!distance && <Text>No active trip</Text>}
+                {!distance && !isOwn && <Text>No active trip</Text>}
+                {isOwn && (
+                    <Text>
+                        {contact.tripName} ⦁{" "}
+                        {getTimeDifference(contact.updatedAt.toDate())}
+                    </Text>
+                )}
             </View>
         </View>
     );
