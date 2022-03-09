@@ -11,6 +11,7 @@ import {
     endTrip,
     updateLocation,
     createTrip,
+    getUserTripDocumentRef,
 } from "./trips";
 
 export {
@@ -24,4 +25,5 @@ export {
     endTrip,
     updateLocation,
     createTrip,
+    getUserTripDocumentRef,
 };

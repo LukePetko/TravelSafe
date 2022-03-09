@@ -32,6 +32,12 @@ export const getUserTripData = async (
     }
 };
 
+export const getUserTripDocumentRef = (
+    id: string,
+): DocumentReference<DocumentData> => {
+    return doc(db, "users", id, "public", "currentTrip");
+};
+
 export const startTrip = async (
     id: string,
     location: GeoPoint,

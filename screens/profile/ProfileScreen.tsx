@@ -5,7 +5,6 @@ import {
     getUserById,
     getUserDocById,
     updateProfilePicture,
-    updateUserFile,
 } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import { ActionSheetIOS, StyleSheet } from "react-native";

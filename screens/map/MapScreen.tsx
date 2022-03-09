@@ -16,6 +16,7 @@ import {
     getUserTripData,
     getPublicUserById,
     getUserById,
+    getUserTripDocumentRef,
 } from "../../api/firestore";
 import {
     BACKGROUND_LOCATION_TASK,
@@ -24,7 +25,9 @@ import {
 import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import DefaultBottomSheet from "@gorhom/bottom-sheet";
 import ContactDetail from "./ContactDetail";
-import { CloseContact } from "../../utils/types/closeContact";
+import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
+import { getCloseContacts } from "../../api/firestore/accounts";
+import { onSnapshot } from "firebase/firestore";
 
 type MapCoords = {
     latitude: number;
@@ -42,86 +45,169 @@ const MapScreen = (): JSX.Element => {
     });
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [contactsTripInfo, setContactsTripInfo] = useState<any>([]);
-    const [userTripInfo, setUserTripInfo] = useState<CloseContact | null>(null);
+    const [contactsTripInfo, setContactsTripInfo] = useState<
+        CurrentTripInfo[] | null
+    >(null);
+    const [userTripInfo, setUserTripInfo] = useState<CurrentTripInfo | null>(
+        null,
+    );
 
     const userId = useSelector((state: any) => state.user.user.payload);
 
-    useEffect(() => {
-        (async () => {
-            const userData = await getUserById(userId);
-            const contacts = userData?.closeContacts;
-            setContactsTripInfo([]);
-            contacts.forEach(
-                async (contact: { id: string; username: string }) => {
-                    const tripData = await getUserTripData(contact.id);
-                    console.log(tripData);
-                    const closeContacts: CloseContact = {
-                        username: tripData?.username,
-                        location: tripData?.location
-                            ? {
-                                  latitude: tripData?.location.latitude,
-                                  longitude: tripData?.location.longitude,
-                                  latitudeDelta: 0.0001,
-                                  longitudeDelta: 0.0001,
-                              }
-                            : null,
-                        profilePicture: tripData?.profilePicture,
-                        tripName: tripData?.tripName,
-                        createdAt: tripData?.createdAt,
-                        updatedAt: tripData?.updatedAt,
-                    };
-
-                    setContactsTripInfo((prevState: any) => [
-                        ...prevState,
-                        closeContacts,
-                    ]);
-                },
-            );
-        })();
-
-        (async () => {
-            const tripData = await getUserTripData(userId);
-            const userTripInfo: CloseContact = {
-                username: tripData?.username,
-                location: tripData?.location
-                    ? {
-                          latitude: tripData?.location.latitude,
-                          longitude: tripData?.location.longitude,
-                          latitudeDelta: 0.0001,
-                          longitudeDelta: 0.0001,
-                      }
-                    : null,
-                profilePicture: tripData?.profilePicture,
-                tripName: tripData?.tripName,
-                createdAt: tripData?.createdAt,
-                updatedAt: tripData?.updatedAt,
-            };
-
-            if (!userTripInfo.location) {
-                setUserTripInfo(null);
-            } else {
-                setUserTripInfo(userTripInfo);
+    const unsubscribeUser = onSnapshot(
+        getUserTripDocumentRef(userId),
+        (snapshot) => {
+            if (snapshot.exists()) {
+                if (
+                    userTripInfo?.tripName !== snapshot.data().tripName ||
+                    userTripInfo?.location?.latitude !==
+                        snapshot.data().location.latitude ||
+                    userTripInfo?.location?.longitude !==
+                        snapshot.data().location.longitude
+                ) {
+                    if (!snapshot.data().tripName) {
+                        setUserTripInfo(null);
+                        return;
+                    }
+                    const data = snapshot.data();
+                    if (data) {
+                        const userTripInfo = {
+                            username: data.username,
+                            profilePicture: data.profilePicture,
+                            location: data.location
+                                ? {
+                                      latitude: data.location.latitude,
+                                      longitude: data.location.longitude,
+                                      latitudeDelta: 0.0001,
+                                      longitudeDelta: 0.0001,
+                                  }
+                                : null,
+                            tripName: data.tripName,
+                            createdAt: data.createdAt,
+                            updatedAt: data.updatedAt,
+                        };
+                        setUserTripInfo(userTripInfo);
+                    }
+                }
             }
-        })();
+        },
+    );
 
-        // if (userId) {
-        //     TaskManager.defineTask(
-        //         BACKGROUND_LOCATION_TASK,
-        //         saveLocationToFirestore,
-        //     );
+    // useEffect(() => {
+    // (async () => {
+    //     const query = await getCloseContacts(userId);
 
-        //     Location.startLocationUpdatesAsync(BACKGROUND_LOCATION_TASK, {
-        //         accuracy: Location.Accuracy.Highest,
-        //         distanceInterval: 200,
-        //         foregroundService: {
-        //             notificationTitle: "Using your location",
-        //             notificationBody:
-        //                 "To turn off, go back to the app and switch something off.",
-        //         },
-        //     });
-        // }
-    }, [userId]);
+    //     let unsubscribe: any;
+
+    //     if (query) {
+    //         unsubscribe = onSnapshot(query, (snapshot) => {
+    //             snapshot.docChanges().forEach((doc) => {
+    //                 console.log(doc.doc.data());
+    //             });
+    //         });
+    //     }
+
+    // const userData = await getUserById(userId);
+    // const contacts = userData?.closeContacts;
+    // setContactsTripInfo([]);
+    // contacts.forEach(
+    //     async (contact: { id: string; username: string }) => {
+    //         const tripData = await getUserTripData(contact.id);
+    //         console.log(tripData);
+    //         const closeContacts: CurrentTripInfo = {
+    //             username: tripData?.username,
+    //             location: tripData?.location
+    //                 ? {
+    //                       latitude: tripData?.location.latitude,
+    //                       longitude: tripData?.location.longitude,
+    //                       latitudeDelta: 0.0001,
+    //                       longitudeDelta: 0.0001,
+    //                   }
+    //                 : null,
+    //             profilePicture: tripData?.profilePicture,
+    //             tripName: tripData?.tripName,
+    //             createdAt: tripData?.createdAt,
+    //             updatedAt: tripData?.updatedAt,
+    //         };
+    //         setContactsTripInfo((prevState: any) => [
+    //             ...prevState,
+    //             closeContacts,
+    //         ]);
+    //     },
+    // );
+    // })();
+
+    // (async () => {
+    //     const tripData = await getUserTripData(userId);
+    //     const userTripInfo: CurrentTripInfo = {
+    //         username: tripData?.username,
+    //         location: tripData?.location
+    //             ? {
+    //                   latitude: tripData?.location.latitude,
+    //                   longitude: tripData?.location.longitude,
+    //                   latitudeDelta: 0.0001,
+    //                   longitudeDelta: 0.0001,
+    //               }
+    //             : null,
+    //         profilePicture: tripData?.profilePicture,
+    //         tripName: tripData?.tripName,
+    //         createdAt: tripData?.createdAt,
+    //         updatedAt: tripData?.updatedAt,
+    //     };
+
+    //     if (!userTripInfo.location) {
+    //         setUserTripInfo(null);
+    //     } else {
+    //         setUserTripInfo(userTripInfo);
+    //     }
+    // })();
+
+    // if (userId) {
+    //     TaskManager.defineTask(
+    //         BACKGROUND_LOCATION_TASK,
+    //         saveLocationToFirestore,
+    //     );
+
+    //     Location.startLocationUpdatesAsync(BACKGROUND_LOCATION_TASK, {
+    //         accuracy: Location.Accuracy.Highest,
+    //         distanceInterval: 200,
+    //         foregroundService: {
+    //             notificationTitle: "Using your location",
+    //             notificationBody:
+    //                 "To turn off, go back to the app and switch something off.",
+    //         },
+    //     });
+    // }
+    // }, [userId]);
+
+    // const unsubscribeUser = onSnapshot(
+    //     getUserTripDocumentRef(userId),
+    //     (snapshot) => {
+    //         // console.log(new Date());
+    //         const tripData = snapshot.data();
+    //         const userTripInfo: CurrentTripInfo = {
+    //             username: tripData?.username,
+    //             location: tripData?.location
+    //                 ? {
+    //                       latitude: tripData?.location.latitude,
+    //                       longitude: tripData?.location.longitude,
+    //                       latitudeDelta: 0.0001,
+    //                       longitudeDelta: 0.0001,
+    //                   }
+    //                 : null,
+    //             profilePicture: tripData?.profilePicture,
+    //             tripName: tripData?.tripName,
+    //             createdAt: tripData?.createdAt,
+    //             updatedAt: tripData?.updatedAt,
+    //         };
+
+    //         if (!userTripInfo.location) {
+    //             setUserTripInfo(null);
+    //         } else {
+    //             setUserTripInfo(userTripInfo);
+    //         }
+    //     },
+    // );
 
     useEffect((): void => {
         (async (): Promise<void> => {
@@ -147,19 +233,8 @@ const MapScreen = (): JSX.Element => {
         })();
     }, []);
 
-    useEffect(() => {
-        console.log(mapRegion);
-    }, [mapRegion]);
-
-    // const bottomSheetRef = useRef<DefaultBottomSheet>(null);
-
     // variables
     const snapPoints = useMemo(() => ["5%", "50%"], []);
-
-    // callbacks
-    const handleSheetChanges = useCallback((index: number) => {
-        console.log("handleSheetChanges", index);
-    }, []);
 
     return (
         <View style={styles.container}>
@@ -172,7 +247,7 @@ const MapScreen = (): JSX.Element => {
                         showsUserLocation={true}
                         // followsUserLocation={true}
                     >
-                        {contactsTripInfo.map(
+                        {contactsTripInfo?.map(
                             (contact: any) =>
                                 contact.location && (
                                     <Marker
@@ -202,7 +277,6 @@ const MapScreen = (): JSX.Element => {
                         // ref={bottomSheetRef}
                         index={1}
                         snapPoints={snapPoints}
-                        onChange={handleSheetChanges}
                     >
                         <View>
                             {!!userTripInfo && (
@@ -240,7 +314,7 @@ const MapScreen = (): JSX.Element => {
                             >
                                 Close Contacts
                             </Text>
-                            {contactsTripInfo.map((contact: any) => (
+                            {contactsTripInfo?.map((contact: any) => (
                                 <Pressable
                                     key={contact.username}
                                     onPress={() =>
@@ -255,14 +329,6 @@ const MapScreen = (): JSX.Element => {
                                         }
                                     />
                                 </Pressable>
-                                // <Pressable
-                                //     key={contact.username}
-                                //     onPress={() =>
-                                //         contact.location &&
-                                //         setmapRegion(contact.location)
-                                //     }
-                                // >
-                                //     <Text>{contact.username}</Text>
                             ))}
                         </View>
                     </BottomSheet>

@@ -1,9 +1,15 @@
 import {
+    collection,
+    collectionGroup,
     doc,
     DocumentData,
     DocumentReference,
     getDoc,
+    onSnapshot,
+    Query,
+    query,
     setDoc,
+    where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
@@ -191,5 +197,21 @@ export const updateProfilePicture = async (
         return result;
     } else {
         return false;
+    }
+};
+
+export const getCloseContacts = async (
+    id: string,
+): Promise<Query<DocumentData> | undefined> => {
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        const user: User = userSnap.data() as User;
+
+        return query(
+            collectionGroup(db, "public"),
+            where("id", "in", user.closeContacts),
+        );
     }
 };

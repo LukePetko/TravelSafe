@@ -1,13 +1,13 @@
 import { getDistance } from "geolib";
 import React, { useEffect, useState } from "react";
 import { Text } from "../../components/Themed";
-import { CloseContact } from "../../utils/types/closeContact";
+import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { Image, StyleSheet, View } from "react-native";
 import { distanceText } from "../../utils/distance";
 import { getTimeDifference } from "../../utils/time";
 
 type ContactDetailProps = {
-    contact: CloseContact;
+    contact: CurrentTripInfo;
     userLocation: any;
     isOwn?: boolean;
 };

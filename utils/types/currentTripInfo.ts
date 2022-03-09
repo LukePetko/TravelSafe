@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-export type CloseContact = {
+export type CurrentTripInfo = {
     username: string;
     location: {
         latitude: number;
