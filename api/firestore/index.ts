@@ -4,6 +4,7 @@ import {
     getUserDocById,
     getPublicUserById,
     updateProfilePicture,
+    getCloseContactsQuery,
 } from "./accounts";
 import {
     getUserTripData,
@@ -26,4 +27,5 @@ export {
     updateLocation,
     createTrip,
     getUserTripDocumentRef,
+    getCloseContactsQuery,
 };

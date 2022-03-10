@@ -19,7 +19,7 @@ export const getUserTripData = async (
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
 
@@ -35,7 +35,7 @@ export const getUserTripData = async (
 export const getUserTripDocumentRef = (
     id: string,
 ): DocumentReference<DocumentData> => {
-    return doc(db, "users", id, "public", "currentTrip");
+    return doc(db, "users", id, "closeContacts", "currentTrip");
 };
 
 export const startTrip = async (
@@ -47,7 +47,7 @@ export const startTrip = async (
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
     const locationSnap: DocumentData = await getDoc(currentTripDoc);
@@ -73,7 +73,7 @@ export const endTrip = async (id: string): Promise<boolean> => {
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
     const locationSnap: DocumentData = await getDoc(currentTripDoc);
@@ -102,7 +102,7 @@ export const updateLocation = async (
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
     const locationSnap: DocumentData = await getDoc(currentTripDoc);
@@ -130,7 +130,7 @@ export const createTrip = async (trip: Trip): Promise<string> => {
         "trips",
     );
 
-    console.log(tripDoc.id);
+    // console.log(tripDoc.id);
 
     const result = await addDoc(tripDoc, trip).then((docRef) => {
         return docRef.id;

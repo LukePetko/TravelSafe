@@ -21,6 +21,7 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
         if (contact.location) {
             (async () => {
                 const _userLocation = await userLocation();
+                if (!_userLocation) return;
                 const contactLocation = contact.location;
                 const distance = getDistance(
                     {
@@ -58,13 +59,13 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
             </View>
             <View style={localStyles.textContainer}>
                 <Text style={{ fontWeight: "bold" }}>{contact.username}</Text>
-                {distance && (
+                {contact.location && !isOwn && (
                     <Text>
                         {distanceText(distance)} ⦁ {contact.tripName} ⦁{" "}
                         {getTimeDifference(contact.updatedAt.toDate())}
                     </Text>
                 )}
-                {!distance && !isOwn && <Text>No active trip</Text>}
+                {!contact.location && !isOwn && <Text>No active trip</Text>}
                 {isOwn && (
                     <Text>
                         {contact.tripName} ⦁{" "}

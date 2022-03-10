@@ -1,5 +1,10 @@
 import { GeoPoint } from "firebase/firestore";
 
+type CloseContact = {
+    id: string;
+    username: string;
+};
+
 export type User = {
     id: string;
     username: string;
@@ -11,7 +16,7 @@ export type User = {
 
     followers: string[];
     following: string[];
-    closeContacts: string[];
+    closeContacts: CloseContact[];
 
     postCount: number;
     followerCount: number;

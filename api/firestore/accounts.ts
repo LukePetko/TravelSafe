@@ -63,6 +63,7 @@ export const createUserAccount = async (
     };
 
     const currentTrip = {
+        id,
         location: null,
         username: userInfo.username,
         profilePicture: "",
@@ -84,7 +85,7 @@ export const createUserAccount = async (
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
     const result = await setDoc(userDoc, user)
@@ -154,7 +155,7 @@ export const updateProfilePicture = async (
         db,
         "users",
         id,
-        "public",
+        "closeContacts",
         "currentTrip",
     );
 
@@ -200,7 +201,7 @@ export const updateProfilePicture = async (
     }
 };
 
-export const getCloseContacts = async (
+export const getCloseContactsQuery = async (
     id: string,
 ): Promise<Query<DocumentData> | undefined> => {
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
@@ -208,10 +209,19 @@ export const getCloseContacts = async (
 
     if (userSnap.exists()) {
         const user: User = userSnap.data() as User;
+        const closeContactsIds: string[] = user.closeContacts.map(
+            (el) => el.id,
+        );
+
+        console.log(closeContactsIds);
+
+        if (closeContactsIds.length === 0) {
+            return undefined;
+        }
 
         return query(
-            collectionGroup(db, "public"),
-            where("id", "in", user.closeContacts),
+            collectionGroup(db, "closeContacts"),
+            where("id", "in", closeContactsIds),
         );
     }
 };

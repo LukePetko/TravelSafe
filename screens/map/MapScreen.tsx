@@ -26,7 +26,10 @@ import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import DefaultBottomSheet from "@gorhom/bottom-sheet";
 import ContactDetail from "./ContactDetail";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
-import { getCloseContacts } from "../../api/firestore/accounts";
+import {
+    getCloseContacts,
+    getCloseContactsQuery,
+} from "../../api/firestore/accounts";
 import { onSnapshot } from "firebase/firestore";
 
 type MapCoords = {
@@ -72,12 +75,13 @@ const MapScreen = (): JSX.Element => {
                     const data = snapshot.data();
                     if (data) {
                         const userTripInfo = {
+                            id: data.id,
                             username: data.username,
                             profilePicture: data.profilePicture,
                             location: data.location
                                 ? {
-                                      latitude: data.location.latitude,
-                                      longitude: data.location.longitude,
+                                      latitude: data.location?.latitude,
+                                      longitude: data.location?.longitude,
                                       latitudeDelta: 0.0001,
                                       longitudeDelta: 0.0001,
                                   }
@@ -92,6 +96,58 @@ const MapScreen = (): JSX.Element => {
             }
         },
     );
+
+    useEffect(() => {
+        (async () => {
+            const closeContactsQuery = await getCloseContactsQuery(userId);
+
+            if (closeContactsQuery) {
+                const closeContactsUnsubscribe = onSnapshot(
+                    closeContactsQuery,
+                    (snapshot) => {
+                        snapshot.forEach((doc) => {
+                            const tripData = doc.data();
+                            const closeContact: CurrentTripInfo = {
+                                id: tripData?.id,
+                                username: tripData?.username,
+                                location: tripData?.location
+                                    ? {
+                                          latitude: tripData?.location.latitude,
+                                          longitude:
+                                              tripData?.location.longitude,
+                                          latitudeDelta: 0.0001,
+                                          longitudeDelta: 0.0001,
+                                      }
+                                    : null,
+                                profilePicture: tripData?.profilePicture,
+                                tripName: tripData?.tripName,
+                                createdAt: tripData?.createdAt,
+                                updatedAt: tripData?.updatedAt,
+                            };
+
+                            setContactsTripInfo((prev) => {
+                                let contactsCopy: CurrentTripInfo[] = [];
+                                if (prev) {
+                                    contactsCopy = [...prev];
+                                    const index = contactsCopy.findIndex(
+                                        (contact) =>
+                                            contact.id === tripData?.id,
+                                    );
+                                    if (index !== -1) {
+                                        contactsCopy[index] = closeContact;
+                                        return contactsCopy;
+                                    }
+                                    return [...contactsCopy, closeContact];
+                                }
+                                return [closeContact];
+                            });
+                        });
+                    },
+                );
+                console.log(contactsTripInfo);
+            }
+        })();
+    }, []);
 
     // useEffect(() => {
     // (async () => {
