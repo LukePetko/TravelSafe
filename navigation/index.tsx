@@ -17,7 +17,7 @@ import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import { useStoreSelector } from "../hooks/useStoreSelector";
-import ModalScreen from "../screens/ModalScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
@@ -85,7 +85,10 @@ const RootNavigator = (): JSX.Element => {
                 options={{ title: "Oops!" }}
             />
             <Stack.Group screenOptions={{ presentation: "modal" }}>
-                <Stack.Screen name="Modal" component={ModalScreen} />
+                <Stack.Screen
+                    name="Notifications"
+                    component={NotificationScreen}
+                />
             </Stack.Group>
         </Stack.Navigator>
     );
@@ -231,7 +234,7 @@ export const BottomTabNavigator = (): JSX.Element => {
                     ),
                     headerRight: () => (
                         <Pressable
-                            onPress={() => navigation.navigate("Modal")}
+                            onPress={() => navigation.navigate("Notifications")}
                             style={({ pressed }: { pressed: boolean }) => ({
                                 opacity: pressed ? 0.5 : 1,
                             })}

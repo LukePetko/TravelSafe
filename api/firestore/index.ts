@@ -6,6 +6,7 @@ import {
     updateProfilePicture,
     getCloseContactsQuery,
 } from "./accounts";
+
 import {
     getUserTripData,
     startTrip,
@@ -14,6 +15,8 @@ import {
     createTrip,
     getUserTripDocumentRef,
 } from "./trips";
+
+import { getUserNotifications } from "./notifications";
 
 export {
     createUserAccount,
@@ -28,4 +31,5 @@ export {
     createTrip,
     getUserTripDocumentRef,
     getCloseContactsQuery,
+    getUserNotifications,
 };

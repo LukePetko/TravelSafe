@@ -13,6 +13,10 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { end, start } from "../../redux/stores/trip";
 import { endTrip, startNewQuickTrip } from "../../utils/trip";
+import {
+    startLocationTracking,
+    stopLocationTracking,
+} from "../../api/backgroundLocation";
 
 const TripScreen = (): JSX.Element => {
     const [userId, setUserId] = useState<string>("");
@@ -36,6 +40,7 @@ const TripScreen = (): JSX.Element => {
         if (!tripId) {
             const tripId = await startNewQuickTrip();
             setTripId(tripId);
+            startLocationTracking(userId);
         } else {
             createAlertButton();
         }
@@ -62,6 +67,7 @@ const TripScreen = (): JSX.Element => {
                 borderRadius={{ top: true, bottom: true }}
                 onPress={async () => {
                     setTripId((await endTrip()) ? "" : tripId);
+                    stopLocationTracking();
                 }}
             >
                 End Trip
