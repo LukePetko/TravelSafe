@@ -11,7 +11,7 @@ import {
 } from "expo-camera/build/Camera.types";
 import { getPictureBlob } from "../../utils/files";
 import { uploadProfileImage } from "../../api/storage";
-import { updateProfilePicture, updateUserFile } from "../../api/firestore";
+import { updateProfilePicture } from "../../api/firestore";
 import { useSelector } from "react-redux";
 
 type Props = {

@@ -6,6 +6,7 @@ import {
     query,
     where,
 } from "firebase/firestore";
+import { useEffect } from "react";
 import { db } from "../../Firebase";
 
 export const getUserNotifications = async (
@@ -13,7 +14,7 @@ export const getUserNotifications = async (
 ): Promise<DocumentData[] | null> => {
     const data: DocumentData[] = [];
     const notificationsQuery = query(
-        collection(db, "users", id, "notifications"),
+        collection(db, "notifications"),
         where("receiverId", "==", id),
     );
 
