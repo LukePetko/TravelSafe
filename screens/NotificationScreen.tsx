@@ -5,6 +5,7 @@ import { styles } from "../styles/global";
 import { getUserId } from "../redux/stores/user";
 import Notification from "../components/Notification";
 import store from "../redux/store";
+import { acceptNotification } from "../api/firestore/notifications";
 
 const NotificationScreen = (): JSX.Element => {
     const userId = getUserId(store.getState());
@@ -17,15 +18,13 @@ const NotificationScreen = (): JSX.Element => {
 
     return (
         <View>
-            <Text
-                style={{
-                    fontWeight: "bold",
-                    fontSize: 32,
-                    padding: 10,
-                }}
-            >
-                Notifications
-            </Text>
+            {notifications?.length === 0 && (
+                <Text
+                    style={{ textAlign: "center", padding: 25, fontSize: 24 }}
+                >
+                    No notifications
+                </Text>
+            )}
             {notifications?.map((notification) => (
                 <Pressable
                     key={notification.senderId}
@@ -33,11 +32,26 @@ const NotificationScreen = (): JSX.Element => {
                 >
                     <Notification
                         type={notification.type}
-                        id={notification.senderId}
+                        senderId={notification.senderId}
                         username={notification.senderUsername}
                         profilePicture={notification.senderProfilePicture}
                         createdAt={notification.createdAt}
-                        onAccept={() => {}}
+                        onAccept={() => {
+                            acceptNotification(
+                                notification.senderId,
+                                notification.receiverId,
+                            );
+
+                            setNotifications(
+                                (notifications) =>
+                                    notifications &&
+                                    notifications.filter(
+                                        (n) =>
+                                            n.senderId !==
+                                            notification.senderId,
+                                    ),
+                            );
+                        }}
                         onDecline={() => {}}
                     />
                 </Pressable>

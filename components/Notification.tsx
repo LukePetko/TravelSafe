@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { getTimeDifference } from "../utils/time";
 import { View, Text } from "./Themed";
@@ -7,7 +7,7 @@ import { SFSymbol } from "react-native-sfsymbols";
 
 type NotificationProps = {
     type: number;
-    id: string;
+    senderId: string;
     username: string;
     profilePicture: string;
     createdAt: Timestamp;
@@ -17,14 +17,23 @@ type NotificationProps = {
 };
 
 const Notification = (props: NotificationProps): JSX.Element => {
-    const { type, id, username, profilePicture, createdAt, navigation } = props;
+    const {
+        type,
+        senderId,
+        username,
+        profilePicture,
+        createdAt,
+        navigation,
+        onAccept,
+        onDecline,
+    } = props;
 
     let typeText;
 
     switch (type) {
         case 1:
+            typeText = "Close contact request";
             break;
-
         default:
             break;
     }
@@ -49,31 +58,38 @@ const Notification = (props: NotificationProps): JSX.Element => {
                     />
                 </View>
                 <View style={localStyles.textContainer}>
-                    <Text style={{ fontWeight: "bold" }}>{username}</Text>
-                    <Text>Hello ⦁ {getTimeDifference(createdAt.toDate())}</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{ fontWeight: "bold" }}>{username}</Text>
+                        <Text>⦁ {getTimeDifference(createdAt.toDate())}</Text>
+                    </View>
+                    <Text>{typeText}</Text>
                 </View>
             </View>
             <View style={localStyles.buttonContainer}>
-                <SFSymbol
-                    name="checkmark"
-                    weight="semibold"
-                    scale="large"
-                    color="green"
-                    size={18}
-                    resizeMode="center"
-                    multicolor={false}
-                    style={{ width: 32, height: 32, marginHorizontal: 8 }}
-                />
-                <SFSymbol
-                    name="xmark"
-                    weight="semibold"
-                    scale="large"
-                    color="red"
-                    size={18}
-                    resizeMode="center"
-                    multicolor={false}
-                    style={{ width: 32, height: 32, marginHorizontal: 8 }}
-                />
+                <Pressable onPress={onAccept}>
+                    <SFSymbol
+                        name="checkmark"
+                        weight="semibold"
+                        scale="large"
+                        color="green"
+                        size={18}
+                        resizeMode="center"
+                        multicolor={false}
+                        style={{ width: 32, height: 32, marginHorizontal: 8 }}
+                    />
+                </Pressable>
+                <Pressable>
+                    <SFSymbol
+                        name="xmark"
+                        weight="semibold"
+                        scale="large"
+                        color="red"
+                        size={18}
+                        resizeMode="center"
+                        multicolor={false}
+                        style={{ width: 32, height: 32, marginHorizontal: 8 }}
+                    />
+                </Pressable>
             </View>
         </View>
     );

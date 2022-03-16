@@ -38,6 +38,10 @@ export type LoginStackParamList = {
     Register: undefined;
 };
 
+export type SearchStackParamList = {
+    Search: undefined;
+};
+
 export type TripStackParamList = {
     Trips: undefined;
 };

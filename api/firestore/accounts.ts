@@ -209,9 +209,7 @@ export const getCloseContactsQuery = async (
 
     if (userSnap.exists()) {
         const user: User = userSnap.data() as User;
-        const closeContactsIds: string[] = user.closeContacts.map(
-            (el) => el.id,
-        );
+        const closeContactsIds: string[] = user.closeContacts;
 
         console.log(closeContactsIds);
 

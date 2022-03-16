@@ -27,6 +27,7 @@ import {
     RootStackParamList,
     RootTabParamList,
     RootTabScreenProps,
+    SearchStackParamList,
     TripStackParamList,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -38,6 +39,7 @@ import CameraModal from "../screens/profile/CameraModal";
 import { Text, Pressable } from "../components/Themed";
 import SettingsModal from "../screens/profile/SettingsModal";
 import TripScreen from "../screens/trip/TripScreen";
+import SearchScreen from "../screens/search/SearchScreen";
 
 type UserState = {
     user: string;
@@ -118,6 +120,22 @@ const AuthNavigator = (): JSX.Element => {
                 // options={{ title: "Oops!" }}
             />
         </LoginStack.Navigator>
+    );
+};
+
+const SearchStack = createNativeStackNavigator<SearchStackParamList>();
+
+export const SearchStackNavigator = (): JSX.Element => {
+    return (
+        <SearchStack.Navigator>
+            <SearchStack.Screen
+                name="Search"
+                component={SearchScreen}
+                options={{
+                    headerShown: true,
+                }}
+            />
+        </SearchStack.Navigator>
     );
 };
 
@@ -251,12 +269,13 @@ export const BottomTabNavigator = (): JSX.Element => {
             />
             <BottomTab.Screen
                 name="SearchTab"
-                component={TabTwoScreen}
+                component={SearchStackNavigator}
                 options={{
                     title: "Search",
                     tabBarIcon: ({ color }: ColorType) => (
                         <Feather name="search" size={24} color={color} />
                     ),
+                    headerShown: false,
                 }}
             />
             <BottomTab.Screen
