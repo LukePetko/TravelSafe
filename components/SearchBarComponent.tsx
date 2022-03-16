@@ -7,7 +7,7 @@ import Hits from "./Hits";
 import SearchBox from "./SearchBox";
 
 type SearchBarProps = {
-    onResultPress: () => void;
+    onResultPress: (id: string) => void;
 };
 
 const SearchBarComponent = (props: SearchBarProps) => {
@@ -27,7 +27,7 @@ const SearchBarComponent = (props: SearchBarProps) => {
     return (
         <InstantSearch searchClient={searchClient} indexName="username">
             <SearchBox />
-            <Hits onPress={onResultPress} />
+            <Hits onPress={(id: string) => onResultPress(id)} />
         </InstantSearch>
     );
 };

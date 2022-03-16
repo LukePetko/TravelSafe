@@ -92,6 +92,7 @@ const RootNavigator = (): JSX.Element => {
                     component={NotificationScreen}
                 />
             </Stack.Group>
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         </Stack.Navigator>
     );
 };

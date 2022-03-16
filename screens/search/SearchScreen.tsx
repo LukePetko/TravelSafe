@@ -6,10 +6,15 @@ type SearchScreenProps = {
     navigation: any;
 };
 
-const SearchScreen = () => {
+const SearchScreen = (props: SearchScreenProps) => {
+    const { navigation } = props;
     return (
         <View>
-            <SearchBarComponent onResultPress={console.log} />
+            <SearchBarComponent
+                onResultPress={(id: string) =>
+                    navigation.navigate("ProfileScreen", { id })
+                }
+            />
         </View>
     );
 };

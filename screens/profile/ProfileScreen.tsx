@@ -15,7 +15,7 @@ import { onSnapshot } from "firebase/firestore";
 
 type ProfileProps = {
     navigation: any;
-    editable?: boolean;
+    route?: any;
 };
 
 type UserStatePayload = {
@@ -25,11 +25,16 @@ type UserStatePayload = {
 };
 
 const ProfileScreen = (props: ProfileProps): JSX.Element => {
-    const { navigation, editable } = props;
+    const { navigation, route } = props;
 
-    const userID: string = useSelector(
-        (state: { user: UserStatePayload }) => state.user.user.payload,
-    );
+    const userID: string = route.params
+        ? route.params.id
+        : useSelector(
+              (state: { user: UserStatePayload }) => state.user.user.payload,
+          );
+
+    const isOwn = !route.params;
+
     const [user, setUser] = useState<any>({});
 
     const pickImage = async () => {
@@ -40,8 +45,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             aspect: [4, 3],
             quality: 0.1,
         });
-
-        console.log(result);
 
         if (!result.cancelled) {
             const blob = await getPictureBlob(result.uri);
@@ -71,13 +74,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         );
 
     useEffect((): void => {
-        // getUserById(userID).then((user) => {
-        //     setUser(user);
-        //     navigation.setOptions({
-        //         title: user?.username,
-        //     });
-        // });
-
         const unSub = onSnapshot(getUserDocById(userID), (doc) => {
             setUser(doc.data());
         });
@@ -86,8 +82,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     if (!user) {
         return <View />;
     }
-
-    console.log(user?.closeContacts);
 
     return (
         <View style={localStyles.container}>
