@@ -12,6 +12,7 @@ import ListLabel from "../../components/ListLabel";
 import { tintColorLight } from "../../constants/Colors";
 import { Alert } from "react-native";
 import { Dispatch } from "@reduxjs/toolkit";
+import { storeData } from "../../async-storage";
 
 type LoginProps = {
     navigation: any;
@@ -29,6 +30,7 @@ export const Login = (props: LoginProps): JSX.Element => {
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
                 dispatch(login(user.user.uid));
+                storeData("userId", user.user.uid);
             })
             .catch((error) => {
                 const errorCode = error.code;

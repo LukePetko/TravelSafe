@@ -41,6 +41,11 @@ import SettingsModal from "../screens/profile/SettingsModal";
 import TripScreen from "../screens/trip/TripScreen";
 import SearchScreen from "../screens/search/SearchScreen";
 import SearchModal from "../screens/profile/SearchModal";
+import { useEffect } from "react";
+import { Dispatch } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+import { getData } from "../async-storage";
+import { login } from "../redux/stores/user";
 
 type UserState = {
     user: string;
@@ -57,6 +62,18 @@ const Navigation = ({
 }: {
     colorScheme: ColorSchemeName;
 }): JSX.Element => {
+    const dispatch: Dispatch<any> = useDispatch<any>();
+
+    useEffect(() => {
+        (async () => {
+            const userId = await getData("userId");
+
+            if (userId) {
+                dispatch(login(userId));
+            }
+        })();
+    }, []);
+
     const { user }: UserState = useStoreSelector((state) => state.user);
     return (
         <NavigationContainer

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { SFSymbol } from "react-native-sfsymbols";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDocById } from "../../api/firestore";
+import { removeData, storeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
 import {
     View,
@@ -77,7 +78,10 @@ const SettingsModal = (props: SettingsModalProps) => {
                 <ListLabel
                     borderRadius={{ top: true, bottom: true }}
                     textStyles={{ color: "red" }}
-                    onPress={() => dispatch(logout())}
+                    onPress={() => {
+                        dispatch(logout());
+                        removeData("userId");
+                    }}
                 >
                     Logout
                 </ListLabel>
