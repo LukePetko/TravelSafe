@@ -2,6 +2,7 @@ import { View, Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
+    getPublicUserDocById,
     getUserById,
     getUserDocById,
     updateProfilePicture,
@@ -74,9 +75,12 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         );
 
     useEffect((): void => {
-        const unSub = onSnapshot(getUserDocById(userID), (doc) => {
-            setUser(doc.data());
-        });
+        const unSub = onSnapshot(
+            isOwn ? getUserDocById(userID) : getPublicUserDocById(userID),
+            (doc) => {
+                setUser(doc.data());
+            },
+        );
     }, []);
 
     if (!user) {

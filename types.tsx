@@ -51,6 +51,7 @@ export type ProfileStackParamList = {
     Profile: undefined;
     CameraModal: undefined;
     SettingsModal: undefined;
+    SearchModal: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =

@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
-import { PublicUser, User } from "../../utils/types/user";
+import { CloseContact, PublicUser, User } from "../../utils/types/user";
 
 /**
  * Creates a new user doc in the users collection after a first registration
@@ -120,6 +120,12 @@ export const getUserDocById = (id: string): DocumentReference<DocumentData> => {
     return doc(db, "users", id);
 };
 
+export const getPublicUserDocById = (
+    id: string,
+): DocumentReference<DocumentData> => {
+    return doc(db, "users", id, "public", "profile");
+};
+
 export const getPublicUserById = async (
     id: string,
 ): Promise<DocumentData | null> => {
@@ -209,7 +215,9 @@ export const getCloseContactsQuery = async (
 
     if (userSnap.exists()) {
         const user: User = userSnap.data() as User;
-        const closeContactsIds: string[] = user.closeContacts;
+        const closeContactsIds: string[] = user.closeContacts.map(
+            (el) => el.id,
+        );
 
         console.log(closeContactsIds);
 

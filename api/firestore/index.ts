@@ -3,6 +3,7 @@ import {
     getUserById,
     getUserDocById,
     getPublicUserById,
+    getPublicUserDocById,
     updateProfilePicture,
     getCloseContactsQuery,
 } from "./accounts";
@@ -16,13 +17,17 @@ import {
     getUserTripDocumentRef,
 } from "./trips";
 
-import { getUserNotifications } from "./notifications";
+import {
+    getUserNotifications,
+    createCloseContactNotification,
+} from "./notifications";
 
 export {
     createUserAccount,
     getUserById,
     getUserDocById,
     getPublicUserById,
+    getPublicUserDocById,
     updateProfilePicture,
     getUserTripData,
     startTrip,
@@ -32,4 +37,5 @@ export {
     getUserTripDocumentRef,
     getCloseContactsQuery,
     getUserNotifications,
+    createCloseContactNotification,
 };

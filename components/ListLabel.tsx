@@ -71,6 +71,7 @@ const ThemedListItem = (props: TextProps): JSX.Element => {
             style={[
                 localStyles.pressable,
                 propStyles.border,
+                style,
                 {
                     backgroundColor,
                 },

@@ -40,6 +40,7 @@ import { Text, Pressable } from "../components/Themed";
 import SettingsModal from "../screens/profile/SettingsModal";
 import TripScreen from "../screens/trip/TripScreen";
 import SearchScreen from "../screens/search/SearchScreen";
+import SearchModal from "../screens/profile/SearchModal";
 
 type UserState = {
     user: string;
@@ -218,6 +219,26 @@ export const ProfileStackNavigator = (): JSX.Element => {
                                 }}
                             >
                                 Done
+                            </Text>
+                        </Pressable>
+                    ),
+                })}
+            />
+            <ProfileStack.Screen
+                name="SearchModal"
+                component={SearchModal}
+                options={({ navigation }) => ({
+                    title: "Add Close Contact",
+                    presentation: "modal",
+                    headerRight: () => (
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <Text
+                                style={{
+                                    color: Colors[colorScheme].tint,
+                                    fontSize: 17,
+                                }}
+                            >
+                                Cancel
                             </Text>
                         </Pressable>
                     ),
