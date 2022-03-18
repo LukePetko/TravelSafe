@@ -47,7 +47,10 @@ import { useDispatch } from "react-redux";
 import { getData } from "../async-storage";
 import { login, setUser } from "../redux/stores/user";
 import { onSnapshot } from "firebase/firestore";
-import { getUserDocById } from "../api/firestore";
+import { getUserDocById, getUserTripDocumentRef } from "../api/firestore";
+import { updateTrip } from "../redux/stores/trip";
+import store from "../redux/store";
+import NewTripScreen from "../screens/trip/NewTripScreen";
 
 type UserState = {
     userId: string;
@@ -72,9 +75,22 @@ const Navigation = ({
 
             if (userId) {
                 dispatch(login(userId));
+
                 onSnapshot(getUserDocById(userId), (doc) => {
                     if (doc.exists()) {
                         dispatch(setUser(doc.data()));
+
+                        doc.data().closeContacts.forEach((contact: any) => {
+                            console.log(contact.id, "aaaa");
+                            onSnapshot(
+                                getUserTripDocumentRef(contact.id),
+                                (doc) => {
+                                    if (doc.exists()) {
+                                        dispatch(updateTrip(doc.data()));
+                                    }
+                                },
+                            );
+                        });
                     }
                 });
             }
@@ -171,6 +187,14 @@ export const TripStackNavigator = (): JSX.Element => {
     return (
         <TripStack.Navigator>
             <TripStack.Screen name="Trips" component={TripScreen} />
+            <TripStack.Screen
+                name="NewTrip"
+                component={NewTripScreen}
+                options={{
+                    headerShown: true,
+                    title: "New Trip",
+                }}
+            />
         </TripStack.Navigator>
     );
 };

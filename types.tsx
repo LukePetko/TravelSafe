@@ -45,6 +45,10 @@ export type SearchStackParamList = {
 
 export type TripStackParamList = {
     Trips: undefined;
+    NewTrip: undefined;
+    NewHoliday: undefined;
+    PastTrips: undefined;
+    PlannedTrips: undefined;
 };
 
 export type ProfileStackParamList = {

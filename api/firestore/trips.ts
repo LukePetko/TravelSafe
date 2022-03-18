@@ -7,10 +7,13 @@ import {
     DocumentReference,
     GeoPoint,
     getDoc,
+    onSnapshot,
     setDoc,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
+import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { Trip } from "../../utils/types/trip";
+import { getUserDocById } from "./accounts";
 
 export const getUserTripData = async (
     id: string,
@@ -130,15 +133,9 @@ export const createTrip = async (trip: Trip): Promise<string> => {
         "trips",
     );
 
-    // console.log(tripDoc.id);
-
     const result = await addDoc(tripDoc, trip).then((docRef) => {
         return docRef.id;
     });
-
-    // const result = await setDoc(tripDoc, trip)
-    //     .then(() => true)
-    //     .catch(() => false);
 
     return result;
 };

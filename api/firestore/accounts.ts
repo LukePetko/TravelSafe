@@ -12,6 +12,8 @@ import {
     where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
+import store from "../../redux/store";
+import { getUser } from "../../redux/stores/user";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { CloseContact, PublicUser, User } from "../../utils/types/user";
 
@@ -213,21 +215,16 @@ export const getCloseContactsQuery = async (
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
     const userSnap: DocumentData = await getDoc(userDoc);
 
-    if (userSnap.exists()) {
-        const user: User = userSnap.data() as User;
-        const closeContactsIds: string[] = user.closeContacts.map(
-            (el) => el.id,
-        );
+    const user = getUser(store.getState());
 
-        console.log(closeContactsIds);
+    const closeContactsIds: string[] = user.closeContacts.map((el) => el.id);
 
-        if (closeContactsIds.length === 0) {
-            return undefined;
-        }
-
-        return query(
-            collectionGroup(db, "closeContacts"),
-            where("id", "in", closeContactsIds),
-        );
+    if (closeContactsIds.length === 0) {
+        return undefined;
     }
+
+    return query(
+        collectionGroup(db, "closeContacts"),
+        where("id", "in", closeContactsIds),
+    );
 };

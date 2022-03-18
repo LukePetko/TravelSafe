@@ -38,6 +38,27 @@ export const getUserNotifications = async (
     return data === [] ? null : data;
 };
 
+export const getSentNotifications = async (
+    id: string,
+): Promise<DocumentData[] | null> => {
+    const data: DocumentData[] = [];
+    const notificationsQuery = query(
+        collection(db, "notifications"),
+        where("senderId", "==", id),
+        where("status", "==", 0),
+    );
+
+    const notificationsSnap = await getDocs(notificationsQuery);
+
+    notificationsSnap.forEach((notificationSnap: DocumentData) => {
+        if (notificationSnap.exists()) {
+            data.push(notificationSnap.data());
+        }
+    });
+
+    return data === [] ? null : data;
+};
+
 export const createCloseContactNotification = async (
     senderId: string,
     receiverId: string,

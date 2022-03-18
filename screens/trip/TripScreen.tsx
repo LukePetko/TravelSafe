@@ -18,7 +18,12 @@ import {
     stopLocationTracking,
 } from "../../api/backgroundLocation";
 
-const TripScreen = (): JSX.Element => {
+type TripScreenProps = {
+    navigation: any;
+};
+
+const TripScreen = (props: TripScreenProps): JSX.Element => {
+    const { navigation } = props;
     const [userId, setUserId] = useState<string>("");
     const [tripId, setTripId] = useState<string>("");
 
@@ -58,13 +63,24 @@ const TripScreen = (): JSX.Element => {
             }}
         >
             <ListLabel
-                borderRadius={{ top: true, bottom: true }}
+                borderRadius={{ top: true }}
+                separator={true}
                 onPress={() => createQuckTrip()}
             >
                 New Quick Trip
             </ListLabel>
             <ListLabel
+                separator={true}
+                onPress={() => navigation.navigate("NewTrip")}
+            >
+                New Trip
+            </ListLabel>
+            <ListLabel borderRadius={{ bottom: true }} onPress={() => {}}>
+                New Holiday
+            </ListLabel>
+            <ListLabel
                 borderRadius={{ top: true, bottom: true }}
+                style={{ marginTop: 20 }}
                 onPress={async () => {
                     setTripId((await endTrip()) ? "" : tripId);
                     stopLocationTracking();

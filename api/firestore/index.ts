@@ -20,6 +20,7 @@ import {
 import {
     getUserNotifications,
     createCloseContactNotification,
+    getSentNotifications,
 } from "./notifications";
 
 export {
@@ -38,4 +39,5 @@ export {
     getCloseContactsQuery,
     getUserNotifications,
     createCloseContactNotification,
+    getSentNotifications,
 };

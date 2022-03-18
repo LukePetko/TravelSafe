@@ -50,8 +50,13 @@ const MapScreen = (): JSX.Element => {
         null,
     );
 
-    const { userId } = useStoreSelector((state) => state.user);
+    const userId = useSelector((state: any) => state.user.userId.payload);
     const tripPath = useSelector((state: any) => state.trip.path.payload);
+    const closeContacts = useStoreSelector(
+        (state: any) => state.trip.closeContacts.payload,
+    );
+
+    console.log(userId);
 
     const unsubscribeUser = onSnapshot(
         getUserTripDocumentRef(userId),
@@ -192,7 +197,7 @@ const MapScreen = (): JSX.Element => {
                             strokeWidth={5}
                             strokeColor={"red"}
                         />
-                        {contactsTripInfo?.map(
+                        {closeContacts?.map(
                             (contact: any) =>
                                 contact.location && (
                                     <Marker
