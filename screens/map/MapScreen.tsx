@@ -25,6 +25,7 @@ import ContactDetail from "./ContactDetail";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { getCloseContactsQuery } from "../../api/firestore/accounts";
 import { onSnapshot } from "firebase/firestore";
+import { useStoreSelector } from "../../hooks/useStoreSelector";
 
 type MapCoords = {
     latitude: number;
@@ -49,7 +50,7 @@ const MapScreen = (): JSX.Element => {
         null,
     );
 
-    const userId = useSelector((state: any) => state.user.user.payload);
+    const { userId } = useStoreSelector((state) => state.user);
     const tripPath = useSelector((state: any) => state.trip.path.payload);
 
     const unsubscribeUser = onSnapshot(

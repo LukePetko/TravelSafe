@@ -13,6 +13,7 @@ import { getPictureBlob } from "../../utils/files";
 import { uploadProfileImage } from "../../api/storage";
 import { updateProfilePicture } from "../../api/firestore";
 import { useSelector } from "react-redux";
+import { useStoreSelector } from "../../hooks/useStoreSelector";
 
 type Props = {
     navigation: any;
@@ -36,9 +37,7 @@ const CameraModal = (props: Props): JSX.Element => {
         null,
     );
 
-    const userID: string = useSelector(
-        (state: { user: UserStatePayload }) => state.user.user.payload,
-    );
+    const { userId } = useStoreSelector((state) => state.user);
 
     let camera: Camera | null;
 
@@ -54,9 +53,9 @@ const CameraModal = (props: Props): JSX.Element => {
     const savePicture = async () => {
         if (photo) {
             const blob = await getPictureBlob(photo.uri);
-            const response = await uploadProfileImage(blob, userID);
+            const response = await uploadProfileImage(blob, userId);
 
-            updateProfilePicture(userID, response);
+            updateProfilePicture(userId, response);
         }
         navigation.goBack();
     };

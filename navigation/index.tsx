@@ -45,10 +45,12 @@ import { useEffect } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { getData } from "../async-storage";
-import { login } from "../redux/stores/user";
+import { login, setUser } from "../redux/stores/user";
+import { onSnapshot } from "firebase/firestore";
+import { getUserDocById } from "../api/firestore";
 
 type UserState = {
-    user: string;
+    userId: string;
 };
 
 type ColorSchemeEnum = "light" | "dark";
@@ -70,17 +72,22 @@ const Navigation = ({
 
             if (userId) {
                 dispatch(login(userId));
+                onSnapshot(getUserDocById(userId), (doc) => {
+                    if (doc.exists()) {
+                        dispatch(setUser(doc.data()));
+                    }
+                });
             }
         })();
     }, []);
 
-    const { user }: UserState = useStoreSelector((state) => state.user);
+    const { userId }: UserState = useStoreSelector((state) => state.user);
     return (
         <NavigationContainer
             linking={LinkingConfiguration}
             theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-            {user ? <RootNavigator /> : <AuthNavigator />}
+            {userId ? <RootNavigator /> : <AuthNavigator />}
         </NavigationContainer>
     );
 };

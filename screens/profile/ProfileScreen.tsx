@@ -13,6 +13,8 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
 import { getPictureBlob } from "../../utils/files";
 import { onSnapshot } from "firebase/firestore";
+import { getUser } from "../../redux/stores/user";
+import store from "../../redux/store";
 
 type ProfileProps = {
     navigation: any;
@@ -20,7 +22,7 @@ type ProfileProps = {
 };
 
 type UserStatePayload = {
-    user: {
+    userId: {
         payload: string;
     };
 };
@@ -31,7 +33,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     const userID: string = route.params
         ? route.params.id
         : useSelector(
-              (state: { user: UserStatePayload }) => state.user.user.payload,
+              (state: { user: UserStatePayload }) => state.user.userId.payload,
           );
 
     const isOwn = !route.params;
@@ -75,12 +77,13 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         );
 
     useEffect((): void => {
-        const unSub = onSnapshot(
-            isOwn ? getUserDocById(userID) : getPublicUserDocById(userID),
-            (doc) => {
+        if (isOwn) {
+            setUser(getUser(store.getState()));
+        } else {
+            const unSub = onSnapshot(getPublicUserDocById(userID), (doc) => {
                 setUser(doc.data());
-            },
-        );
+            });
+        }
     }, []);
 
     if (!user) {

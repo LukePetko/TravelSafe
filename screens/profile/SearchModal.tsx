@@ -10,7 +10,7 @@ type SearchModalProps = {
 
 const SearchModal = (props: SearchModalProps) => {
     const { navigation } = props;
-    const userId = useSelector((state: any) => state.user.user.payload);
+    const userId = useSelector((state: any) => state.user.userId.payload);
 
     return (
         <View>

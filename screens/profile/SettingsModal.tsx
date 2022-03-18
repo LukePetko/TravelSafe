@@ -13,7 +13,8 @@ import {
     KeyboardAvoidingView,
 } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
-import { logout } from "../../redux/stores/user";
+import store from "../../redux/store";
+import { getUser, logout } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
 import { User } from "../../utils/types/user";
 
@@ -25,10 +26,12 @@ const SettingsModal = (props: SettingsModalProps) => {
     const { navigation } = props;
 
     const dispatch: Dispatch<any> = useDispatch<any>();
-    const userId = useSelector((state: any) => state.user.user.payload);
+    const userId = useSelector((state: any) => state.user.userId.payload);
 
     const [user, setUser] = useState<any>({});
     const [closeContacts, setCloseContacts] = useState<any[]>([]);
+
+    console.log(getUser(store.getState()));
 
     useEffect(() => {
         const unSub = onSnapshot(getUserDocById(userId), (doc) => {
