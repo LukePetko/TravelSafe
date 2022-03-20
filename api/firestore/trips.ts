@@ -43,7 +43,7 @@ export const getUserTripDocumentRef = (
 
 export const startTrip = async (
     id: string,
-    location: GeoPoint,
+    location: GeoPoint | undefined,
     tripName: string,
 ): Promise<boolean> => {
     const currentTripDoc: DocumentReference<DocumentData> = doc(

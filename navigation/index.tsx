@@ -48,7 +48,7 @@ import { getData } from "../async-storage";
 import { login, setUser } from "../redux/stores/user";
 import { onSnapshot } from "firebase/firestore";
 import { getUserDocById, getUserTripDocumentRef } from "../api/firestore";
-import { updateTrip } from "../redux/stores/trip";
+import { getTripId, updateTrip } from "../redux/stores/trip";
 import store from "../redux/store";
 import NewTripScreen from "../screens/trip/NewTripScreen";
 
@@ -68,6 +68,8 @@ const Navigation = ({
     colorScheme: ColorSchemeName;
 }): JSX.Element => {
     const dispatch: Dispatch<any> = useDispatch<any>();
+
+    console.log(getTripId(store.getState()));
 
     useEffect(() => {
         (async () => {

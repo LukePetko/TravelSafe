@@ -1,11 +1,12 @@
 import * as Location from "expo-location";
-import { GeoPoint } from "firebase/firestore";
+import { doc, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
 import { createTrip, startTrip } from "../api/firestore";
 import { Trip } from "./types/trip";
 import store from "../redux/store";
-import { start } from "../redux/stores/trip";
+import { getTripId, start } from "../redux/stores/trip";
 import { getUserId } from "../redux/stores/user";
 import { endTrip as endTripAPI } from "../api/firestore";
+import { db } from "../Firebase";
 
 export const startNewQuickTrip = async () => {
     const state = store.getState();
@@ -20,15 +21,14 @@ export const startNewQuickTrip = async () => {
             location.coords.longitude,
         ),
 
-        notifyCloseContacts: false,
+        status: "active",
 
         createdAt: new Date(),
         updatedAt: new Date(),
     };
 
     const tripId = await createTrip(trip);
-    start(tripId);
-    console.log(await startTrip(userId, trip.startPlace, trip.name));
+    await startTrip(userId, trip.startPlace, trip.name);
 
     return tripId;
 };
@@ -36,7 +36,14 @@ export const startNewQuickTrip = async () => {
 export const endTrip = async () => {
     const state = store.getState();
     const userId = getUserId(state);
-    // const tripId = state.trip.trip.payload;
+    const tripId = getTripId(state);
+
+    const tripDoc = doc(db, `users`, userId, "trips", tripId);
+
+    updateDoc(tripDoc, {
+        status: "ended",
+        updatedAt: serverTimestamp(),
+    });
 
     const response = await endTripAPI(userId);
     return response;

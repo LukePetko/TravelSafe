@@ -8,16 +8,16 @@ export type Trip = {
     startTime: Date;
     endTime?: Date;
 
-    startPlace: GeoPoint;
+    startPlace?: GeoPoint;
     endPlace?: GeoPoint;
 
     description?: string;
 
     invitedUsers?: string[];
 
-    notifyCloseContacts: boolean;
-
     thumbnail?: string;
+
+    status: string;
 
     createdAt: Date;
     updatedAt: Date;

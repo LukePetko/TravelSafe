@@ -44,6 +44,7 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
     const createQuckTrip = async () => {
         if (!tripId) {
             const tripId = await startNewQuickTrip();
+            dispatch(start(tripId));
             setTripId(tripId);
             startLocationTracking(userId);
         } else {
@@ -78,6 +79,19 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
             <ListLabel borderRadius={{ bottom: true }} onPress={() => {}}>
                 New Holiday
             </ListLabel>
+
+            <ListLabel
+                borderRadius={{ top: true }}
+                style={{ marginTop: 20 }}
+                separator={true}
+                onPress={() => {}}
+            >
+                Planned Trips
+            </ListLabel>
+            <ListLabel borderRadius={{ bottom: true }} onPress={() => {}}>
+                Past Trips
+            </ListLabel>
+
             <ListLabel
                 borderRadius={{ top: true, bottom: true }}
                 style={{ marginTop: 20 }}

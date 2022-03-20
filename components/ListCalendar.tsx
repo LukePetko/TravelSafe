@@ -20,6 +20,7 @@ type CalendarProps = {
     setDate?: (date: Date) => void;
     time?: Date;
     setTime?: (time: Date) => void;
+    minimumDate?: Date;
 };
 
 type ListCalendarProps = TextProps & CalendarProps;
@@ -47,6 +48,7 @@ const ListCalendar = (props: ListCalendarProps): JSX.Element => {
         setDate,
         time,
         setTime,
+        minimumDate,
         lightColor,
         darkColor,
         ...otherProps
@@ -247,6 +249,7 @@ const ListCalendar = (props: ListCalendarProps): JSX.Element => {
                             date={date}
                             onDateChange={(date) => setDate(date)}
                             textColor={color}
+                            minimumDate={minimumDate}
                         />
                     </View>
                 </View>
@@ -276,6 +279,7 @@ const ListCalendar = (props: ListCalendarProps): JSX.Element => {
                             date={time}
                             onDateChange={(time) => setTime(time)}
                             textColor={color}
+                            minimumDate={minimumDate}
                         />
                     </View>
                 </View>

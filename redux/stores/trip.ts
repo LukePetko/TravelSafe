@@ -24,7 +24,7 @@ export const tripSlice: Slice = createSlice({
     initialState,
     reducers: {
         start: (state, payload?: PayloadAction<string>) => {
-            state.trip = payload;
+            state.trip = payload?.payload;
         },
         end: (state?) => {
             state.trip = null;
@@ -55,7 +55,7 @@ export const tripSlice: Slice = createSlice({
 
 export const { start, end, addPoint, updateTrip, deleteTrip } =
     tripSlice.actions;
-export const getTripId = (state: RootState): string => state.trip.trip.payload;
+export const getTripId = (state: RootState): string => state.trip.trip;
 export const getPath = (state: RootState): Location[] =>
     state.trip.path.payload;
 export const getCloseContacts = (state: RootState): CurrentTripInfo[] =>

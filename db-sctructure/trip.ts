@@ -1,22 +1,22 @@
 type Trip = {
-    id: number;
-    user_id: number;
+    id?: string;
+    user_id: string;
 
     name: string;
     description: string;
 
-    holiday_id: number;
+    holiday_id?: string;
 
     start_date: Date;
     end_date: Date;
 
-    start_place: {lat: string, long: string};
-    end_place: {lat: string, long: string};
+    start_place: { lat: string; long: string } | null;
+    end_place: { lat: string; long: string } | null;
 
     thumbnail: string;
 
-    invited_users: number[];
+    invited_users?: string[];
 
     created_at: Date;
     updated_at: Date;
-}
+};
