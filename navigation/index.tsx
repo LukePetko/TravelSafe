@@ -51,6 +51,8 @@ import { getUserDocById, getUserTripDocumentRef } from "../api/firestore";
 import { getTripId, updateTrip } from "../redux/stores/trip";
 import store from "../redux/store";
 import NewTripScreen from "../screens/trip/NewTripScreen";
+import PlannedTripsScreen from "../screens/trip/PlannedTripsScreen";
+import PastTripsScreen from "../screens/trip/PastTripsScreen";
 
 type UserState = {
     userId: string;
@@ -197,6 +199,11 @@ export const TripStackNavigator = (): JSX.Element => {
                     title: "New Trip",
                 }}
             />
+            <TripStack.Screen
+                name="PlannedTrips"
+                component={PlannedTripsScreen}
+            />
+            <TripStack.Screen name="PastTrips" component={PastTripsScreen} />
         </TripStack.Navigator>
     );
 };

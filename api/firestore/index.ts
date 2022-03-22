@@ -15,6 +15,8 @@ import {
     updateLocation,
     createTrip,
     getUserTripDocumentRef,
+    getCreatedUserTrips,
+    getEndedUserTrips,
 } from "./trips";
 
 import {
@@ -35,6 +37,8 @@ export {
     endTrip,
     updateLocation,
     createTrip,
+    getCreatedUserTrips,
+    getEndedUserTrips,
     getUserTripDocumentRef,
     getCloseContactsQuery,
     getUserNotifications,

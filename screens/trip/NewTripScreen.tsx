@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SFSymbol } from "react-native-sfsymbols";
+import { createTrip } from "../../api/firestore";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -15,39 +16,54 @@ import { tintColorDark, tintColorLight } from "../../constants/Colors";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
 import { Trip } from "../../utils/types/trip";
+import { newTripValidation } from "../../utils/validations";
 
 type NewTripScreenProps = {
     navigation: any;
     route: any;
 };
 
+export type NewTripState = {
+    name: string;
+    description: string;
+    startTime: Date;
+    endTime: Date;
+    thumbnail: string;
+};
+
 const NewTripScreen = (props: NewTripScreenProps) => {
     const { navigation, route } = props;
 
-    const [tripName, setTripName] = useState("");
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
-    const [desctiption, setDescription] = useState("");
-    const [thumbnail, setThumbnail] = useState(
-        "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-    );
+    const [tripState, setTripState] = useState<NewTripState>({
+        name: "",
+        description: "",
+        startTime: new Date(),
+        endTime: new Date(),
+        thumbnail:
+            "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+    });
+
+    const onChange = (key: keyof NewTripState, value: string | Date): void => {
+        setTripState({
+            ...tripState,
+            [key]: value,
+        });
+    };
 
     const userId = getUserId(store.getState());
 
     const onSubmit = () => {
+        console.log(newTripValidation(tripState));
+
         const trip: Trip = {
             userId: userId,
-            name: tripName,
-            startTime: startTime,
-            endTime: endTime,
-            description: desctiption,
-            thumbnail: thumbnail,
+            ...tripState,
             status: "created",
             createdAt: new Date(),
             updatedAt: new Date(),
         };
 
-        console.log(trip);
+        console.log(createTrip(trip));
     };
 
     navigation.setOptions({
@@ -119,9 +135,9 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                 </Text>
                 <View style={{ alignItems: "center", marginTop: 20 }}>
                     <ListInput
-                        value={tripName}
+                        value={tripState.name}
                         onChangeText={(value: string): void => {
-                            setTripName(value);
+                            onChange("name", value);
                         }}
                         placeholder={"Enter trip name"}
                         separator={true}
@@ -141,13 +157,13 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            setStartTime(date);
+                            onChange("startTime", date);
                         }}
                         setTime={(time: Date): void => {
-                            setStartTime(time);
+                            onChange("startTime", time);
                         }}
-                        date={startTime}
-                        time={startTime}
+                        date={tripState.startTime}
+                        time={tripState.endTime}
                         minimumDate={new Date()}
                     >
                         Start Time
@@ -157,14 +173,14 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            setEndTime(date);
+                            onChange("endTime", date);
                         }}
                         setTime={(time: Date): void => {
-                            setEndTime(time);
+                            onChange("endTime", time);
                         }}
-                        date={endTime}
-                        time={endTime}
-                        minimumDate={startTime}
+                        date={tripState.endTime}
+                        time={tripState.endTime}
+                        minimumDate={tripState.startTime}
                     >
                         End Time
                     </ListCalendar>
@@ -185,9 +201,9 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     </ListLabel>
 
                     <ListInput
-                        value={desctiption}
+                        value={tripState.description}
                         onChangeText={(value: string): void => {
-                            setDescription(value);
+                            onChange("description", value);
                         }}
                         placeholder={"Enter Description"}
                         borderRadius={{ top: true, bottom: true }}
@@ -202,7 +218,10 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     >
                         Thumbnail
                     </Text>
-                    <ProfilePicture photoURL={thumbnail} onPress={() => {}} />
+                    <ProfilePicture
+                        photoURL={tripState.thumbnail}
+                        onPress={() => {}}
+                    />
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

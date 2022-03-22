@@ -7,8 +7,11 @@ import {
     DocumentReference,
     GeoPoint,
     getDoc,
+    getDocs,
     onSnapshot,
+    query,
     setDoc,
+    where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
@@ -39,6 +42,44 @@ export const getUserTripDocumentRef = (
     id: string,
 ): DocumentReference<DocumentData> => {
     return doc(db, "users", id, "closeContacts", "currentTrip");
+};
+
+export const getCreatedUserTrips = async (id: string): Promise<Trip[]> => {
+    const tripsQuery = query(
+        collection(db, "users", id, "trips"),
+        where("status", "==", "created"),
+    );
+
+    const trips = await getDocs(tripsQuery);
+
+    const tripsData: Trip[] = [];
+
+    trips.forEach((trip: DocumentData) => {
+        if (trip.exists()) {
+            tripsData.push(trip.data());
+        }
+    });
+
+    return tripsData;
+};
+
+export const getEndedUserTrips = async (id: string): Promise<Trip[]> => {
+    const tripsQuery = query(
+        collection(db, "users", id, "trips"),
+        where("status", "==", "ended"),
+    );
+
+    const trips = await getDocs(tripsQuery);
+
+    const tripsData: Trip[] = [];
+
+    trips.forEach((trip: DocumentData) => {
+        if (trip.exists()) {
+            tripsData.push(trip.data());
+        }
+    });
+
+    return tripsData;
 };
 
 export const startTrip = async (
