@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
+import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 import { getUserDocById } from "./accounts";
 
@@ -179,4 +180,62 @@ export const createTrip = async (trip: Trip): Promise<string> => {
     });
 
     return result;
+};
+
+export const createHoliday = async (holiday: Holiday): Promise<string> => {
+    const holidayDoc: CollectionReference<DocumentData> = collection(
+        db,
+        "users",
+        holiday.userId,
+        "holidays",
+    );
+
+    const result = await addDoc(holidayDoc, holiday)
+        .then((docRef) => {
+            return docRef.id;
+        })
+        .catch(() => {
+            return "";
+        });
+
+    return result;
+};
+
+export const getCreatedUserHoliday = async (id: string): Promise<Holiday[]> => {
+    const holidayQuery = query(
+        collection(db, "users", id, "holidays"),
+        where("endTime", ">", new Date()),
+    );
+
+    const holiday = await getDocs(holidayQuery);
+
+    const holidayData: Trip[] = [];
+
+    holiday.forEach((holiday: DocumentData) => {
+        if (holiday.exists()) {
+            holidayData.push(holiday.data());
+        }
+    });
+
+    return holidayData;
+};
+
+export const getEndedUserHoliday = async (id: string): Promise<Holiday[]> => {
+    const currentDate = new Date();
+    const holidayQuery = query(
+        collection(db, "users", id, "holidays"),
+        where("endTime", "<", currentDate),
+    );
+
+    const holiday = await getDocs(holidayQuery);
+
+    const holidayData: Holiday[] = [];
+
+    holiday.forEach((holiday: DocumentData) => {
+        if (holiday.exists()) {
+            holidayData.push(holiday.data());
+        }
+    });
+
+    return holidayData;
 };

@@ -53,6 +53,7 @@ import store from "../redux/store";
 import NewTripScreen from "../screens/trip/NewTripScreen";
 import PlannedTripsScreen from "../screens/trip/PlannedTripsScreen";
 import PastTripsScreen from "../screens/trip/PastTripsScreen";
+import NewHolidayScreen from "../screens/trip/NewHolidayScreen";
 
 type UserState = {
     userId: string;
@@ -200,10 +201,29 @@ export const TripStackNavigator = (): JSX.Element => {
                 }}
             />
             <TripStack.Screen
+                name="NewHoliday"
+                component={NewHolidayScreen}
+                options={{
+                    headerShown: true,
+                    title: "New Holiday",
+                }}
+            />
+            <TripStack.Screen
                 name="PlannedTrips"
                 component={PlannedTripsScreen}
+                options={{
+                    headerShown: true,
+                    title: "Planned Trips",
+                }}
             />
-            <TripStack.Screen name="PastTrips" component={PastTripsScreen} />
+            <TripStack.Screen
+                name="PastTrips"
+                component={PastTripsScreen}
+                options={{
+                    headerShown: true,
+                    title: "Past Trips",
+                }}
+            />
         </TripStack.Navigator>
     );
 };

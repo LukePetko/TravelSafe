@@ -76,7 +76,10 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
             >
                 New Trip
             </ListLabel>
-            <ListLabel borderRadius={{ bottom: true }} onPress={() => {}}>
+            <ListLabel
+                borderRadius={{ bottom: true }}
+                onPress={() => navigation.navigate("NewHoliday")}
+            >
                 New Holiday
             </ListLabel>
 

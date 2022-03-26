@@ -1,4 +1,5 @@
 import { RegisterState } from "../screens/auth/Register";
+import { NewHolidayState } from "../screens/trip/NewHolidayScreen";
 import { NewTripState } from "../screens/trip/NewTripScreen";
 
 export type RegisterErrors = {
@@ -14,6 +15,13 @@ export type RegisterErrors = {
 };
 
 export type NewTripErrors = {
+    fields: {
+        name: string;
+    };
+    isValid: boolean;
+};
+
+export type NewHolidayErrors = {
     fields: {
         name: string;
     };
@@ -111,6 +119,23 @@ export const registerValidation = (state: RegisterState): RegisterErrors => {
 
 export const newTripValidation = (state: NewTripState): NewTripErrors => {
     const errors: NewTripErrors = {
+        fields: {
+            name: "",
+        },
+        isValid: true,
+    };
+
+    if (state.name === "") {
+        errors.fields.name = "Name is required";
+        errors.isValid = false;
+    }
+    return errors;
+};
+
+export const newHolidayValidation = (
+    state: NewHolidayState,
+): NewHolidayErrors => {
+    const errors: NewHolidayErrors = {
         fields: {
             name: "",
         },
