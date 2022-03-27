@@ -14,7 +14,12 @@ import { Trip } from "../../utils/types/trip";
 import { getCreatedUserHoliday } from "../../api/firestore/trips";
 import { Holiday } from "../../utils/types/holiday";
 
-const PlannedTripsScreen = () => {
+type PlannedTripsScreenProps = {
+    navigation: any;
+};
+
+const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
+    const { navigation } = props;
     const userId = getUserId(store.getState());
     const [trips, setTrips] = useState<Trip[]>([]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -90,7 +95,14 @@ const PlannedTripsScreen = () => {
                     Planned Trips
                 </Text>
                 {trips.map((trip) => (
-                    <Pressable key={trip.id}>
+                    <Pressable
+                        key={trip.id}
+                        onPress={() =>
+                            navigation.navigate("EditTrip", {
+                                trip,
+                            })
+                        }
+                    >
                         <View style={localStyles.container}>
                             <View style={localStyles.imageContainer}>
                                 <Image

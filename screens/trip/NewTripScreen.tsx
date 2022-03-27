@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SFSymbol } from "react-native-sfsymbols";
 import { createTrip } from "../../api/firestore";
+import { getCreatedUserHoliday } from "../../api/firestore/trips";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -15,6 +16,7 @@ import {
 import { tintColorDark, tintColorLight } from "../../constants/Colors";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
+import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 import { newTripValidation } from "../../utils/validations";
 
@@ -26,6 +28,7 @@ type NewTripScreenProps = {
 export type NewTripState = {
     name: string;
     description: string;
+    holiday: Holiday | null;
     startTime: Date;
     endTime: Date;
     thumbnail: string;
@@ -37,13 +40,20 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const [tripState, setTripState] = useState<NewTripState>({
         name: "",
         description: "",
+        holiday: null,
         startTime: new Date(),
         endTime: new Date(),
         thumbnail:
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
 
-    const onChange = (key: keyof NewTripState, value: string | Date): void => {
+    const [holidays, setHolidays] = useState<Holiday[]>([]);
+    const [showHoliday, setShowHoliday] = useState(false);
+
+    const onChange = (
+        key: keyof NewTripState,
+        value: string | Date | Holiday | null,
+    ): void => {
         setTripState({
             ...tripState,
             [key]: value,
@@ -52,12 +62,19 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
     const userId = getUserId(store.getState());
 
+    useEffect(() => {
+        getCreatedUserHoliday(userId).then((holidays) => {
+            setHolidays(holidays);
+        });
+    }, []);
+
     const onSubmit = () => {
         console.log(newTripValidation(tripState));
 
         const trip: Trip = {
             userId: userId,
             ...tripState,
+            holidayId: tripState.holiday?.id,
             status: "created",
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -140,15 +157,57 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                             onChange("name", value);
                         }}
                         placeholder={"Enter trip name"}
-                        separator={true}
-                        borderRadius={{ top: true }}
+                        separator={holidays.length > 0}
+                        borderRadius={{
+                            top: true,
+                            bottom: holidays.length === 0,
+                        }}
                     />
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ bottom: true }}
-                    >
-                        Holiday
-                    </ListLabel>
+                    {holidays.length > 0 && (
+                        <ListLabel
+                            showChevron={true}
+                            borderRadius={{ bottom: !showHoliday }}
+                            separator={showHoliday}
+                            rotateChevron={showHoliday}
+                            onPress={() => setShowHoliday(!showHoliday)}
+                            fieldValue={tripState.holiday?.name}
+                        >
+                            Holiday
+                        </ListLabel>
+                    )}
+
+                    {showHoliday && (
+                        <>
+                            <ListLabel
+                                borderRadius={{
+                                    bottom: true,
+                                }}
+                                separator={true}
+                                onPress={() => {
+                                    onChange("holiday", null);
+                                    setShowHoliday(false);
+                                }}
+                            >
+                                No Holiday
+                            </ListLabel>
+
+                            {holidays.map((holiday, index) => (
+                                <ListLabel
+                                    key={holiday.id}
+                                    borderRadius={{
+                                        bottom: index === holidays.length - 1,
+                                    }}
+                                    separator={index !== holidays.length - 1}
+                                    onPress={() => {
+                                        onChange("holiday", holiday);
+                                        setShowHoliday(false);
+                                    }}
+                                >
+                                    {holiday.name}
+                                </ListLabel>
+                            ))}
+                        </>
+                    )}
 
                     <ListCalendar
                         style={{ marginTop: 20 }}

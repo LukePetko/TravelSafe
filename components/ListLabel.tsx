@@ -16,6 +16,7 @@ type ListItemProps = {
     };
     separator?: boolean;
     showChevron?: boolean;
+    rotateChevron?: boolean;
     fieldValue?: string;
     icon?: any;
     textStyles?: any;
@@ -31,6 +32,7 @@ const ThemedListItem = (props: TextProps): JSX.Element => {
         borderRadius,
         separator,
         showChevron,
+        rotateChevron,
         fieldValue,
         icon,
         textStyles,
@@ -103,7 +105,11 @@ const ThemedListItem = (props: TextProps): JSX.Element => {
                         )}
                         {showChevron && (
                             <Feather
-                                name="chevron-right"
+                                name={
+                                    rotateChevron
+                                        ? "chevron-down"
+                                        : "chevron-right"
+                                }
                                 color={grey}
                                 size={19}
                             />
