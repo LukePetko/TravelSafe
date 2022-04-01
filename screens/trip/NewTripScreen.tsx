@@ -71,16 +71,19 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const onSubmit = () => {
         console.log(newTripValidation(tripState));
 
-        const trip: Trip = {
+        const trip: Trip & { holiday?: Holiday | null } = {
             userId: userId,
             ...tripState,
-            holidayId: tripState.holiday?.id,
+            holidayId: tripState.holiday?.holidayId,
             status: "created",
             createdAt: new Date(),
             updatedAt: new Date(),
         };
 
+        delete trip.holiday;
+
         console.log(createTrip(trip));
+        navigation.goBack();
     };
 
     navigation.setOptions({
@@ -222,7 +225,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                             onChange("startTime", time);
                         }}
                         date={tripState.startTime}
-                        time={tripState.endTime}
+                        time={tripState.startTime}
                         minimumDate={new Date()}
                     >
                         Start Time

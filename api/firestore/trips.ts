@@ -213,7 +213,7 @@ export const getCreatedUserHoliday = async (id: string): Promise<Holiday[]> => {
 
     holiday.forEach((holiday: DocumentData) => {
         if (holiday.exists()) {
-            holidayData.push(holiday.data());
+            holidayData.push({ holidayId: holiday.id, ...holiday.data() });
         }
     });
 
