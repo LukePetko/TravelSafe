@@ -55,7 +55,7 @@ const PastTripsScreen = () => {
                     </Text>
                 )}
                 {holidays.map((holiday) => (
-                    <Pressable key={holiday.id}>
+                    <Pressable key={holiday.holidayId}>
                         <View style={localStyles.container}>
                             <View style={localStyles.imageContainer}>
                                 <Image

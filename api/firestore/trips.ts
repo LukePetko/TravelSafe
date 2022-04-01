@@ -57,7 +57,7 @@ export const getCreatedUserTrips = async (id: string): Promise<Trip[]> => {
 
     trips.forEach((trip: DocumentData) => {
         if (trip.exists()) {
-            tripsData.push(trip.data());
+            tripsData.push({ id: trip.id, ...trip.data() });
         }
     });
 
@@ -76,7 +76,7 @@ export const getEndedUserTrips = async (id: string): Promise<Trip[]> => {
 
     trips.forEach((trip: DocumentData) => {
         if (trip.exists()) {
-            tripsData.push(trip.data());
+            tripsData.push({ id: trip.id, ...trip.data() });
         }
     });
 
@@ -233,7 +233,7 @@ export const getEndedUserHoliday = async (id: string): Promise<Holiday[]> => {
 
     holiday.forEach((holiday: DocumentData) => {
         if (holiday.exists()) {
-            holidayData.push(holiday.data());
+            holidayData.push({ holidayId: holiday.id, ...holiday.data() });
         }
     });
 
