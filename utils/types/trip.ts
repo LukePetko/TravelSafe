@@ -1,12 +1,12 @@
-import { GeoPoint } from "firebase/firestore";
+import { GeoPoint, Timestamp } from "firebase/firestore";
 
 export type Trip = {
     id?: string;
     userId: string;
     name: string;
     holidayId?: string;
-    startTime: Date;
-    endTime?: Date;
+    startTime: Date | Timestamp;
+    endTime?: Date | Timestamp;
 
     startPlace?: GeoPoint;
     endPlace?: GeoPoint;
