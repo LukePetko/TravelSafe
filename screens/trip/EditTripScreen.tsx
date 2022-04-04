@@ -11,6 +11,7 @@ import { NewTripState } from "./NewTripScreen";
 import ListCalendar from "../../components/ListCalendar";
 import ProfilePicture from "../../components/ProfilePicture";
 import { Trip } from "../../utils/types/trip";
+import { tintColorLight } from "../../constants/Colors";
 
 type EditTripScreenProps = {
     navigation: any;
@@ -215,6 +216,13 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         photoURL={tripState.thumbnail}
                         onPress={() => {}}
                     />
+                    <ListLabel
+                        borderRadius={{ top: true, bottom: true }}
+                        style={{ marginVertical: 20 }}
+                        textStyles={{ color: tintColorLight }}
+                    >
+                        Start Trip
+                    </ListLabel>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

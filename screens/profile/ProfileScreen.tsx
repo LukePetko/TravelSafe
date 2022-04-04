@@ -13,7 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
 import { getPictureBlob } from "../../utils/files";
 import { onSnapshot } from "firebase/firestore";
-import { getUser } from "../../redux/stores/user";
+import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 
 type ProfileProps = {
@@ -32,9 +32,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const userID: string = route.params
         ? route.params.id
-        : useSelector(
-              (state: { user: UserStatePayload }) => state.user.userId.payload,
-          );
+        : getUserId(store.getState());
 
     const isOwn = !route.params;
 
