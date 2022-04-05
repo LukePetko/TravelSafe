@@ -44,6 +44,10 @@ const EditTripScreen = (props: EditTripScreenProps) => {
         });
     };
 
+    const onStart = () => {
+        return
+    }
+
     const userId = getUserId(store.getState());
 
     useEffect(() => {
@@ -220,6 +224,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         borderRadius={{ top: true, bottom: true }}
                         style={{ marginVertical: 20 }}
                         textStyles={{ color: tintColorLight }}
+                        onPress={() => onStart()}
                     >
                         Start Trip
                     </ListLabel>
