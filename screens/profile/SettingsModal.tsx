@@ -137,7 +137,7 @@ const SettingsModal = (props: SettingsModalProps) => {
                         <SFSymbol
                             name="plus"
                             weight="semibold"
-                            scale="large"
+                            scale="medium"
                             color={tintColorLight}
                             size={18}
                             resizeMode="center"

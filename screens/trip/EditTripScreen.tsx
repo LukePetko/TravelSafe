@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 import { KeyboardAvoidingView, ScrollView } from "../../components/Themed";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
-import { getCreatedUserHoliday } from "../../api/firestore/trips";
-import { getUserId } from "../../redux/stores/user";
+import {
+    getCreatedUserHoliday,
+    setTripActive,
+    startTrip,
+} from "../../api/firestore/trips";
+import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Holiday } from "../../utils/types/holiday";
 import { NewTripState } from "./NewTripScreen";
@@ -12,6 +16,13 @@ import ListCalendar from "../../components/ListCalendar";
 import ProfilePicture from "../../components/ProfilePicture";
 import { Trip } from "../../utils/types/trip";
 import { tintColorLight } from "../../constants/Colors";
+import { getTripId, start } from "../../redux/stores/trip";
+import * as Location from "expo-location";
+import { GeoPoint } from "@firebase/firestore";
+import { createTripAlertButton } from "../../utils/alers";
+import { Dispatch } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+import { startLocationTracking } from "../../api/backgroundLocation";
 
 type EditTripScreenProps = {
     navigation: any;
@@ -34,6 +45,8 @@ const EditTripScreen = (props: EditTripScreenProps) => {
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
 
+    const dispatch: Dispatch<any> = useDispatch<any>();
+
     const onChange = (
         key: keyof NewTripState,
         value: string | Date | Holiday | null,
@@ -44,9 +57,25 @@ const EditTripScreen = (props: EditTripScreenProps) => {
         });
     };
 
-    const onStart = () => {
-        return
-    }
+    const onStart = async () => {
+        if (!getTripId(store.getState())) {
+            const tripId: string = route.params.trip.id;
+            const tripName: string = route.params.trip.name;
+            const location: Location.LocationObject =
+                await Location.getCurrentPositionAsync();
+            const geoPoint: GeoPoint = new GeoPoint(
+                location.coords.latitude,
+                location.coords.longitude,
+            );
+            startTrip(tripId, geoPoint, tripName);
+            dispatch(start(tripId));
+            startLocationTracking(userId);
+            setTripActive(getUserId(store.getState()), tripId);
+            navigation.navigate("MapTab");
+            return;
+        }
+        createTripAlertButton();
+    };
 
     const userId = getUserId(store.getState());
 

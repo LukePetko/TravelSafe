@@ -11,12 +11,13 @@ import store from "../../redux/store";
 import * as Location from "expo-location";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { end, start } from "../../redux/stores/trip";
+import { end, getTripId, start } from "../../redux/stores/trip";
 import { endTrip, startNewQuickTrip } from "../../utils/trip";
 import {
     startLocationTracking,
     stopLocationTracking,
 } from "../../api/backgroundLocation";
+import { createTripAlertButton } from "../../utils/alers";
 
 type TripScreenProps = {
     navigation: any;
@@ -25,30 +26,16 @@ type TripScreenProps = {
 const TripScreen = (props: TripScreenProps): JSX.Element => {
     const { navigation } = props;
     const [userId, setUserId] = useState<string>("");
-    const [tripId, setTripId] = useState<string>("");
 
     const dispatch: Dispatch<any> = useDispatch<any>();
 
-    const createAlertButton = (): void =>
-        Alert.alert(
-            "Cannot start two trips at the same time",
-            "If you want to start new trip end the running one",
-            [
-                {
-                    text: "OK",
-                    style: "cancel",
-                },
-            ],
-        );
-
     const createQuckTrip = async () => {
-        if (!tripId) {
+        if (!getTripId(store.getState())) {
             const tripId = await startNewQuickTrip();
             dispatch(start(tripId));
-            setTripId(tripId);
             startLocationTracking(userId);
         } else {
-            createAlertButton();
+            createTripAlertButton();
         }
     };
 
@@ -102,8 +89,11 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
                 borderRadius={{ top: true, bottom: true }}
                 style={{ marginTop: 20 }}
                 onPress={async () => {
-                    setTripId((await endTrip()) ? "" : tripId);
-                    stopLocationTracking();
+                    if (getTripId(store.getState())) {
+                        stopLocationTracking();
+                        endTrip();
+                        dispatch(end());
+                    }
                 }}
             >
                 End Trip

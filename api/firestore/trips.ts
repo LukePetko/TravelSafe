@@ -113,6 +113,33 @@ export const startTrip = async (
     }
 };
 
+export const setTripActive = async (
+    userId: string,
+    tripId: string,
+): Promise<boolean> => {
+    const tripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "trips",
+        tripId,
+    );
+
+    const tripSnap: DocumentData = await getDoc(tripDoc);
+
+    if (tripSnap.exists()) {
+        const updatedTrip = {
+            ...tripSnap.data(),
+            status: "active",
+        };
+
+        return await setDoc(tripDoc, updatedTrip)
+            .then(() => true)
+            .catch(() => false);
+    }
+    return false;
+};
+
 export const endTrip = async (id: string): Promise<boolean> => {
     const currentTripDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -209,7 +236,7 @@ export const getCreatedUserHoliday = async (id: string): Promise<Holiday[]> => {
 
     const holiday = await getDocs(holidayQuery);
 
-    const holidayData: Trip[] = [];
+    const holidayData: Holiday[] = [];
 
     holiday.forEach((holiday: DocumentData) => {
         if (holiday.exists()) {

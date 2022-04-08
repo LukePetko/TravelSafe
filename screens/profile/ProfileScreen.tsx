@@ -8,7 +8,7 @@ import {
     updateProfilePicture,
 } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
-import { ActionSheetIOS, StyleSheet } from "react-native";
+import { ActionSheetIOS, Button, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
 import { getPictureBlob } from "../../utils/files";
@@ -105,6 +105,12 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     {contact.id} {contact.username}
                 </Text>
             ))}
+            {isOwn && (
+                <Button
+                    title="new post"
+                    onPress={() => navigation.navigate("NewPost")}
+                />
+            )}
         </View>
     );
 };

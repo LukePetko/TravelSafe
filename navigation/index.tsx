@@ -23,6 +23,7 @@ import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import {
     LoginStackParamList,
+    PostStackParamList,
     ProfileStackParamList,
     RootStackParamList,
     RootTabParamList,
@@ -55,6 +56,7 @@ import PlannedTripsScreen from "../screens/trip/PlannedTripsScreen";
 import PastTripsScreen from "../screens/trip/PastTripsScreen";
 import NewHolidayScreen from "../screens/trip/NewHolidayScreen";
 import EditTripScreen from "../screens/trip/EditTripScreen";
+import NewPostScreen from "../screens/posts/NewPost";
 
 type UserState = {
     userId: string;
@@ -184,6 +186,16 @@ export const SearchStackNavigator = (): JSX.Element => {
                 }}
             />
         </SearchStack.Navigator>
+    );
+};
+
+const PostStack = createNativeStackNavigator<PostStackParamList>();
+
+export const PostStackNavigator = (): JSX.Element => {
+    return (
+        <PostStack.Navigator>
+            <PostStack.Screen name="NewPost" component={NewPostScreen} />
+        </PostStack.Navigator>
     );
 };
 
@@ -330,6 +342,7 @@ export const ProfileStackNavigator = (): JSX.Element => {
                     ),
                 })}
             />
+            <ProfileStack.Screen name="NewPost" component={NewPostScreen} />
         </ProfileStack.Navigator>
     );
 };

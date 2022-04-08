@@ -62,6 +62,7 @@ const MapScreen = (): JSX.Element => {
         getUserTripDocumentRef(userId),
         (snapshot) => {
             if (snapshot.exists()) {
+                console.log(snapshot.data());
                 if (
                     userTripInfo?.tripName !== snapshot.data().tripName ||
                     userTripInfo?.location?.latitude !==

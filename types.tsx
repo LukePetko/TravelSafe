@@ -43,6 +43,10 @@ export type SearchStackParamList = {
     Search: undefined;
 };
 
+export type PostStackParamList = {
+    NewPost: undefined;
+};
+
 export type TripStackParamList = {
     Trips: undefined;
     NewTrip: undefined;
@@ -57,6 +61,7 @@ export type ProfileStackParamList = {
     CameraModal: undefined;
     SettingsModal: undefined;
     SearchModal: undefined;
+    NewPost: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
