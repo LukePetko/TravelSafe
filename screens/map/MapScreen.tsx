@@ -11,12 +11,13 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     getUserTripData,
     getPublicUserById,
     getUserById,
     getUserTripDocumentRef,
+    endTrip,
 } from "../../api/firestore";
 
 import { Pressable, BottomSheet, Text } from "../../components/Themed";
@@ -26,6 +27,9 @@ import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { getCloseContactsQuery } from "../../api/firestore/accounts";
 import { onSnapshot } from "firebase/firestore";
 import { useStoreSelector } from "../../hooks/useStoreSelector";
+import { end, getTripId } from "../../redux/stores/trip";
+import store from "../../redux/store";
+import { stopLocationTracking } from "../../api/backgroundLocation";
 
 type MapCoords = {
     latitude: number;
@@ -34,7 +38,13 @@ type MapCoords = {
     longitudeDelta: number;
 };
 
-const MapScreen = (): JSX.Element => {
+type MapScreenProps = {
+    navigation: any;
+};
+
+const MapScreen = (props: MapScreenProps): JSX.Element => {
+    const { navigation } = props;
+
     const [mapRegion, setmapRegion] = useState<MapCoords>({
         latitude: 37.78825,
         longitude: -122.4324,
@@ -252,6 +262,7 @@ const MapScreen = (): JSX.Element => {
                                             contact={userTripInfo}
                                             userLocation={async () => null}
                                             isOwn={true}
+                                            navigation={navigation}
                                         />
                                     </Pressable>
                                 </>

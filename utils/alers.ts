@@ -11,3 +11,31 @@ export const createTripAlertButton = (): void =>
             },
         ],
     );
+
+export const endTripAlertButton = (onPress: () => void): void =>
+    Alert.alert("Do you want to stop the trip?", "", [
+        {
+            text: "Yes",
+            onPress,
+        },
+        {
+            text: "No",
+            style: "cancel",
+        },
+    ]);
+
+export const createPostAlertButton = (onPress: () => void): void =>
+    Alert.alert(
+        "Do you want to create post?",
+        "Share your latest trip with your friends!",
+        [
+            {
+                text: "Yes",
+                onPress,
+            },
+            {
+                text: "No",
+                style: "cancel",
+            },
+        ],
+    );

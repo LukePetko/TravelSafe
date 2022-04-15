@@ -19,6 +19,12 @@ const TabOneScreen = ({ navigation }: RootTabScreenProps<"HomeTab">) => {
             />
             <EditScreenInfo path="/screens/TabOneScreen.tsx" />
             <Button title="logout!" onPress={() => dispatch(logout())} />
+            <Button
+                title="new post!"
+                onPress={() =>
+                    navigation.navigate("ProfileTab", { screen: "NewPost" })
+                }
+            />
         </View>
     );
 };

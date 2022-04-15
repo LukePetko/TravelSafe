@@ -5,7 +5,7 @@ import { Image } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
 import { useDispatch, useSelector } from "react-redux";
 import { getSentNotifications, getUserDocById } from "../../api/firestore";
-import { removeData, storeData } from "../../async-storage";
+import { removeData, getData, storeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
 import {
     View,
@@ -158,8 +158,12 @@ const SettingsModal = (props: SettingsModalProps) => {
                     borderRadius={{ top: true, bottom: true }}
                     textStyles={{ color: "red" }}
                     onPress={() => {
-                        dispatch(logout());
-                        removeData("userId");
+                        (async () => {
+                            console.log(await getData("userId"));
+                            await removeData("userId");
+                            console.log(await getData("userId"));
+                            dispatch(logout());
+                        })();
                     }}
                 >
                     Logout

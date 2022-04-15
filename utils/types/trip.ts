@@ -4,7 +4,7 @@ export type Trip = {
     id?: string;
     userId: string;
     name: string;
-    holidayId?: string;
+    holidayId?: string | null;
     startTime: Date | Timestamp;
     endTime?: Date | Timestamp;
 

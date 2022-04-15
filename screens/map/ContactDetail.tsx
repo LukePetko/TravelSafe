@@ -2,20 +2,40 @@ import { getDistance } from "geolib";
 import React, { useEffect, useState } from "react";
 import { Text } from "../../components/Themed";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import { distanceText } from "../../utils/distance";
 import { getTimeDifference } from "../../utils/time";
+import { SFSymbol } from "react-native-sfsymbols";
+import { tintColorLight } from "../../constants/Colors";
+import { end, getTripId } from "../../redux/stores/trip";
+import store from "../../redux/store";
+import { stopLocationTracking } from "../../api/backgroundLocation";
+import { useDispatch } from "react-redux";
+import { getUserId } from "../../redux/stores/user";
+import { createPostAlertButton, endTripAlertButton } from "../../utils/alers";
+import { endTrip } from "../../utils/trip";
 
 type ContactDetailProps = {
     contact: CurrentTripInfo;
     userLocation: any;
     isOwn?: boolean;
+    navigation?: any;
 };
 
 const ContactDetail = (props: ContactDetailProps): JSX.Element => {
-    const { contact, userLocation, isOwn } = props;
+    const { contact, userLocation, isOwn, navigation } = props;
 
     const [distance, setDistance] = useState<number | null>(null);
+
+    const dispatch = useDispatch();
+
+    const endTripAction = () => {
+        if (getTripId(store.getState())) {
+            stopLocationTracking();
+            endTrip();
+            dispatch(end());
+        }
+    };
 
     useEffect(() => {
         if (contact.location) {
@@ -71,6 +91,41 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
                         {contact.tripName} ⦁{" "}
                         {getTimeDifference(contact.updatedAt.toDate())}
                     </Text>
+                )}
+            </View>
+            <View>
+                {isOwn && (
+                    <Pressable
+                        onPress={() =>
+                            endTripAlertButton(() => {
+                                const tripId = getTripId(store.getState());
+                                endTripAction();
+                                createPostAlertButton(() => {
+                                    navigation.navigate("ProfileTab", {
+                                        screen: "NewPost",
+                                        params: {
+                                            tripId,
+                                        },
+                                    });
+                                });
+                            })
+                        }
+                    >
+                        <SFSymbol
+                            name="xmark"
+                            weight="semibold"
+                            scale="large"
+                            color={tintColorLight}
+                            size={18}
+                            resizeMode="center"
+                            multicolor={false}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                marginHorizontal: 8,
+                            }}
+                        />
+                    </Pressable>
                 )}
             </View>
         </View>

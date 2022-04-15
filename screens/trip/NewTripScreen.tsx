@@ -74,7 +74,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         const trip: Trip & { holiday?: Holiday | null } = {
             userId: userId,
             ...tripState,
-            holidayId: tripState.holiday?.holidayId,
+            holidayId: tripState.holiday?.holidayId || null,
             status: "created",
             createdAt: new Date(),
             updatedAt: new Date(),
