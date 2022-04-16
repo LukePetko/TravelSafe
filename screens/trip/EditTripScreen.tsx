@@ -67,7 +67,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                 location.coords.latitude,
                 location.coords.longitude,
             );
-            startTrip(tripId, geoPoint, tripName);
+            console.log(await startTrip(userId, geoPoint, tripName));
             dispatch(start(tripId));
             startLocationTracking(userId);
             setTripActive(getUserId(store.getState()), tripId);

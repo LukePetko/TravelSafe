@@ -75,7 +75,7 @@ const Navigation = ({
 }): JSX.Element => {
     const dispatch: Dispatch<any> = useDispatch<any>();
 
-    console.log(getTripId(store.getState()));
+    // console.log(getTripId(store.getState()));
 
     useEffect(() => {
         (async () => {
@@ -89,7 +89,6 @@ const Navigation = ({
                         dispatch(setUser(doc.data()));
 
                         doc.data().closeContacts.forEach((contact: any) => {
-                            console.log(contact.id, "aaaa");
                             onSnapshot(
                                 getUserTripDocumentRef(contact.id),
                                 (doc) => {

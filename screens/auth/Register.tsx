@@ -75,11 +75,7 @@ const Register = (props: RegisterProps): JSX.Element => {
             if (userDoc) {
                 dispatch(login(userId));
             }
-
-            console.log(user.providerId);
         }
-
-        console.log(errors);
     };
 
     return (

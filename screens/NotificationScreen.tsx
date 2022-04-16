@@ -13,7 +13,6 @@ const NotificationScreen = (): JSX.Element => {
 
     useEffect(() => {
         getUserNotifications(userId).then(setNotifications);
-        console.log(notifications);
     }, []);
 
     return (

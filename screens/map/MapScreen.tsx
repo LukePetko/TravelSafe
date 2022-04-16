@@ -72,7 +72,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
         getUserTripDocumentRef(userId),
         (snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.data());
+                // console.log(snapshot.data());
                 if (
                     userTripInfo?.tripName !== snapshot.data().tripName ||
                     userTripInfo?.location?.latitude !==
@@ -110,7 +110,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     );
 
     useEffect(() => {
-        console.log(tripPath, "tripPath");
+        // console.log(tripPath, "tripPath");
     }, [tripPath]);
 
     useEffect(() => {
@@ -160,7 +160,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                         });
                     },
                 );
-                console.log(contactsTripInfo);
+                // console.log(contactsTripInfo);
             }
         })();
     }, []);

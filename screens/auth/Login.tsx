@@ -35,8 +35,6 @@ export const Login = (props: LoginProps): JSX.Element => {
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode);
-                console.log(errorMessage);
                 createTwoButtonAlert();
             });
     };
