@@ -15,11 +15,19 @@ import { getEndedUserTrips } from "../../api/firestore";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Timestamp } from "firebase/firestore";
+import * as ImagePicker from "expo-image-picker";
+import { getPictureBlob } from "../../utils/files";
+import { Image, Pressable } from "react-native";
+
+type ImageContainer = {
+    uri: string;
+    file: File;
+};
 
 type NewPostState = {
     trip: Trip | null;
     description: string;
-    photos: any[];
+    photos: ImageContainer[];
 };
 
 type NewPostProps = {
@@ -57,6 +65,24 @@ const NewPost = (props: NewPostProps) => {
         }
 
         return new Date(date.seconds * 1000).toLocaleDateString();
+    };
+
+    const addImage = async (): Promise<ImageContainer | null> => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.1,
+        });
+
+        if (!result.cancelled) {
+            return {
+                uri: result.uri,
+                file: await getPictureBlob(result.uri),
+            };
+        }
+
+        return null;
     };
 
     useEffect(() => {
@@ -143,11 +169,65 @@ const NewPost = (props: NewPostProps) => {
                         style={{
                             marginTop: 20,
                         }}
-                        borderRadius={{ top: true, bottom: true }}
+                        borderRadius={{
+                            top: true,
+                            bottom: postState.photos.length == 0,
+                        }}
+                        separator={postState.photos.length > 0}
                         showChevron
+                        onPress={() => {
+                            addImage().then((image) => {
+                                if (image) {
+                                    setPostState({
+                                        ...postState,
+                                        photos: [...postState.photos, image],
+                                    });
+                                }
+                            });
+                        }}
+                        fieldValue={`${postState.photos.length} photo${
+                            postState.photos.length == 1 ? "" : "s"
+                        }`}
                     >
                         Add Photos
                     </ListLabel>
+
+                    {postState.photos.length > 0 && (
+                        <ListLabel borderRadius={{ bottom: true }}>
+                            {postState.photos.map((photo, index) => (
+                                <Pressable
+                                    key={index}
+                                    onPress={() => {
+                                        setPostState({
+                                            ...postState,
+                                            photos: postState.photos.filter(
+                                                (p) => p !== photo,
+                                            ),
+                                        });
+                                    }}
+                                    style={{
+                                        paddingHorizontal: 3,
+                                        paddingVertical: 10,
+                                    }}
+                                >
+                                    <Image
+                                        source={{
+                                            uri: photo.uri,
+                                        }}
+                                        style={{
+                                            width: 100,
+                                            height: 100,
+                                        }}
+                                    />
+                                    <SFSymbol
+                                        name="trash"
+                                        size={20}
+                                        color="red"
+                                    />
+                                </Pressable>
+                            ))}
+                        </ListLabel>
+                    )}
 
                     <ListLabel
                         style={{ marginTop: 20 }}
@@ -173,6 +253,17 @@ const NewPost = (props: NewPostProps) => {
                         }
                     >
                         Tag Friends
+                    </ListLabel>
+
+                    <ListLabel
+                        style={{ marginTop: 20 }}
+                        textStyles={{ color: tintColorLight }}
+                        borderRadius={{
+                            top: true,
+                            bottom: true,
+                        }}
+                    >
+                        Create Post
                     </ListLabel>
                 </View>
             </ScrollView>
