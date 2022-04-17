@@ -17,6 +17,9 @@ import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Post } from "../../utils/types/post";
 import { getPosts } from "../../api/firestore/posts";
+import ListLabel from "../../components/ListLabel";
+import { User } from "../../utils/types/user";
+import { followUser } from "../../api/firestore/accounts";
 
 type ProfileProps = {
     navigation: any;
@@ -38,8 +41,10 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const isOwn = !route.params;
 
-    const [user, setUser] = useState<any>({});
+    const [user, setUser] = useState<User>({});
     const [posts, setPosts] = useState<Post[]>([]);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
+    const [isFollower, setIsFollower] = useState<boolean>(false);
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -82,14 +87,21 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             setUser(getUser(store.getState()));
         } else {
             const unSub = onSnapshot(getPublicUserDocById(userID), (doc) => {
-                setUser(doc.data());
+                const user: User = doc.data() as User;
+                setUser(user);
+                console.log(user);
+                const ownUserId = getUserId(store.getState());
+
+                setIsFollowing(user?.followers.includes(ownUserId));
+                setIsFollower(user?.following.includes(ownUserId));
+                console.log(isFollower, isFollowing);
             });
         }
     }, []);
 
     useEffect((): void => {
         (async () => {
-            const posts = await getPosts(userID);
+            const posts = (await getPosts(userID)) as Post[];
             setPosts(posts);
         })();
     }, [user]);
@@ -120,6 +132,20 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     title="new post"
                     onPress={() => navigation.navigate("NewPost")}
                 />
+            )}
+            {!isOwn && (
+                <ListLabel
+                    borderRadius={{ top: true, bottom: true }}
+                    onPress={() => {
+                        followUser(getUserId(store.getState()), userID);
+                    }}
+                >
+                    {isFollowing
+                        ? "Unfollow"
+                        : isFollower
+                        ? "Follow Back"
+                        : "Follow"}
+                </ListLabel>
             )}
             {posts.map((post: Post) => (
                 <Text key={post.id}>{post.description}</Text>

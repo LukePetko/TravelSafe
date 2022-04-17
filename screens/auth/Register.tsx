@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../redux/stores/user";
 import { Dispatch } from "@reduxjs/toolkit";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
+import { storeData } from "../../async-storage";
 
 type RegisterProps = {
     navigation: any;
@@ -74,6 +75,8 @@ const Register = (props: RegisterProps): JSX.Element => {
 
             if (userDoc) {
                 dispatch(login(userId));
+                dispatch(login(userId));
+                storeData("userId", userId);
             }
         }
     };

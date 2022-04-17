@@ -12,6 +12,8 @@ export type Comment = {
 export type Post = {
     id?: string;
     userId: string;
+    username: string;
+    userProfilePicture: string;
     tripId: string | null;
 
     description: string;

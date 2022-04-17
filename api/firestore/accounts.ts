@@ -228,3 +228,40 @@ export const getCloseContactsQuery = async (
         where("id", "in", closeContactsIds),
     );
 };
+
+export const followUser = async (
+    ownId: string,
+    userId: string,
+): Promise<boolean> => {
+    const ownUserDoc: DocumentReference<DocumentData> = doc(db, "users", ownId);
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", userId);
+    const ownUserSnap: DocumentData = await getDoc(ownUserDoc);
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (ownUserSnap.exists() && userSnap.exists()) {
+        const ownUser: User = ownUserSnap.data() as User;
+        const user: User = userSnap.data() as User;
+
+        const updatedOwnUser: User = {
+            ...ownUser,
+            following: [...ownUser.following, userId],
+            followingCount: ownUser.followingCount + 1,
+            updatedAt: new Date(),
+        };
+        const updatedUser: User = {
+            ...user,
+            followers: [...user.followers, ownId],
+            followerCount: user.followerCount + 1,
+            updatedAt: new Date(),
+        };
+
+        const result = await setDoc(ownUserDoc, updatedOwnUser)
+            .then(() => setDoc(userDoc, updatedUser))
+            .then(() => true)
+            .catch(() => false);
+
+        return result;
+    } else {
+        return false;
+    }
+};

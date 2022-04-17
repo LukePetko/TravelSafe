@@ -17,6 +17,8 @@ import { Post } from "../../utils/types/post";
 import { uploadPostImage } from "../storage";
 import "react-native-get-random-values";
 import { v4 } from "uuid";
+import { getUser } from "../../redux/stores/user";
+import store from "../../redux/store";
 
 export const createPost = async (
     userId: string,
@@ -32,7 +34,7 @@ export const createPost = async (
         postId,
     );
 
-    console.log(tripId);
+    const user = await getUser(store.getState());
 
     const images = imageFiles.map(async (imageFile: File) => {
         return await uploadPostImage(
@@ -42,10 +44,14 @@ export const createPost = async (
         );
     });
 
+    console.log(user.username, user.profilePicture);
+
     Promise.all(images).then(async (images: string[]) => {
         const post: Post = {
             id: postId,
             userId,
+            username: user.username,
+            userProfilePicture: user.profilePicture,
             tripId,
             description,
             images,
