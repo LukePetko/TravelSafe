@@ -15,6 +15,8 @@ import { getPictureBlob } from "../../utils/files";
 import { onSnapshot } from "firebase/firestore";
 import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
+import { Post } from "../../utils/types/post";
+import { getPosts } from "../../api/firestore/posts";
 
 type ProfileProps = {
     navigation: any;
@@ -37,6 +39,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     const isOwn = !route.params;
 
     const [user, setUser] = useState<any>({});
+    const [posts, setPosts] = useState<Post[]>([]);
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -84,6 +87,13 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         }
     }, []);
 
+    useEffect((): void => {
+        (async () => {
+            const posts = await getPosts(userID);
+            setPosts(posts);
+        })();
+    }, [user]);
+
     if (!user) {
         return <View />;
     }
@@ -111,6 +121,9 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     onPress={() => navigation.navigate("NewPost")}
                 />
             )}
+            {posts.map((post: Post) => (
+                <Text key={post.id}>{post.description}</Text>
+            ))}
         </View>
     );
 };

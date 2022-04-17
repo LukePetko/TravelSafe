@@ -11,3 +11,13 @@ export const uploadProfileImage = async (data: File, userID: string) => {
     const result = await uploadBytes(photosRef, data);
     return await getDownloadURL(result.ref);
 };
+
+export const uploadPostImage = async (
+    data: File,
+    postId: string,
+    imageNumber: number,
+) => {
+    const photosRef = ref(storage, `posts/${postId}/${imageNumber}.jpg`);
+    const result = await uploadBytes(photosRef, data);
+    return await getDownloadURL(result.ref);
+};

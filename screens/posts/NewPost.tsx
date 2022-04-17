@@ -18,6 +18,7 @@ import { Timestamp } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import { getPictureBlob } from "../../utils/files";
 import { Image, Pressable } from "react-native";
+import { createPost } from "../../api/firestore/posts";
 
 type ImageContainer = {
     uri: string;
@@ -83,6 +84,24 @@ const NewPost = (props: NewPostProps) => {
         }
 
         return null;
+    };
+
+    const onSubmit = async (): Promise<void> => {
+        const { description, photos } = postState;
+
+        const userId = getUserId(store.getState());
+        const tripId = postState.trip?.id;
+
+        console.log(
+            await createPost(
+                userId,
+                tripId ? tripId : null,
+                description,
+                photos.map((p) => p.file),
+            ),
+        );
+
+        // navigation.navigate("Home");
     };
 
     useEffect(() => {
@@ -262,6 +281,7 @@ const NewPost = (props: NewPostProps) => {
                             top: true,
                             bottom: true,
                         }}
+                        onPress={() => onSubmit()}
                     >
                         Create Post
                     </ListLabel>

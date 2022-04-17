@@ -46,6 +46,7 @@
         "react-native-date-picker": "^4.1.2",
         "react-native-elements": "^3.4.2",
         "react-native-gesture-handler": "^2.2.0",
+        "react-native-get-random-values": "^1.7.2",
         "react-native-ios-kit": "^0.0.22",
         "react-native-maps": "0.29.4",
         "react-native-reanimated": "^2.4.1",
@@ -56,13 +57,15 @@
         "react-native-vector-icons": "^9.1.0",
         "react-native-web": "0.17.1",
         "react-redux": "^7.2.6",
-        "redux": "^4.1.2"
+        "redux": "^4.1.2",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",
         "@types/react": "~17.0.21",
         "@types/react-instantsearch-native": "^6.3.2",
         "@types/react-native": "~0.64.12",
+        "@types/uuid": "^8.3.4",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.6",
