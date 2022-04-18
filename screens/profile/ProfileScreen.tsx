@@ -19,7 +19,7 @@ import { Post } from "../../utils/types/post";
 import { getPosts } from "../../api/firestore/posts";
 import ListLabel from "../../components/ListLabel";
 import { User } from "../../utils/types/user";
-import { followUser } from "../../api/firestore/accounts";
+import { followUser, unfollowUser } from "../../api/firestore/accounts";
 
 type ProfileProps = {
     navigation: any;
@@ -41,13 +41,12 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const isOwn = !route.params;
 
-    const [user, setUser] = useState<User>({});
+    const [user, setUser] = useState<User | null>(null);
     const [posts, setPosts] = useState<Post[]>([]);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
     const [isFollower, setIsFollower] = useState<boolean>(false);
 
     const pickImage = async () => {
-        // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
@@ -67,7 +66,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         ActionSheetIOS.showActionSheetWithOptions(
             {
                 options: ["Cancel", "Take A Photo", "Choose From Library"],
-                // destructiveButtonIndex: 2,
                 cancelButtonIndex: 0,
                 userInterfaceStyle: "dark",
             },
@@ -89,12 +87,13 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             const unSub = onSnapshot(getPublicUserDocById(userID), (doc) => {
                 const user: User = doc.data() as User;
                 setUser(user);
-                console.log(user);
                 const ownUserId = getUserId(store.getState());
-
-                setIsFollowing(user?.followers.includes(ownUserId));
-                setIsFollower(user?.following.includes(ownUserId));
-                console.log(isFollower, isFollowing);
+                setIsFollowing(
+                    user?.followers?.map((u) => u.id).includes(ownUserId),
+                );
+                setIsFollower(
+                    user?.following.map((u) => u.id).includes(ownUserId),
+                );
             });
         }
     }, []);
@@ -137,7 +136,9 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                 <ListLabel
                     borderRadius={{ top: true, bottom: true }}
                     onPress={() => {
-                        followUser(getUserId(store.getState()), userID);
+                        isFollowing
+                            ? unfollowUser(getUserId(store.getState()), userID)
+                            : followUser(getUserId(store.getState()), userID);
                     }}
                 >
                     {isFollowing

@@ -235,8 +235,28 @@ export const followUser = async (
 ): Promise<boolean> => {
     const ownUserDoc: DocumentReference<DocumentData> = doc(db, "users", ownId);
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", userId);
+
+    const ownUserPublicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        ownId,
+        "public",
+        "profile",
+    );
+    const userPublicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "public",
+        "profile",
+    );
+
     const ownUserSnap: DocumentData = await getDoc(ownUserDoc);
     const userSnap: DocumentData = await getDoc(userDoc);
+    const ownUserPublicUserSnap: DocumentData = await getDoc(
+        ownUserPublicUserDoc,
+    );
+    const userPublicUserSnap: DocumentData = await getDoc(userPublicUserDoc);
 
     if (ownUserSnap.exists() && userSnap.exists()) {
         const ownUser: User = ownUserSnap.data() as User;
@@ -244,19 +264,132 @@ export const followUser = async (
 
         const updatedOwnUser: User = {
             ...ownUser,
-            following: [...ownUser.following, userId],
+            following: [
+                ...ownUser.following,
+                {
+                    id: userId,
+                    username: user.username,
+                    profilePicture: user.profilePicture,
+                },
+            ],
             followingCount: ownUser.followingCount + 1,
             updatedAt: new Date(),
         };
         const updatedUser: User = {
             ...user,
-            followers: [...user.followers, ownId],
+            followers: [
+                ...user.followers,
+                {
+                    id: ownId,
+                    username: ownUser.username,
+                    profilePicture: ownUser.profilePicture,
+                },
+            ],
+            followerCount: user.followerCount + 1,
+            updatedAt: new Date(),
+        };
+        const updatedOwnUserPublicUser: PublicUser = {
+            ...(ownUserPublicUserSnap.data() as PublicUser),
+            following: [
+                ...ownUser.following,
+                {
+                    id: userId,
+                    username: user.username,
+                    profilePicture: user.profilePicture,
+                },
+            ],
+            followingCount: ownUser.followingCount + 1,
+            updatedAt: new Date(),
+        };
+        const updatedUserPublicUser: PublicUser = {
+            ...(userPublicUserSnap.data() as PublicUser),
+            followers: [
+                ...user.followers,
+                {
+                    id: ownId,
+                    username: ownUser.username,
+                    profilePicture: ownUser.profilePicture,
+                },
+            ],
             followerCount: user.followerCount + 1,
             updatedAt: new Date(),
         };
 
         const result = await setDoc(ownUserDoc, updatedOwnUser)
             .then(() => setDoc(userDoc, updatedUser))
+            .then(() => setDoc(ownUserPublicUserDoc, updatedOwnUserPublicUser))
+            .then(() => setDoc(userPublicUserDoc, updatedUserPublicUser))
+            .then(() => true)
+            .catch(() => false);
+
+        return result;
+    } else {
+        return false;
+    }
+};
+
+export const unfollowUser = async (
+    ownId: string,
+    userId: string,
+): Promise<boolean> => {
+    const ownUserDoc: DocumentReference<DocumentData> = doc(db, "users", ownId);
+    const userDoc: DocumentReference<DocumentData> = doc(db, "users", userId);
+
+    const ownUserPublicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        ownId,
+        "public",
+        "profile",
+    );
+    const userPublicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "public",
+        "profile",
+    );
+
+    const ownUserSnap: DocumentData = await getDoc(ownUserDoc);
+    const userSnap: DocumentData = await getDoc(userDoc);
+    const ownUserPublicUserSnap: DocumentData = await getDoc(
+        ownUserPublicUserDoc,
+    );
+    const userPublicUserSnap: DocumentData = await getDoc(userPublicUserDoc);
+
+    if (ownUserSnap.exists() && userSnap.exists()) {
+        const ownUser: User = ownUserSnap.data() as User;
+        const user: User = userSnap.data() as User;
+
+        const updatedOwnUser: User = {
+            ...ownUser,
+            following: ownUser.following.filter((el) => el.id !== userId),
+            followingCount: ownUser.followingCount - 1,
+            updatedAt: new Date(),
+        };
+        const updatedUser: User = {
+            ...user,
+            followers: user.followers.filter((el) => el.id !== ownId),
+            followerCount: user.followerCount - 1,
+            updatedAt: new Date(),
+        };
+        const updatedOwnUserPublicUser: PublicUser = {
+            ...(ownUserPublicUserSnap.data() as PublicUser),
+            following: ownUser.following.filter((el) => el.id !== userId),
+            followingCount: ownUser.followingCount - 1,
+            updatedAt: new Date(),
+        };
+        const updatedUserPublicUser: PublicUser = {
+            ...(userPublicUserSnap.data() as PublicUser),
+            followers: user.followers.filter((el) => el.id !== ownId),
+            followerCount: user.followerCount - 1,
+            updatedAt: new Date(),
+        };
+
+        const result = await setDoc(ownUserDoc, updatedOwnUser)
+            .then(() => setDoc(userDoc, updatedUser))
+            .then(() => setDoc(ownUserPublicUserDoc, updatedOwnUserPublicUser))
+            .then(() => setDoc(userPublicUserDoc, updatedUserPublicUser))
             .then(() => true)
             .catch(() => false);
 
