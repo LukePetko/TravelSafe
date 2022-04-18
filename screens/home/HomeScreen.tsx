@@ -6,6 +6,7 @@ import { getUserById } from "../../api/firestore";
 import { FollowUser } from "../../utils/types/user";
 import { Post } from "../../utils/types/post";
 import { getPostsFromUsers } from "../../api/firestore/posts";
+import PostComponent from "../../components/PostComponent";
 
 const HomeScreen = () => {
     const [followed, setFollowed] = useState<string[]>([]);
@@ -31,7 +32,9 @@ const HomeScreen = () => {
 
     return (
         <View>
-            <Text>HomeScreen</Text>
+            {posts.map((p: Post) => {
+                return p ? <PostComponent key={p.id} post={p} /> : null;
+            })}
         </View>
     );
 };
