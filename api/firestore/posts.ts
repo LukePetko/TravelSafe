@@ -89,3 +89,29 @@ export const getPosts = async (userId: string): Promise<DocumentData[]> => {
 
     return postsData;
 };
+
+export const getPostsFromUsers = async (
+    userIds: string[],
+): Promise<DocumentData[]> => {
+    if (userIds.length === 0) {
+        console.log("No users");
+        return [];
+    }
+
+    const postsQuery: Query<DocumentData> = query(
+        collection(db, "posts"),
+        where("userId", "in", userIds),
+    );
+
+    const posts = await getDocs(postsQuery);
+
+    const postsData: DocumentData[] = [];
+
+    posts.forEach((post: DocumentData) => {
+        if (post.exists()) {
+            postsData.push(post.data());
+        }
+    });
+
+    return postsData;
+};

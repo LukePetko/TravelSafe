@@ -39,6 +39,10 @@ export type LoginStackParamList = {
     Register: undefined;
 };
 
+export type HomeStackParamList = {
+    Home: undefined;
+};
+
 export type SearchStackParamList = {
     Search: undefined;
 };

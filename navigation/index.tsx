@@ -22,6 +22,7 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import {
+    HomeStackParamList,
     LoginStackParamList,
     PostStackParamList,
     ProfileStackParamList,
@@ -57,6 +58,7 @@ import PastTripsScreen from "../screens/trip/PastTripsScreen";
 import NewHolidayScreen from "../screens/trip/NewHolidayScreen";
 import EditTripScreen from "../screens/trip/EditTripScreen";
 import NewPostScreen from "../screens/posts/NewPost";
+import HomeScreen from "../screens/home/HomeScreen";
 
 type UserState = {
     userId: string;
@@ -169,6 +171,22 @@ const AuthNavigator = (): JSX.Element => {
                 // options={{ title: "Oops!" }}
             />
         </LoginStack.Navigator>
+    );
+};
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+
+export const HomeStackNavigator = (): JSX.Element => {
+    return (
+        <HomeStack.Navigator>
+            <HomeStack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+        </HomeStack.Navigator>
     );
 };
 
@@ -364,7 +382,7 @@ export const BottomTabNavigator = (): JSX.Element => {
         >
             <BottomTab.Screen
                 name="HomeTab"
-                component={TabOneScreen}
+                component={HomeStackNavigator}
                 options={({ navigation }: RootTabScreenProps<"HomeTab">) => ({
                     title: "Home",
                     tabBarIcon: ({ color }: ColorType) => (
