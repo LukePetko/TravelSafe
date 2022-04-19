@@ -11,7 +11,7 @@ import {
 import { styles } from "../styles/global";
 
 const Hits = connectInfiniteHits(({ hits, hasMore, refine, onPress }: any) => {
-    // console.log(hits, hasMore, onPress);
+    console.log(hits, hasMore, onPress);
 
     const onEndReached = () => {
         if (hasMore) {
@@ -20,29 +20,34 @@ const Hits = connectInfiniteHits(({ hits, hasMore, refine, onPress }: any) => {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={"padding"}
-            style={{
-                // flex: 1,
-                height: "100%",
-            }}
-            enabled
-            keyboardVerticalOffset={90}
-        >
-            <ScrollView>
-                {hits.map((hit: any) => (
-                    <Pressable
-                        onPress={() => {
-                            onPress(hit.objectID);
+        <>
+            {hits.length > 0 &&
+                hits[0]._highlightResult.username.matchLevel !== "none" && (
+                    <KeyboardAvoidingView
+                        behavior={"padding"}
+                        style={{
+                            // flex: 1,
+                            height: "100%",
                         }}
-                        style={localStyles.hit}
-                        key={hit.objectID}
+                        enabled
+                        keyboardVerticalOffset={90}
                     >
-                        <Text>{hit.username}</Text>
-                    </Pressable>
-                ))}
-            </ScrollView>
-        </KeyboardAvoidingView>
+                        <ScrollView>
+                            {hits.map((hit: any) => (
+                                <Pressable
+                                    onPress={() => {
+                                        onPress(hit.objectID);
+                                    }}
+                                    style={localStyles.hit}
+                                    key={hit.objectID}
+                                >
+                                    <Text>{hit.username}</Text>
+                                </Pressable>
+                            ))}
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                )}
+        </>
     );
 });
 
