@@ -16,7 +16,7 @@ const NotificationScreen = (): JSX.Element => {
     }, []);
 
     return (
-        <View>
+        <View style={styles.container}>
             {notifications?.length === 0 && (
                 <Text
                     style={{ textAlign: "center", padding: 25, fontSize: 24 }}
