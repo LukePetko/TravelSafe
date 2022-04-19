@@ -1,12 +1,6 @@
 import { View, Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import {
-    getPublicUserDocById,
-    getUserById,
-    getUserDocById,
-    updateProfilePicture,
-} from "../../api/firestore";
+import { getUserById, updateProfilePicture } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import {
     ActionSheetIOS,
@@ -18,26 +12,22 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
 import { getPictureBlob } from "../../utils/files";
-import { onSnapshot } from "firebase/firestore";
-import { getUser, getUserId } from "../../redux/stores/user";
+import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Post } from "../../utils/types/post";
-import { getPosts, getPostsFromUsers } from "../../api/firestore/posts";
+import { getPostsFromUsers } from "../../api/firestore/posts";
 import ListLabel from "../../components/ListLabel";
-import { User } from "../../utils/types/user";
-import { followUser, unfollowUser } from "../../api/firestore/accounts";
+import { FollowUser, PublicUser, User } from "../../utils/types/user";
+import {
+    followUser,
+    getPublicUserById,
+    unfollowUser,
+} from "../../api/firestore/accounts";
 import PostComponent from "../../components/PostComponent";
-import { ScrollView } from "react-native-gesture-handler";
 
 type ProfileProps = {
     navigation: any;
     route?: any;
-};
-
-type UserStatePayload = {
-    userId: {
-        payload: string;
-    };
 };
 
 const ProfileScreen = (props: ProfileProps): JSX.Element => {
@@ -49,7 +39,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const isOwn = !route.params;
 
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | PublicUser | null>(null);
     const [posts, setPosts] = useState<Post[]>([]);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
     const [isFollower, setIsFollower] = useState<boolean>(false);
@@ -88,6 +78,29 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             },
         );
 
+    const loadUser = async () => {
+        console.log("loading user");
+        if (isOwn) {
+            const user = (await getUserById(userID)) as User;
+            setUser(user);
+        } else {
+            const user = (await getPublicUserById(userID)) as PublicUser;
+            setUser(user);
+            const ownUserId = getUserId(store.getState());
+            setIsFollowing(
+                user?.followers
+                    ?.map((u: FollowUser) => u.id)
+                    .includes(ownUserId),
+            );
+            setIsFollower(
+                user?.following
+                    .map((u: FollowUser) => u.id)
+                    .includes(ownUserId),
+            );
+        }
+        console.log("user loaded");
+    };
+
     const loadPosts = async () => {
         console.log("Loading Posts");
         const user = await getUserById(getUserId(store.getState()));
@@ -99,29 +112,9 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     };
 
     useEffect((): void => {
-        if (isOwn) {
-            setUser(getUser(store.getState()));
-        } else {
-            const unSub = onSnapshot(getPublicUserDocById(userID), (doc) => {
-                const user: User = doc.data() as User;
-                setUser(user);
-                const ownUserId = getUserId(store.getState());
-                setIsFollowing(
-                    user?.followers?.map((u) => u.id).includes(ownUserId),
-                );
-                setIsFollower(
-                    user?.following.map((u) => u.id).includes(ownUserId),
-                );
-            });
-        }
+        loadUser();
+        loadPosts();
     }, []);
-
-    useEffect((): void => {
-        (async () => {
-            const posts = (await getPosts(userID)) as Post[];
-            setPosts(posts);
-        })();
-    }, [user]);
 
     if (!user) {
         return <View />;
@@ -143,11 +136,12 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                             <Text>email: {user?.email}</Text>
                             <Text>followers: {user?.followerCount}</Text>
                             <Text>following: {user?.followingCount}</Text>
-                            {user?.closeContacts?.map((contact: any) => (
-                                <Text key={contact.id}>
-                                    {contact.id} {contact.username}
-                                </Text>
-                            ))}
+                            {isOwn &&
+                                user?.closeContacts?.map((contact: any) => (
+                                    <Text key={contact.id}>
+                                        {contact.id} {contact.username}
+                                    </Text>
+                                ))}
                             {isOwn && (
                                 <Button
                                     title="new post"
@@ -190,6 +184,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     <RefreshControl
                         refreshing={false}
                         onRefresh={() => {
+                            loadUser();
                             loadPosts();
                         }}
                     />
