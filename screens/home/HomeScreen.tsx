@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { Text, FlatList, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -7,6 +7,9 @@ import { FollowUser } from "../../utils/types/user";
 import { Post } from "../../utils/types/post";
 import { getPostsFromUsers } from "../../api/firestore/posts";
 import PostComponent from "../../components/PostComponent";
+import { tintColorLight } from "../../constants/Colors";
+import colors from "../../constants/Colors";
+import { View } from "../../components/Themed";
 
 type HomeScreenProps = {
     navigation: any;
@@ -18,22 +21,22 @@ const HomeScreen = (props: HomeScreenProps) => {
     const [followed, setFollowed] = useState<string[]>([]);
     const [posts, setPosts] = useState<Post[]>([]);
 
+    const loadPosts = async () => {
+        console.log("Loading Posts");
+        const user = await getUserById(getUserId(store.getState()));
+
+        if (user) {
+            setPosts(
+                (await getPostsFromUsers(
+                    await user.following.map((u: FollowUser) => u.id),
+                )) as Post[],
+            );
+        }
+        console.log(`Loaded ${posts.length} posts`);
+    };
+
     useEffect(() => {
-        (async () => {
-            const user = await getUserById(getUserId(store.getState()));
-
-            if (user) {
-                // setFollowed(user.following.map((u: FollowUser) => u.id));
-                setPosts(
-                    (await getPostsFromUsers(
-                        await user.following.map((u: FollowUser) => u.id),
-                    )) as Post[],
-                );
-
-                console.log(posts.map((p: Post) => p.username));
-                // console.log(followed);
-            }
-        })();
+        loadPosts();
     }, []);
 
     return (
@@ -43,7 +46,15 @@ const HomeScreen = (props: HomeScreenProps) => {
                 renderItem={({ item }) => (
                     <PostComponent post={item} navigation={navigation} />
                 )}
-                keyExtractor={(item: Post) => item.id}
+                keyExtractor={(item: Post) => `item ${item.id}`}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {
+                            loadPosts();
+                        }}
+                    />
+                }
             />
         </View>
     );

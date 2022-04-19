@@ -6,10 +6,12 @@ import {
     DocumentData,
     DocumentReference,
     getDocs,
+    orderBy,
     Query,
     query,
     serverTimestamp,
     setDoc,
+    Timestamp,
     where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
@@ -59,8 +61,8 @@ export const createPost = async (
             likes: [],
             comments: [],
 
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: Timestamp.fromDate(new Date()),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         return await setDoc(postDocumentRef, post)
@@ -101,6 +103,7 @@ export const getPostsFromUsers = async (
     const postsQuery: Query<DocumentData> = query(
         collection(db, "posts"),
         where("userId", "in", userIds),
+        orderBy("createdAt", "desc"),
     );
 
     const posts = await getDocs(postsQuery);

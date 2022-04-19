@@ -1,4 +1,5 @@
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
+import { FollowUser } from "./user";
 
 export type Comment = {
     id?: string;
@@ -19,9 +20,9 @@ export type Post = {
     description: string;
     images: string[];
 
-    likes: string[];
+    likes: FollowUser[];
     comments: Comment[];
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };
