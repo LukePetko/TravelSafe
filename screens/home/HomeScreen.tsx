@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -8,7 +8,13 @@ import { Post } from "../../utils/types/post";
 import { getPostsFromUsers } from "../../api/firestore/posts";
 import PostComponent from "../../components/PostComponent";
 
-const HomeScreen = () => {
+type HomeScreenProps = {
+    navigation: any;
+};
+
+const HomeScreen = (props: HomeScreenProps) => {
+    const { navigation } = props;
+
     const [followed, setFollowed] = useState<string[]>([]);
     const [posts, setPosts] = useState<Post[]>([]);
 
@@ -32,9 +38,13 @@ const HomeScreen = () => {
 
     return (
         <View>
-            {posts.map((p: Post) => {
-                return p ? <PostComponent key={p.id} post={p} /> : null;
-            })}
+            <FlatList
+                data={posts}
+                renderItem={({ item }) => (
+                    <PostComponent post={item} navigation={navigation} />
+                )}
+                keyExtractor={(item: Post) => item.id}
+            />
         </View>
     );
 };
