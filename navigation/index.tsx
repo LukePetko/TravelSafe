@@ -89,17 +89,6 @@ const Navigation = ({
                 onSnapshot(getUserDocById(userId), (doc) => {
                     if (doc.exists()) {
                         dispatch(setUser(doc.data()));
-
-                        doc.data().closeContacts.forEach((contact: any) => {
-                            onSnapshot(
-                                getUserTripDocumentRef(contact.id),
-                                (doc) => {
-                                    if (doc.exists()) {
-                                        dispatch(updateTrip(doc.data()));
-                                    }
-                                },
-                            );
-                        });
                     }
                 });
             }

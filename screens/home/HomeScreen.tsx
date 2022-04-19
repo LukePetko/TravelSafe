@@ -10,6 +10,7 @@ import PostComponent from "../../components/PostComponent";
 import { tintColorLight } from "../../constants/Colors";
 import colors from "../../constants/Colors";
 import { View } from "../../components/Themed";
+import { styles } from "../../styles/global";
 
 type HomeScreenProps = {
     navigation: any;
@@ -40,22 +41,28 @@ const HomeScreen = (props: HomeScreenProps) => {
     }, []);
 
     return (
-        <View>
-            <FlatList
-                data={posts}
-                renderItem={({ item }) => (
-                    <PostComponent post={item} navigation={navigation} />
-                )}
-                keyExtractor={(item: Post) => `item ${item.id}`}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={false}
-                        onRefresh={() => {
-                            loadPosts();
-                        }}
-                    />
-                }
-            />
+        <View style={{ flex: 1 }}>
+            {posts.length > 0 ? (
+                <FlatList
+                    data={posts}
+                    renderItem={({ item }) => (
+                        <PostComponent post={item} navigation={navigation} />
+                    )}
+                    keyExtractor={(item: Post) => `item ${item.id}`}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={false}
+                            onRefresh={() => {
+                                loadPosts();
+                            }}
+                        />
+                    }
+                />
+            ) : (
+                <View style={styles.container}>
+                    <Text style={{ fontWeight: "600" }}>No posts to show</Text>
+                </View>
+            )}
         </View>
     );
 };

@@ -16,7 +16,7 @@ export const startLocationTracking = async (id: string): Promise<void> => {
 
     Location.startLocationUpdatesAsync(BACKGROUND_FIRESTORE_LOCATION_TASK, {
         accuracy: Location.Accuracy.Highest,
-        distanceInterval: 200,
+        distanceInterval: 10,
         foregroundService: {
             notificationTitle: "Using your location",
             notificationBody:

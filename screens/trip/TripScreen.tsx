@@ -11,7 +11,7 @@ import store from "../../redux/store";
 import * as Location from "expo-location";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { end, getTripId, start } from "../../redux/stores/trip";
+import { end, getTripId, resetDistance, start } from "../../redux/stores/trip";
 import { endTrip, startNewQuickTrip } from "../../utils/trip";
 import {
     startLocationTracking,
@@ -93,6 +93,7 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
                         stopLocationTracking();
                         endTrip();
                         dispatch(end());
+                        dispatch(resetDistance());
                     }
                 }}
             >
