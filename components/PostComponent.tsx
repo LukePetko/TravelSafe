@@ -23,7 +23,9 @@ const PostComponent = (props: PostComponentProps) => {
             <Pressable
                 onPress={() => {
                     console.log(post);
-                    navigation.navigate("ProfileScreen", post.userId);
+                    navigation.navigate("ProfileScreen", {
+                        id: post.userId,
+                    });
                 }}
                 style={{
                     backgroundColor: "transparent",

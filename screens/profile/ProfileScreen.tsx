@@ -8,7 +8,13 @@ import {
     updateProfilePicture,
 } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
-import { ActionSheetIOS, Button, StyleSheet } from "react-native";
+import {
+    ActionSheetIOS,
+    Button,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
 import { getPictureBlob } from "../../utils/files";
@@ -16,10 +22,12 @@ import { onSnapshot } from "firebase/firestore";
 import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Post } from "../../utils/types/post";
-import { getPosts } from "../../api/firestore/posts";
+import { getPosts, getPostsFromUsers } from "../../api/firestore/posts";
 import ListLabel from "../../components/ListLabel";
 import { User } from "../../utils/types/user";
 import { followUser, unfollowUser } from "../../api/firestore/accounts";
+import PostComponent from "../../components/PostComponent";
+import { ScrollView } from "react-native-gesture-handler";
 
 type ProfileProps = {
     navigation: any;
@@ -80,6 +88,16 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
             },
         );
 
+    const loadPosts = async () => {
+        console.log("Loading Posts");
+        const user = await getUserById(getUserId(store.getState()));
+
+        if (user) {
+            setPosts((await getPostsFromUsers([userID])) as Post[]);
+        }
+        console.log(`Loaded ${posts.length} posts`);
+    };
+
     useEffect((): void => {
         if (isOwn) {
             setUser(getUser(store.getState()));
@@ -111,46 +129,72 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     return (
         <View style={localStyles.container}>
-            <ProfilePicture
-                photoURL={
-                    user?.profilePicture ||
-                    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
+            <FlatList
+                ListHeaderComponent={() => {
+                    return (
+                        <View style={localStyles.innerContainer}>
+                            <ProfilePicture
+                                photoURL={
+                                    user?.profilePicture ||
+                                    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
+                                }
+                                onPress={onPress}
+                            />
+                            <Text>email: {user?.email}</Text>
+                            <Text>followers: {user?.followerCount}</Text>
+                            <Text>following: {user?.followingCount}</Text>
+                            {user?.closeContacts?.map((contact: any) => (
+                                <Text key={contact.id}>
+                                    {contact.id} {contact.username}
+                                </Text>
+                            ))}
+                            {isOwn && (
+                                <Button
+                                    title="new post"
+                                    onPress={() =>
+                                        navigation.navigate("NewPost")
+                                    }
+                                />
+                            )}
+                            {!isOwn && (
+                                <ListLabel
+                                    borderRadius={{ top: true, bottom: true }}
+                                    onPress={() => {
+                                        isFollowing
+                                            ? unfollowUser(
+                                                  getUserId(store.getState()),
+                                                  userID,
+                                              )
+                                            : followUser(
+                                                  getUserId(store.getState()),
+                                                  userID,
+                                              );
+                                    }}
+                                >
+                                    {isFollowing
+                                        ? "Unfollow"
+                                        : isFollower
+                                        ? "Follow Back"
+                                        : "Follow"}
+                                </ListLabel>
+                            )}
+                        </View>
+                    );
+                }}
+                data={posts}
+                renderItem={({ item }) => (
+                    <PostComponent post={item} navigation={navigation} />
+                )}
+                keyExtractor={(item: Post) => `item ${item.id}`}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {
+                            loadPosts();
+                        }}
+                    />
                 }
-                onPress={onPress}
             />
-            <Text>email: {user?.email}</Text>
-            <Text>followers: {user?.followerCount}</Text>
-            <Text>following: {user?.followingCount}</Text>
-            {user?.closeContacts?.map((contact: any) => (
-                <Text key={contact.id}>
-                    {contact.id} {contact.username}
-                </Text>
-            ))}
-            {isOwn && (
-                <Button
-                    title="new post"
-                    onPress={() => navigation.navigate("NewPost")}
-                />
-            )}
-            {!isOwn && (
-                <ListLabel
-                    borderRadius={{ top: true, bottom: true }}
-                    onPress={() => {
-                        isFollowing
-                            ? unfollowUser(getUserId(store.getState()), userID)
-                            : followUser(getUserId(store.getState()), userID);
-                    }}
-                >
-                    {isFollowing
-                        ? "Unfollow"
-                        : isFollower
-                        ? "Follow Back"
-                        : "Follow"}
-                </ListLabel>
-            )}
-            {posts.map((post: Post) => (
-                <Text key={post.id}>{post.description}</Text>
-            ))}
         </View>
     );
 };
@@ -158,7 +202,11 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 const localStyles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: 20,
+        alignItems: "center",
+    },
+    innerContainer: {
+        flex: 1,
+        marginVertical: 20,
         alignItems: "center",
     },
 });
