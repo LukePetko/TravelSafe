@@ -27,9 +27,6 @@ const PostComponent = (props: PostComponentProps) => {
                         id: post.userId,
                     });
                 }}
-                style={{
-                    backgroundColor: "transparent",
-                }}
             >
                 <View style={localStyles.nameContainer}>
                     <Image

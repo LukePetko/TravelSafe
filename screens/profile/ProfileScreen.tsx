@@ -37,7 +37,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         ? route.params.id
         : getUserId(store.getState());
 
-    const isOwn = !route.params;
+    const isOwn = !route.params || userID === getUserId(store.getState());
 
     const [user, setUser] = useState<User | PublicUser | null>(null);
     const [posts, setPosts] = useState<Post[]>([]);
