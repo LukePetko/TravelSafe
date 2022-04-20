@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { getPictureBlob } from "../../utils/files";
 import { Image, Pressable } from "react-native";
 import { createPost } from "../../api/firestore/posts";
+import Spinner from "react-native-spinkit";
 
 type ImageContainer = {
     uri: string;
@@ -43,6 +44,7 @@ const NewPost = (props: NewPostProps) => {
 
     const [trips, setTrips] = useState<Trip[]>([]);
     const [showTrips, setShowTrips] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
 
     const [postState, setPostState] = useState<NewPostState>({
         trip: null,
@@ -87,6 +89,7 @@ const NewPost = (props: NewPostProps) => {
     };
 
     const onSubmit = async (): Promise<void> => {
+        setShowLoading(true);
         const { description, photos } = postState;
 
         const userId = getUserId(store.getState());
@@ -101,7 +104,9 @@ const NewPost = (props: NewPostProps) => {
             ),
         );
 
-        // navigation.navigate("Home");
+        setShowLoading(false);
+
+        navigation.goBack();
     };
 
     useEffect(() => {
@@ -118,176 +123,194 @@ const NewPost = (props: NewPostProps) => {
     }, []);
 
     return (
-        <KeyboardAvoidingView
-            behavior={"padding"}
-            style={{
-                flex: 1,
-                height: "100%",
-                marginTop: 20,
-            }}
-            enabled
-            keyboardVerticalOffset={90}
-        >
-            <ScrollView>
-                <Text
+        <>
+            {showLoading ? (
+                <View style={styles.container}>
+                    <Spinner
+                        size={100}
+                        type="ThreeBounce"
+                        color={tintColorLight}
+                    />
+                </View>
+            ) : (
+                <KeyboardAvoidingView
+                    behavior={"padding"}
                     style={{
-                        fontWeight: "bold",
-                        fontSize: 32,
-                        padding: 10,
+                        flex: 1,
+                        height: "100%",
+                        paddingTop: 20,
                     }}
+                    enabled
+                    keyboardVerticalOffset={90}
                 >
-                    New Post
-                </Text>
-                <View style={[styles.container, { marginTop: 20 }]}>
-                    {trips.length > 0 && (
-                        <ListLabel
-                            showChevron={true}
-                            borderRadius={{ top: true }}
-                            separator={true}
-                            rotateChevron={showTrips}
-                            onPress={() => setShowTrips(!showTrips)}
-                            fieldValue={postState.trip?.name}
+                    <ScrollView>
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 32,
+                                padding: 10,
+                            }}
                         >
-                            Trip
-                        </ListLabel>
-                    )}
-                    {showTrips && (
-                        <>
+                            New Post
+                        </Text>
+                        <View style={[styles.container, { marginTop: 20 }]}>
+                            {trips.length > 0 && (
+                                <ListLabel
+                                    showChevron={true}
+                                    borderRadius={{ top: true }}
+                                    separator={true}
+                                    rotateChevron={showTrips}
+                                    onPress={() => setShowTrips(!showTrips)}
+                                    fieldValue={postState.trip?.name}
+                                >
+                                    Trip
+                                </ListLabel>
+                            )}
+                            {showTrips && (
+                                <>
+                                    <ListLabel
+                                        separator={true}
+                                        onPress={() => {
+                                            onChange("trip", null);
+                                            setShowTrips(false);
+                                        }}
+                                    >
+                                        No Trip
+                                    </ListLabel>
+
+                                    {trips.map((trip) => (
+                                        <ListLabel
+                                            key={trip.id}
+                                            separator={true}
+                                            onPress={() => {
+                                                onChange("trip", trip);
+                                                setShowTrips(false);
+                                            }}
+                                        >
+                                            {trip.name} -{" "}
+                                            {getDate(trip.startTime)}
+                                        </ListLabel>
+                                    ))}
+                                </>
+                            )}
+                            <ListInput
+                                placeholder="Description"
+                                borderRadius={{ bottom: true }}
+                                value={postState.description}
+                                onChangeText={(text) =>
+                                    onChange("description", text)
+                                }
+                            />
+
                             <ListLabel
-                                separator={true}
-                                onPress={() => {
-                                    onChange("trip", null);
-                                    setShowTrips(false);
+                                style={{
+                                    marginTop: 20,
                                 }}
+                                borderRadius={{
+                                    top: true,
+                                    bottom: postState.photos.length == 0,
+                                }}
+                                separator={postState.photos.length > 0}
+                                showChevron
+                                onPress={() => {
+                                    addImage().then((image) => {
+                                        if (image) {
+                                            setPostState({
+                                                ...postState,
+                                                photos: [
+                                                    ...postState.photos,
+                                                    image,
+                                                ],
+                                            });
+                                        }
+                                    });
+                                }}
+                                fieldValue={`${postState.photos.length} photo${
+                                    postState.photos.length == 1 ? "" : "s"
+                                }`}
                             >
-                                No Trip
+                                Add Photos
                             </ListLabel>
 
-                            {trips.map((trip) => (
-                                <ListLabel
-                                    key={trip.id}
-                                    separator={true}
-                                    onPress={() => {
-                                        onChange("trip", trip);
-                                        setShowTrips(false);
-                                    }}
-                                >
-                                    {trip.name} - {getDate(trip.startTime)}
+                            {postState.photos.length > 0 && (
+                                <ListLabel borderRadius={{ bottom: true }}>
+                                    {postState.photos.map((photo, index) => (
+                                        <Pressable
+                                            key={index}
+                                            onPress={() => {
+                                                setPostState({
+                                                    ...postState,
+                                                    photos: postState.photos.filter(
+                                                        (p) => p !== photo,
+                                                    ),
+                                                });
+                                            }}
+                                            style={{
+                                                paddingHorizontal: 3,
+                                                paddingVertical: 10,
+                                            }}
+                                        >
+                                            <Image
+                                                source={{
+                                                    uri: photo.uri,
+                                                }}
+                                                style={{
+                                                    width: 100,
+                                                    height: 100,
+                                                }}
+                                            />
+                                            <SFSymbol
+                                                name="trash"
+                                                size={20}
+                                                color="red"
+                                            />
+                                        </Pressable>
+                                    ))}
                                 </ListLabel>
-                            ))}
-                        </>
-                    )}
-                    <ListInput
-                        placeholder="Description"
-                        borderRadius={{ bottom: true }}
-                        value={postState.description}
-                        onChangeText={(text) => onChange("description", text)}
-                    />
+                            )}
 
-                    <ListLabel
-                        style={{
-                            marginTop: 20,
-                        }}
-                        borderRadius={{
-                            top: true,
-                            bottom: postState.photos.length == 0,
-                        }}
-                        separator={postState.photos.length > 0}
-                        showChevron
-                        onPress={() => {
-                            addImage().then((image) => {
-                                if (image) {
-                                    setPostState({
-                                        ...postState,
-                                        photos: [...postState.photos, image],
-                                    });
-                                }
-                            });
-                        }}
-                        fieldValue={`${postState.photos.length} photo${
-                            postState.photos.length == 1 ? "" : "s"
-                        }`}
-                    >
-                        Add Photos
-                    </ListLabel>
-
-                    {postState.photos.length > 0 && (
-                        <ListLabel borderRadius={{ bottom: true }}>
-                            {postState.photos.map((photo, index) => (
-                                <Pressable
-                                    key={index}
-                                    onPress={() => {
-                                        setPostState({
-                                            ...postState,
-                                            photos: postState.photos.filter(
-                                                (p) => p !== photo,
-                                            ),
-                                        });
-                                    }}
-                                    style={{
-                                        paddingHorizontal: 3,
-                                        paddingVertical: 10,
-                                    }}
-                                >
-                                    <Image
-                                        source={{
-                                            uri: photo.uri,
-                                        }}
-                                        style={{
-                                            width: 100,
-                                            height: 100,
-                                        }}
-                                    />
-                                    <SFSymbol
-                                        name="trash"
-                                        size={20}
-                                        color="red"
-                                    />
-                                </Pressable>
-                            ))}
-                        </ListLabel>
-                    )}
-
-                    <ListLabel
-                        style={{ marginTop: 20 }}
-                        textStyles={{ color: tintColorLight }}
-                        borderRadius={{
-                            top: true,
-                            bottom: true,
-                        }}
-                        icon={
-                            <SFSymbol
-                                name="plus"
-                                weight="semibold"
-                                scale="medium"
-                                color={tintColorLight}
-                                size={18}
-                                resizeMode="center"
-                                multicolor={false}
-                                style={{
-                                    width: 32,
-                                    height: 32,
+                            <ListLabel
+                                style={{ marginTop: 20 }}
+                                textStyles={{ color: tintColorLight }}
+                                borderRadius={{
+                                    top: true,
+                                    bottom: true,
                                 }}
-                            />
-                        }
-                    >
-                        Tag Friends
-                    </ListLabel>
+                                icon={
+                                    <SFSymbol
+                                        name="plus"
+                                        weight="semibold"
+                                        scale="medium"
+                                        color={tintColorLight}
+                                        size={18}
+                                        resizeMode="center"
+                                        multicolor={false}
+                                        style={{
+                                            width: 32,
+                                            height: 32,
+                                        }}
+                                    />
+                                }
+                            >
+                                Tag Friends
+                            </ListLabel>
 
-                    <ListLabel
-                        style={{ marginTop: 20 }}
-                        textStyles={{ color: tintColorLight }}
-                        borderRadius={{
-                            top: true,
-                            bottom: true,
-                        }}
-                        onPress={() => onSubmit()}
-                    >
-                        Create Post
-                    </ListLabel>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                            <ListLabel
+                                style={{ marginTop: 20 }}
+                                textStyles={{ color: tintColorLight }}
+                                borderRadius={{
+                                    top: true,
+                                    bottom: true,
+                                }}
+                                onPress={() => onSubmit()}
+                            >
+                                Create Post
+                            </ListLabel>
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            )}
+        </>
     );
 };
 
