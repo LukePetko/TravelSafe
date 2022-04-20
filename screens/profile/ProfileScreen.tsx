@@ -24,25 +24,33 @@ import {
     unfollowUser,
 } from "../../api/firestore/accounts";
 import PostComponent from "../../components/PostComponent";
+import { connect } from "react-redux";
 
 type ProfileProps = {
     navigation: any;
     route?: any;
+    ownUserID: string | null;
 };
 
+const mapStateToProps = (state: any) => ({
+    ownUserID: getUserId(state),
+});
+
 const ProfileScreen = (props: ProfileProps): JSX.Element => {
-    const { navigation, route } = props;
-
-    const userID: string = route.params
-        ? route.params.id
-        : getUserId(store.getState());
-
-    const isOwn = !route.params || userID === getUserId(store.getState());
+    const { navigation, route, ownUserID } = props;
 
     const [user, setUser] = useState<User | PublicUser | null>(null);
     const [posts, setPosts] = useState<Post[]>([]);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
     const [isFollower, setIsFollower] = useState<boolean>(false);
+    const [userID, setUserID] = useState<string>(route.params?.id ?? ownUserID);
+    const [isOwn, setIsOwn] = useState<boolean>(
+        !route.params || userID === ownUserID,
+    );
+
+    useEffect(() => {
+        console.log(userID, ownUserID);
+    }, [userID]);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -206,4 +214,4 @@ const localStyles = StyleSheet.create({
     },
 });
 
-export default ProfileScreen;
+export default connect(mapStateToProps)(ProfileScreen);

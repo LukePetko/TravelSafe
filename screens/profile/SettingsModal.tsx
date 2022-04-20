@@ -3,7 +3,7 @@ import { onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { getSentNotifications, getUserDocById } from "../../api/firestore";
 import { removeData, getData, storeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
@@ -16,19 +16,23 @@ import {
 import { tintColorLight } from "../../constants/Colors";
 import { useStoreSelector } from "../../hooks/useStoreSelector";
 import store from "../../redux/store";
-import { getUser, logout } from "../../redux/stores/user";
+import { getUser, getUserId, logout } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
 import { User } from "../../utils/types/user";
 
 type SettingsModalProps = {
     navigation: any;
+    userId: string;
 };
 
+const mapStateToProps = (state: any) => ({
+    userId: getUserId(state),
+});
+
 const SettingsModal = (props: SettingsModalProps) => {
-    const { navigation } = props;
+    const { navigation, userId } = props;
 
     const dispatch: Dispatch<any> = useDispatch<any>();
-    const userId = useSelector((state: any) => state.user.userId.payload);
 
     const [user, setUser] = useState<any>({});
     const [closeContacts, setCloseContacts] = useState<any[]>([]);
@@ -173,4 +177,4 @@ const SettingsModal = (props: SettingsModalProps) => {
     );
 };
 
-export default SettingsModal;
+export default connect(mapStateToProps)(SettingsModal);

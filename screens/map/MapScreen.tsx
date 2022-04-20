@@ -20,6 +20,7 @@ import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { User } from "../../utils/types/user";
 import { getPath, getTripId } from "../../redux/stores/trip";
+import { tintColorLight } from "../../constants/Colors";
 
 type MapCoords = {
     latitude: number;
@@ -70,10 +71,6 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     useEffect(() => {
         console.log("userTripId", tripId);
     }, [tripId]);
-
-    useEffect(() => {
-        console.log("rerender!");
-    }, []);
 
     // useEffect(() => {
     //     console.log(path);
@@ -239,7 +236,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                         <Polyline
                             coordinates={path}
                             strokeWidth={5}
-                            strokeColor={"red"}
+                            strokeColor={tintColorLight}
                         />
                         {contactsTripInfo?.map(
                             (contact: any) =>
