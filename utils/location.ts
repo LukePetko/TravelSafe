@@ -12,7 +12,7 @@ export const saveLocationToFirestore = async ({ data, error }: any) => {
 
     store.dispatch(addDistance(10));
     const distance = getDistance(store.getState());
-    console.log(distance);
+    // console.log(distance);
 
     // console.log(data);
 

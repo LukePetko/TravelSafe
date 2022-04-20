@@ -14,6 +14,6 @@ export type CurrentTripInfo = {
         | null;
     profilePicture: string;
     tripName: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
 };

@@ -1,25 +1,25 @@
 import { View, Image } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { styles } from "../../styles/global";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 import * as Location from "expo-location";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { getUserTripDocumentRef } from "../../api/firestore";
 
 import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import ContactDetail from "./ContactDetail";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
-import {
-    getCloseContactsQuery,
-    getUserById,
-} from "../../api/firestore/accounts";
+import { getUserById } from "../../api/firestore/accounts";
 import { onSnapshot } from "firebase/firestore";
-import { useStoreSelector } from "../../hooks/useStoreSelector";
 import { getUserId } from "../../redux/stores/user";
-import store from "../../redux/store";
 import { User } from "../../utils/types/user";
-import { getPath, getTripId } from "../../redux/stores/trip";
+import {
+    getDistance,
+    getPath,
+    getTripId,
+    getTripName,
+} from "../../redux/stores/trip";
 import { tintColorLight } from "../../constants/Colors";
 
 type MapCoords = {
@@ -34,31 +34,25 @@ type MapScreenProps = {
     userId?: string;
     tripId?: string;
     path?: any;
+    distance?: number;
+    tripName?: string;
 };
 
 const mapStateToProps = (state: any) => ({
     userId: getUserId(state),
     tripId: getTripId(state),
     path: getPath(state),
+    distance: getDistance(state),
+    tripName: getTripName(state),
 });
 
 const MapScreen = (props: MapScreenProps): JSX.Element => {
-    const { navigation, userId, tripId, path } = props;
-
-    const [mapRegion, setmapRegion] = useState<MapCoords>({
-        latitude: 0,
-        longitude: 0,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-    });
+    const { navigation, userId, tripId, path, distance, tripName } = props;
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<User | null>(null);
     const [contactsTripInfo, setContactsTripInfo] = useState<CurrentTripInfo[]>(
         [],
-    );
-    const [userTripInfo, setUserTripInfo] = useState<CurrentTripInfo | null>(
-        null,
     );
     const [followUserLocation, setFollowUserLocation] = useState<boolean>(true);
 
@@ -69,128 +63,31 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        console.log("userTripId", tripId);
-    }, [tripId]);
-
-    // useEffect(() => {
-    //     console.log(path);
-    // }, [path]);
-
-    useEffect(() => {
-        console.log("user loaded", user?.id);
-
         user?.closeContacts?.forEach((contactId) => {
-            onSnapshot(getUserTripDocumentRef(contactId.id), (snapshot) => {
-                const tripInfo = snapshot.data() as CurrentTripInfo;
-                if (
-                    !contactsTripInfo.some(
-                        (contactTripInfo) => contactTripInfo.id === tripInfo.id,
-                    )
-                ) {
-                    setContactsTripInfo((prev) => [...prev, tripInfo]);
-                }
-            });
+            onSnapshot(
+                getUserTripDocumentRef(contactId.id),
+                async (snapshot) => {
+                    const tripInfo = snapshot.data() as CurrentTripInfo;
+                    // update or add contact to contactsTripInfo
+                    console.log("tripInfo", contactsTripInfo);
+                    console.log("contactId", contactId);
+                    console.warn("tripInfo", tripInfo);
+                    const contactIndex = contactsTripInfo.findIndex(
+                        (contact) => contact.id === contactId.id,
+                    );
+                    if (contactIndex !== -1) {
+                        contactsTripInfo[contactIndex] = tripInfo;
+                    } else {
+                        await setContactsTripInfo([
+                            ...contactsTripInfo,
+                            tripInfo,
+                        ]);
+                    }
+                    console.log(contactsTripInfo.map((p) => p.id));
+                },
+            );
         });
     }, [user]);
-
-    // console.log(userId);
-
-    // const unsubscribeUser = onSnapshot(
-    //     getUserTripDocumentRef(userId),
-    //     (snapshot) => {
-    //         if (snapshot.exists()) {
-    //             // console.log(snapshot.data());
-    //             if (
-    //                 userTripInfo?.tripName !== snapshot.data().tripName ||
-    //                 userTripInfo?.location?.latitude !==
-    //                     snapshot.data().location.latitude ||
-    //                 userTripInfo?.location?.longitude !==
-    //                     snapshot.data().location.longitude
-    //             ) {
-    //                 if (!snapshot.data().tripName) {
-    //                     setUserTripInfo(null);
-    //                     return;
-    //                 }
-    //                 const data = snapshot.data();
-    //                 if (data) {
-    //                     const userTripInfo = {
-    //                         id: data.id,
-    //                         username: data.username,
-    //                         profilePicture: data.profilePicture,
-    //                         location: data.location
-    //                             ? {
-    //                                   latitude: data.location?.latitude,
-    //                                   longitude: data.location?.longitude,
-    //                                   latitudeDelta: 0.0001,
-    //                                   longitudeDelta: 0.0001,
-    //                               }
-    //                             : null,
-    //                         tripName: data.tripName,
-    //                         createdAt: data.createdAt,
-    //                         updatedAt: data.updatedAt,
-    //                     };
-    //                     setUserTripInfo(userTripInfo);
-    //                 }
-    //             }
-    //         }
-    //     },
-    // );
-
-    // useEffect(() => {
-    //     // console.log(tripPath, "tripPath");
-    // }, [tripPath]);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const closeContactsQuery = await getCloseContactsQuery(userId);
-
-    //         if (closeContactsQuery) {
-    //             const closeContactsUnsubscribe = onSnapshot(
-    //                 closeContactsQuery,
-    //                 (snapshot) => {
-    //                     snapshot.forEach((doc) => {
-    //                         const tripData = doc.data();
-    //                         const closeContact: CurrentTripInfo = {
-    //                             id: tripData?.id,
-    //                             username: tripData?.username,
-    //                             location: tripData?.location
-    //                                 ? {
-    //                                       latitude: tripData?.location.latitude,
-    //                                       longitude:
-    //                                           tripData?.location.longitude,
-    //                                       latitudeDelta: 0.0001,
-    //                                       longitudeDelta: 0.0001,
-    //                                   }
-    //                                 : null,
-    //                             profilePicture: tripData?.profilePicture,
-    //                             tripName: tripData?.tripName,
-    //                             createdAt: tripData?.createdAt,
-    //                             updatedAt: tripData?.updatedAt,
-    //                         };
-
-    //                         setContactsTripInfo((prev) => {
-    //                             let contactsCopy: CurrentTripInfo[] = [];
-    //                             if (prev) {
-    //                                 contactsCopy = [...prev];
-    //                                 const index = contactsCopy.findIndex(
-    //                                     (contact) =>
-    //                                         contact.id === tripData?.id,
-    //                                 );
-    //                                 if (index !== -1) {
-    //                                     contactsCopy[index] = closeContact;
-    //                                     return contactsCopy;
-    //                                 }
-    //                                 return [...contactsCopy, closeContact];
-    //                             }
-    //                             return [closeContact];
-    //                         });
-    //                     });
-    //                 },
-    //             );
-    //             // console.log(contactsTripInfo);
-    //         }
-    //     })();
-    // }, []);
 
     useEffect((): void => {
         (async (): Promise<void> => {
@@ -199,25 +96,19 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
             if (status !== "granted") {
                 return;
             }
-
-            let location: Location.LocationObject =
-                await Location.getCurrentPositionAsync({});
-            const {
-                latitude,
-                longitude,
-            }: { latitude: number; longitude: number } = location.coords;
-            setmapRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-            });
             setIsLoading(false);
         })();
     }, []);
 
+    const map = useRef() as React.MutableRefObject<MapView>;
+
     // variables
-    const snapPoints = useMemo(() => ["5%", "50%"], []);
+    const snapPoints = useMemo(() => ["5%", "25%", "50%"], []);
+
+    const animateToRegion = (coords: MapCoords): void => {
+        console.log(coords);
+        map.current.animateToRegion(coords, 1000);
+    };
 
     return (
         <View style={styles.container}>
@@ -226,12 +117,12 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                     <MapView
                         // provider={PROVIDER_GOOGLE}
                         style={{ alignSelf: "stretch", height: "100%" }}
-                        // region={mapRegion}
                         showsUserLocation={true}
                         followsUserLocation={followUserLocation}
                         onPanDrag={() => {
                             setFollowUserLocation(false);
                         }}
+                        ref={map}
                     >
                         <Polyline
                             coordinates={path}
@@ -270,7 +161,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                         snapPoints={snapPoints}
                     >
                         <View>
-                            {!!userTripInfo && (
+                            {!!tripId && (
                                 <>
                                     <Text
                                         style={{
@@ -282,14 +173,24 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                                         Your active trip
                                     </Text>
                                     <Pressable
-                                        key={userTripInfo.username}
+                                        key={userId}
                                         onPress={() =>
-                                            userTripInfo.location &&
-                                            setmapRegion(userTripInfo.location)
+                                            path[path.length - 1] &&
+                                            // setFollowUserLocation(true)
+                                            animateToRegion(
+                                                path[path.length - 1],
+                                            )
                                         }
                                     >
                                         <ContactDetail
-                                            contact={userTripInfo}
+                                            contact={{
+                                                id: userId || "",
+                                                username: user?.username || "",
+                                                profilePicture:
+                                                    user?.profilePicture || "",
+                                                location: path[path.length - 1],
+                                                tripName: tripName || "",
+                                            }}
                                             userLocation={async () => null}
                                             isOwn={true}
                                             navigation={navigation}
@@ -309,10 +210,10 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                             {contactsTripInfo?.map((contact: any) => (
                                 <Pressable
                                     key={contact.username}
-                                    onPress={() =>
-                                        contact.location &&
-                                        setmapRegion(contact.location)
-                                    }
+                                    onPress={() => {
+                                        !!contact.location &&
+                                            animateToRegion(contact.location);
+                                    }}
                                 >
                                     <ContactDetail
                                         contact={contact}

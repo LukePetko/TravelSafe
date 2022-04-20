@@ -7,7 +7,7 @@ import { distanceText } from "../../utils/distance";
 import { getTimeDifference } from "../../utils/time";
 import { SFSymbol } from "react-native-sfsymbols";
 import { tintColorLight } from "../../constants/Colors";
-import { end, getTripId } from "../../redux/stores/trip";
+import { end, getTripId, resetDistance } from "../../redux/stores/trip";
 import store from "../../redux/store";
 import { stopLocationTracking } from "../../api/backgroundLocation";
 import { useDispatch } from "react-redux";
@@ -34,6 +34,7 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
             stopLocationTracking();
             endTrip();
             dispatch(end());
+            dispatch(resetDistance());
         }
     };
 
@@ -82,14 +83,18 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
                 {contact.location && !isOwn && (
                     <Text>
                         {distanceText(distance)} ⦁ {contact.tripName} ⦁{" "}
-                        {getTimeDifference(contact.updatedAt.toDate())}
+                        {contact &&
+                            contact.updatedAt &&
+                            getTimeDifference(contact.updatedAt.toDate())}
                     </Text>
                 )}
                 {!contact.location && !isOwn && <Text>No active trip</Text>}
                 {isOwn && (
                     <Text>
                         {contact.tripName} ⦁{" "}
-                        {getTimeDifference(contact.updatedAt.toDate())}
+                        {contact &&
+                            contact.updatedAt &&
+                            getTimeDifference(contact?.updatedAt?.toDate())}
                     </Text>
                 )}
             </View>
