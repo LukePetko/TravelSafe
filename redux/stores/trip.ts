@@ -18,6 +18,7 @@ const initialState = {
     path: [],
     distance: 0,
     tripName: "",
+    startTime: new Date(),
 } as TripState;
 
 export const tripSlice: Slice = createSlice({
@@ -44,13 +45,24 @@ export const tripSlice: Slice = createSlice({
         addTripName: (state, payload: PayloadAction<string>) => {
             state.tripName = payload.payload;
         },
+        addStartTime: (state, payload: PayloadAction<Date>) => {
+            state.startTime = payload.payload;
+        },
     },
 });
 
-export const { start, end, addPoint, addDistance, resetDistance, addTripName } =
-    tripSlice.actions;
+export const {
+    start,
+    end,
+    addPoint,
+    addDistance,
+    resetDistance,
+    addTripName,
+    addStartTime,
+} = tripSlice.actions;
 export const getTripId = (state: RootState): string => state.trip.trip;
 export const getPath = (state: RootState): Location[] => state.trip.path;
 export const getDistance = (state: RootState): number => state.trip.distance;
 export const getTripName = (state: RootState): string => state.trip.tripName;
+export const getStartTime = (state: RootState): Date => state.trip.startTime;
 export default tripSlice.reducer;

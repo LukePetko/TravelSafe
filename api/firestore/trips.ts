@@ -14,6 +14,8 @@ import {
     where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
+import store from "../../redux/store";
+import { addStartTime, addTripName } from "../../redux/stores/trip";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
@@ -105,6 +107,8 @@ export const startTrip = async (
             tripName,
             updatedAt: new Date(),
         };
+        store.dispatch(addTripName(tripName));
+        store.dispatch(addStartTime(new Date()));
         return await setDoc(currentTripDoc, updatedLocation)
             .then(() => true)
             .catch(() => false);

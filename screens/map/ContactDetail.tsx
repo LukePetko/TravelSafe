@@ -7,23 +7,47 @@ import { distanceText } from "../../utils/distance";
 import { getTimeDifference } from "../../utils/time";
 import { SFSymbol } from "react-native-sfsymbols";
 import { tintColorLight } from "../../constants/Colors";
-import { end, getTripId, resetDistance } from "../../redux/stores/trip";
+import {
+    end,
+    getStartTime,
+    getTripId,
+    getTripName,
+    resetDistance,
+} from "../../redux/stores/trip";
 import store from "../../redux/store";
 import { stopLocationTracking } from "../../api/backgroundLocation";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { getUserId } from "../../redux/stores/user";
 import { createPostAlertButton, endTripAlertButton } from "../../utils/alers";
 import { endTrip } from "../../utils/trip";
+import { getDistance as reduxGetDistance } from "../../redux/stores/trip";
 
 type ContactDetailProps = {
     contact: CurrentTripInfo;
     userLocation: any;
     isOwn?: boolean;
     navigation?: any;
+    ownDistance: number;
+    ownTripName: string;
+    ownTripStartTime: Date;
 };
 
+const mapStateToProps = (state: any) => ({
+    ownDistance: reduxGetDistance(state),
+    ownTripName: getTripName(state),
+    ownTripStartTime: getStartTime(state),
+});
+
 const ContactDetail = (props: ContactDetailProps): JSX.Element => {
-    const { contact, userLocation, isOwn, navigation } = props;
+    const {
+        contact,
+        userLocation,
+        isOwn,
+        navigation,
+        ownDistance,
+        ownTripName,
+        ownTripStartTime,
+    } = props;
 
     const [distance, setDistance] = useState<number | null>(null);
 
@@ -91,10 +115,8 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
                 {!contact.location && !isOwn && <Text>No active trip</Text>}
                 {isOwn && (
                     <Text>
-                        {contact.tripName} ⦁{" "}
-                        {contact &&
-                            contact.updatedAt &&
-                            getTimeDifference(contact?.updatedAt?.toDate())}
+                        {ownTripName} ⦁ {distanceText(ownDistance)} ⦁
+                        {getTimeDifference(ownTripStartTime)}
                     </Text>
                 )}
             </View>
@@ -152,4 +174,4 @@ const localStyles = StyleSheet.create({
     },
 });
 
-export default ContactDetail;
+export default connect(mapStateToProps)(ContactDetail);
