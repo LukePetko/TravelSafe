@@ -17,6 +17,9 @@ export type Trip = {
 
     thumbnail?: string;
 
+    distance?: number;
+    path: GeoPoint[];
+
     status: string;
 
     createdAt: Date;

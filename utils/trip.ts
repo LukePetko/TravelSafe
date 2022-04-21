@@ -3,7 +3,7 @@ import { doc, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
 import { createTrip, startTrip } from "../api/firestore";
 import { Trip } from "./types/trip";
 import store from "../redux/store";
-import { getTripId, start } from "../redux/stores/trip";
+import { getDistance, getPath, getTripId, start } from "../redux/stores/trip";
 import { getUserId } from "../redux/stores/user";
 import { endTrip as endTripAPI } from "../api/firestore";
 import { db } from "../Firebase";
@@ -37,11 +37,16 @@ export const endTrip = async () => {
     const state = store.getState();
     const userId = getUserId(state);
     const tripId = getTripId(state);
+    const path = await getPath(state);
+    const distance = await getDistance(state);
 
     const tripDoc = doc(db, `users`, userId, "trips", tripId);
 
     updateDoc(tripDoc, {
+        path: JSON.stringify(path),
+        distance: distance,
         status: "ended",
+        endTime: serverTimestamp(),
         updatedAt: serverTimestamp(),
     });
 
