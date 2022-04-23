@@ -17,7 +17,13 @@ import {
     getEndedUserHoliday,
 } from "../../api/firestore/trips";
 
-const PastTripsScreen = () => {
+type PastTripScreenProps = {
+    navigation: any;
+};
+
+const PastTripsScreen = (props: PastTripScreenProps) => {
+    const { navigation } = props;
+
     const userId = getUserId(store.getState());
     const [trips, setTrips] = useState<Trip[]>([]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -92,7 +98,14 @@ const PastTripsScreen = () => {
                     Past Trips
                 </Text>
                 {trips.map((trip) => (
-                    <Pressable key={trip.id}>
+                    <Pressable
+                        key={trip.id}
+                        onPress={() => {
+                            navigation.navigate("PastTripDetail", {
+                                trip,
+                            });
+                        }}
+                    >
                         <View style={localStyles.container}>
                             <View style={localStyles.imageContainer}>
                                 <Image

@@ -58,6 +58,7 @@ export type TripStackParamList = {
     PastTrips: undefined;
     PlannedTrips: undefined;
     EditTrip: undefined;
+    PastTripDetail: undefined;
 };
 
 export type ProfileStackParamList = {

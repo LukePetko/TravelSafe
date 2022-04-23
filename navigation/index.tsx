@@ -59,6 +59,7 @@ import NewHolidayScreen from "../screens/trip/NewHolidayScreen";
 import EditTripScreen from "../screens/trip/EditTripScreen";
 import NewPostScreen from "../screens/posts/NewPost";
 import HomeScreen from "../screens/home/HomeScreen";
+import PastTripDetail from "../screens/trip/PastTripDetail";
 
 type UserState = {
     userId: string;
@@ -249,6 +250,13 @@ export const TripStackNavigator = (): JSX.Element => {
                 options={{
                     headerShown: true,
                     title: "Edit Trip",
+                }}
+            />
+            <TripStack.Screen
+                name="PastTripDetail"
+                component={PastTripDetail}
+                options={{
+                    headerShown: true,
                 }}
             />
         </TripStack.Navigator>
