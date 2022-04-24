@@ -147,9 +147,6 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                     {showHoliday && (
                         <>
                             <ListLabel
-                                borderRadius={{
-                                    bottom: true,
-                                }}
                                 separator={true}
                                 onPress={() => {
                                     onChange("holiday", null);
