@@ -3,6 +3,9 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (4.0.2):
     - ExpoModulesCore
+  - EXBackgroundFetch (10.1.1):
+    - ExpoModulesCore
+    - UMTaskManagerInterface
   - EXCamera (12.1.2):
     - ExpoModulesCore
   - EXConstants (13.0.2):
@@ -311,6 +314,8 @@ PODS:
     - React-jsi (= 0.64.3)
     - React-perflogger (= 0.64.3)
   - React-jsinspector (0.64.3)
+  - react-native-background-timer (2.4.1):
+    - React-Core
   - react-native-date-picker (4.1.5):
     - React-Core
   - react-native-get-random-values (1.7.2):
@@ -434,6 +439,7 @@ PODS:
 DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXBackgroundFetch (from `../node_modules/expo-background-fetch/ios`)
   - EXCamera (from `../node_modules/expo-camera/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXDevice (from `../node_modules/expo-device/ios`)
@@ -472,6 +478,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -509,6 +516,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../node_modules/expo-application/ios"
+  EXBackgroundFetch:
+    :path: "../node_modules/expo-background-fetch/ios"
   EXCamera:
     :path: "../node_modules/expo-camera/ios"
   EXConstants:
@@ -581,6 +590,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-background-timer:
+    :path: "../node_modules/react-native-background-timer"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-get-random-values:
@@ -640,6 +651,7 @@ SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   EXApplication: 54fe5bd6268d697771645e8f1aef8b806a65247a
+  EXBackgroundFetch: 37aa26b5bc98c81604b868c094c2295f3ed1ac71
   EXCamera: 4a0d00d6d1e4703c31a75514d8bc804a2eab27bd
   EXConstants: 88bf79622fbd9b476c96d8ec57fe97ca44fe8e3c
   EXDevice: aa5e1edbf350481a948c3258b750dd11e6e4579e
@@ -676,6 +688,7 @@ SPEC CHECKSUMS:
   React-jsi: a8b09c29521c798f1783348b37b511ba7b3dbeb3
   React-jsiexecutor: df6abc9fafbecb8e5b7a5fbc5e6d4bd017d594d5
   React-jsinspector: 34e23860273a23695342f58eed3ffd3ba10c31e0
+  react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-date-picker: 93603f8a1c171fb8988cf472eff6f2d76652500f
   react-native-get-random-values: 30b3f74ca34e30e2e480de48e4add2706a40ac8f
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89
