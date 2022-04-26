@@ -39,3 +39,11 @@ export const createPostAlertButton = (onPress: () => void): void =>
             },
         ],
     );
+
+export const inactivityAlert = (onPress: () => void): void =>
+    Alert.alert("You have been inactive for a while", "Is everything ok?", [
+        {
+            text: "Yes",
+            onPress,
+        },
+    ]);

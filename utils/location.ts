@@ -11,6 +11,10 @@ import {
     resetLastMovementTime,
 } from "../redux/stores/trip";
 import { getUserId } from "../redux/stores/user";
+import { inactivityAlert } from "./alers";
+import * as Notifications from "expo-notifications";
+import { Notification } from "expo-notifications";
+import { inactiveLocalNotification } from "./notifications";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
@@ -60,12 +64,12 @@ export const checkTimer = async () => {
     const time = getLastMovementTime(store.getState());
     console.log(time);
 
-    if (time > 15) {
-        Alert.alert("move!");
-        store.dispatch(addLastMovementTime(-15));
-        // store.dispatch(addDistance(10));
-        // store.dispatch(addLastMovementTime(-10 * 60 * 1000));
+    if (time === 15) {
+        inactiveLocalNotification();
+        inactivityAlert(() => store.dispatch(resetLastMovementTime()));
     }
+
+    // add push to close contacts
 
     store.dispatch(addLastMovementTime(1));
 };

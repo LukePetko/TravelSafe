@@ -48,3 +48,17 @@ export async function registerForPushNotificationsAsync(): Promise<string> {
 
     return token || "";
 }
+
+export const inactiveLocalNotification = () => {
+    const schedulingOptions = {
+        content: {
+            title: "You have been inactive for a while",
+            body: "Is everything ok?",
+            sound: true,
+        },
+        trigger: {
+            seconds: 1,
+        },
+    };
+    Notifications.scheduleNotificationAsync(schedulingOptions);
+};
