@@ -14,7 +14,10 @@ import { getUserId } from "../redux/stores/user";
 import { inactivityAlert } from "./alers";
 import * as Notifications from "expo-notifications";
 import { Notification } from "expo-notifications";
-import { inactiveLocalNotification } from "./notifications";
+import {
+    inactiveLocalNotification,
+    sendPushNotification,
+} from "./notifications";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
@@ -64,9 +67,13 @@ export const checkTimer = async () => {
     const time = getLastMovementTime(store.getState());
     console.log(time);
 
-    if (time === 15) {
+    if (time === 5) {
         inactiveLocalNotification();
         inactivityAlert(() => store.dispatch(resetLastMovementTime()));
+    }
+
+    if (time === 10) {
+        sendPushNotification("");
     }
 
     // add push to close contacts

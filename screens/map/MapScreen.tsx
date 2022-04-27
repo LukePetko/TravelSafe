@@ -10,7 +10,10 @@ import { getUserTripDocumentRef } from "../../api/firestore";
 import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import ContactDetail from "./ContactDetail";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
-import { getUserById } from "../../api/firestore/accounts";
+import {
+    getCloseContactsQuery,
+    getUserById,
+} from "../../api/firestore/accounts";
 import { onSnapshot } from "firebase/firestore";
 import { getUserId } from "../../redux/stores/user";
 import { User } from "../../utils/types/user";
@@ -63,30 +66,14 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        user?.closeContacts?.forEach((contactId) => {
-            onSnapshot(
-                getUserTripDocumentRef(contactId.id),
-                async (snapshot) => {
-                    const tripInfo = snapshot.data() as CurrentTripInfo;
-                    // update or add contact to contactsTripInfo
-                    console.log("tripInfo", contactsTripInfo);
-                    console.log("contactId", contactId);
-                    console.warn("tripInfo", tripInfo);
-                    const contactIndex = contactsTripInfo.findIndex(
-                        (contact) => contact.id === contactId.id,
-                    );
-                    if (contactIndex !== -1) {
-                        contactsTripInfo[contactIndex] = tripInfo;
-                    } else {
-                        await setContactsTripInfo([
-                            ...contactsTripInfo,
-                            tripInfo,
-                        ]);
-                    }
-                    console.log(contactsTripInfo.map((p) => p.id));
-                },
-            );
-        });
+        (async () => {
+            const query = await getCloseContactsQuery();
+            onSnapshot(query!, (snapshot) => {
+                setContactsTripInfo(
+                    snapshot.docs.map((doc) => doc.data() as CurrentTripInfo),
+                );
+            });
+        })();
     }, [user]);
 
     useEffect((): void => {

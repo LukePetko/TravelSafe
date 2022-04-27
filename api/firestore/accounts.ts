@@ -209,11 +209,11 @@ export const updateProfilePicture = async (
     }
 };
 
-export const getCloseContactsQuery = async (
-    id: string,
-): Promise<Query<DocumentData> | undefined> => {
-    const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
-    const userSnap: DocumentData = await getDoc(userDoc);
+export const getCloseContactsQuery = async (): Promise<
+    Query<DocumentData> | undefined
+> => {
+    // const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
+    // const userSnap: DocumentData = await getDoc(userDoc);
 
     const user = getUser(store.getState());
 

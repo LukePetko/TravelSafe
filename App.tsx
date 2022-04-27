@@ -30,6 +30,7 @@ const App = (): JSX.Element | null => {
         registerForPushNotificationsAsync().then((token) =>
             setExpoPushToken(token),
         );
+        console.log(expoPushToken);
 
         notificationListener.current =
             Notifications.addNotificationReceivedListener((notification) => {
@@ -63,6 +64,12 @@ const App = (): JSX.Element | null => {
                 <SafeAreaProvider>
                     <Navigation colorScheme={colorScheme} />
                     <StatusBar />
+                    <Button
+                        title="Send Push Notification"
+                        onPress={() => {
+                            sendPushNotification(expoPushToken);
+                        }}
+                    />
                 </SafeAreaProvider>
             </Provider>
             // </GestureHandlerRootView>
