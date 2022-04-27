@@ -1,8 +1,3 @@
-/**
- * If you are not familiar with React Navigation, refer to the "Fundamentals" guide:
- * https://reactnavigation.org/docs/getting-started
- *
- */
 import { FontAwesome, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -19,8 +14,6 @@ import useColorScheme from "../hooks/useColorScheme";
 import { useStoreSelector } from "../hooks/useStoreSelector";
 import NotificationScreen from "../screens/NotificationScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import TabOneScreen from "../screens/TabOneScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
 import {
     HomeStackParamList,
     LoginStackParamList,
@@ -43,15 +36,14 @@ import SettingsModal from "../screens/profile/SettingsModal";
 import TripScreen from "../screens/trip/TripScreen";
 import SearchScreen from "../screens/search/SearchScreen";
 import SearchModal from "../screens/profile/SearchModal";
-import { useEffect } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { getData } from "../async-storage";
-import { login, setUser } from "../redux/stores/user";
+import { login, setNotificationId, setUser } from "../redux/stores/user";
 import { onSnapshot } from "firebase/firestore";
-import { getUserDocById, getUserTripDocumentRef } from "../api/firestore";
-import { getTripId, updateTrip } from "../redux/stores/trip";
-import store from "../redux/store";
+import { getUserDocById } from "../api/firestore";
+import { Subscription } from "expo-modules-core";
 import NewTripScreen from "../screens/trip/NewTripScreen";
 import PlannedTripsScreen from "../screens/trip/PlannedTripsScreen";
 import PastTripsScreen from "../screens/trip/PastTripsScreen";
@@ -60,6 +52,10 @@ import EditTripScreen from "../screens/trip/EditTripScreen";
 import NewPostScreen from "../screens/posts/NewPost";
 import HomeScreen from "../screens/home/HomeScreen";
 import PastTripDetail from "../screens/trip/PastTripDetail";
+import { registerForPushNotificationsAsync } from "../utils/notifications";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import { addNotificationId } from "../api/firestore/accounts";
 
 type UserState = {
     userId: string;
@@ -78,7 +74,10 @@ const Navigation = ({
 }): JSX.Element => {
     const dispatch: Dispatch<any> = useDispatch<any>();
 
-    // console.log(getTripId(store.getState()));
+    const [expoPushToken, setExpoPushToken] = useState<string>("");
+    const [notification, setNotification] = useState(false);
+    const notificationListener: MutableRefObject<Subscription> = useRef();
+    const responseListener: MutableRefObject<Subscription> = useRef();
 
     useEffect(() => {
         (async () => {
@@ -92,6 +91,39 @@ const Navigation = ({
                         dispatch(setUser(doc.data()));
                     }
                 });
+
+                if (Device.isDevice) {
+                    registerForPushNotificationsAsync().then((token) => {
+                        setExpoPushToken(token);
+                        dispatch(setNotificationId(token));
+                        console.error(token);
+                        addNotificationId(userId, token);
+                    });
+
+                    notificationListener.current =
+                        Notifications.addNotificationReceivedListener(
+                            (notification) => {
+                                // setNotification(notification as Boolean);
+                                console.log("notification", notification);
+                            },
+                        );
+
+                    responseListener.current =
+                        Notifications.addNotificationResponseReceivedListener(
+                            (response) => {
+                                console.log(response);
+                            },
+                        );
+
+                    return () => {
+                        Notifications.removeNotificationSubscription(
+                            notificationListener.current,
+                        );
+                        Notifications.removeNotificationSubscription(
+                            responseListener.current,
+                        );
+                    };
+                }
             }
         })();
     }, []);
@@ -107,10 +139,6 @@ const Navigation = ({
     );
 };
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = (): JSX.Element => {
@@ -361,10 +389,6 @@ export const ProfileStackNavigator = (): JSX.Element => {
     );
 };
 
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 export const BottomTabNavigator = (): JSX.Element => {

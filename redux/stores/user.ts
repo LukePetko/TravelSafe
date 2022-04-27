@@ -5,11 +5,13 @@ import { RootState } from "../store";
 interface UserState {
     userId: number | null;
     user: User | null;
+    notificationId: string | null;
 }
 
 const initialState = {
     userId: null,
     user: null,
+    notificationId: null,
 } as UserState;
 
 export const userSlice: Slice = createSlice({
@@ -28,11 +30,26 @@ export const userSlice: Slice = createSlice({
         removeUser: (state) => {
             state.user = null;
         },
+        setNotificationId: (state, payload?: PayloadAction<string>) => {
+            state.notificationId = payload;
+        },
+        resetNotificationId: (state) => {
+            state.notificationId = null;
+        },
     },
 });
 
-export const { login, logout, setUser, removeUser } = userSlice.actions;
+export const {
+    login,
+    logout,
+    setUser,
+    removeUser,
+    setNotificationId,
+    resetNotificationId,
+} = userSlice.actions;
 export const getUserId = (state: RootState): string =>
     state?.user?.userId?.payload || "";
 export const getUser = (state: RootState): User => state.user.user.payload;
+export const getNotificationId = (state: RootState): string =>
+    state?.user?.notificationId?.payload || "";
 export default userSlice.reducer;

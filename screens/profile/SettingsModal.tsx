@@ -5,6 +5,7 @@ import { Image } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { getSentNotifications, getUserDocById } from "../../api/firestore";
+import { removeNotificationId } from "../../api/firestore/accounts";
 import { removeData, getData, storeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
 import {
@@ -16,7 +17,13 @@ import {
 import { tintColorLight } from "../../constants/Colors";
 import { useStoreSelector } from "../../hooks/useStoreSelector";
 import store from "../../redux/store";
-import { getUser, getUserId, logout } from "../../redux/stores/user";
+import {
+    getNotificationId,
+    getUser,
+    getUserId,
+    logout,
+    resetNotificationId,
+} from "../../redux/stores/user";
 import { styles } from "../../styles/global";
 import { User } from "../../utils/types/user";
 
@@ -163,9 +170,12 @@ const SettingsModal = (props: SettingsModalProps) => {
                     textStyles={{ color: "red" }}
                     onPress={() => {
                         (async () => {
-                            console.log(await getData("userId"));
                             await removeData("userId");
-                            console.log(await getData("userId"));
+                            removeNotificationId(
+                                getUserId(store.getState()),
+                                getNotificationId(store.getState()),
+                            );
+                            dispatch(resetNotificationId());
                             dispatch(logout());
                         })();
                     }}

@@ -9,16 +9,17 @@ Notifications.setNotificationHandler({
     }),
 });
 
-export async function sendPushNotification(expoPushToken: string) {
+export async function sendPushNotification(
+    expoPushTokens: string[],
+    title: string,
+    body: string,
+) {
+    if (expoPushTokens.length === 0) return;
     const message = {
-        to: [
-            "ExponentPushToken[sRQvWWNVcbkGWWCMsLtv55]",
-            "ExponentPushToken[7ZzPSWK3SZrwwbFmG0Lqj5]",
-        ],
+        to: expoPushTokens,
         sound: "default",
-        title: "Original Title",
-        body: "And here is the body!",
-        data: { someData: "goes here" },
+        title,
+        body,
     };
 
     await fetch("https://exp.host/--/api/v2/push/send", {

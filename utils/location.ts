@@ -1,6 +1,6 @@
-import { GeoPoint } from "firebase/firestore";
+import { GeoPoint, getDocs } from "firebase/firestore";
 import { Alert } from "react-native";
-import { updateLocation } from "../api/firestore";
+import { getCloseContactsQuery, updateLocation } from "../api/firestore";
 import store from "../redux/store";
 import {
     addDistance,
@@ -10,7 +10,7 @@ import {
     getLastMovementTime,
     resetLastMovementTime,
 } from "../redux/stores/trip";
-import { getUserId } from "../redux/stores/user";
+import { getUser, getUserId } from "../redux/stores/user";
 import { inactivityAlert } from "./alers";
 import * as Notifications from "expo-notifications";
 import { Notification } from "expo-notifications";
@@ -18,6 +18,9 @@ import {
     inactiveLocalNotification,
     sendPushNotification,
 } from "./notifications";
+import { CloseContact, PublicUser } from "./types/user";
+import { getCloseContacts } from "../api/firestore/accounts";
+import { CurrentTripInfo } from "./types/currentTripInfo";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
@@ -73,7 +76,26 @@ export const checkTimer = async () => {
     }
 
     if (time === 10) {
-        sendPushNotification("");
+        (async () => {
+            const ids: string[] = [];
+            const contacts: CurrentTripInfo[] | undefined =
+                await getCloseContacts();
+            if (contacts) {
+                contacts.forEach((contact: CurrentTripInfo) => {
+                    // console.warn(contact);
+                    contact.expoNotificationIds.forEach((id: string) => {
+                        ids.push(id);
+                    });
+                });
+            }
+            sendPushNotification(
+                ids,
+                `${
+                    getUser(store.getState()).username
+                } was inactive for over an hour!`,
+                "Go and check his location!",
+            );
+        })();
     }
 
     // add push to close contacts

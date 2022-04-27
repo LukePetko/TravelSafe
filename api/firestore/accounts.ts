@@ -5,9 +5,11 @@ import {
     DocumentData,
     DocumentReference,
     getDoc,
+    getDocs,
     onSnapshot,
     Query,
     query,
+    QuerySnapshot,
     setDoc,
     where,
 } from "firebase/firestore";
@@ -15,6 +17,7 @@ import { db } from "../../Firebase";
 import store from "../../redux/store";
 import { getUser } from "../../redux/stores/user";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
+import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { CloseContact, PublicUser, User } from "../../utils/types/user";
 
 /**
@@ -59,6 +62,8 @@ export const createUserAccount = async (
         followingCount: 0,
 
         profilePicture: "",
+
+        notificationIds: [],
 
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -229,6 +234,29 @@ export const getCloseContactsQuery = async (): Promise<
     );
 };
 
+export const getCloseContacts = async (): Promise<
+    CurrentTripInfo[] | undefined
+> => {
+    const query: Query<DocumentData> | undefined =
+        await getCloseContactsQuery();
+
+    if (query === undefined) {
+        return undefined;
+    }
+
+    const closeContactsSnap: QuerySnapshot<DocumentData> = await getDocs(query);
+
+    if (closeContactsSnap.empty) {
+        return undefined;
+    }
+
+    const closeContacts: CurrentTripInfo[] = closeContactsSnap.docs.map(
+        (docSnap) => docSnap.data() as CurrentTripInfo,
+    );
+
+    return closeContacts;
+};
+
 export const followUser = async (
     ownId: string,
     userId: string,
@@ -397,4 +425,74 @@ export const unfollowUser = async (
     } else {
         return false;
     }
+};
+
+export const addNotificationId = async (
+    userId: string,
+    notificationId: string,
+): Promise<boolean> => {
+    const userDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "closeContacts",
+        "currentTrip",
+    );
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        const user: CurrentTripInfo = userSnap.data() as CurrentTripInfo;
+
+        if (user.expoNotificationIds.includes(notificationId)) {
+            return true;
+        }
+
+        const updatedUser: CurrentTripInfo = {
+            ...user,
+            expoNotificationIds: [...user.expoNotificationIds, notificationId],
+            updatedAt: new Date(),
+        };
+
+        const result = await setDoc(userDoc, updatedUser)
+            .then(() => true)
+            .catch(() => false);
+
+        return result;
+    }
+
+    return false;
+};
+
+export const removeNotificationId = async (
+    userId: string,
+    notificationId: string,
+): Promise<boolean> => {
+    const userDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "closeContacts",
+        "currentTrip",
+    );
+    const userSnap: DocumentData = await getDoc(userDoc);
+
+    if (userSnap.exists()) {
+        const user: CurrentTripInfo = userSnap.data() as CurrentTripInfo;
+
+        const updatedUser: CurrentTripInfo = {
+            ...user,
+            expoNotificationIds: user.expoNotificationIds.filter(
+                (el) => el !== notificationId,
+            ),
+            updatedAt: new Date(),
+        };
+
+        const result = await setDoc(userDoc, updatedUser)
+            .then(() => true)
+            .catch(() => false);
+
+        return result;
+    }
+
+    return false;
 };
