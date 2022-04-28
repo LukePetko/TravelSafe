@@ -4,6 +4,7 @@ import { getTimeDifference } from "../utils/time";
 import { View, Text } from "./Themed";
 import { Timestamp } from "firebase/firestore";
 import { SFSymbol } from "react-native-sfsymbols";
+import { width } from "../utils/dimensions";
 
 type NotificationProps = {
     type: number;
@@ -33,6 +34,9 @@ const Notification = (props: NotificationProps): JSX.Element => {
     switch (type) {
         case 1:
             typeText = "Close contact request";
+            break;
+        case 2:
+            typeText = `${username} didn't move for over an hour`;
             break;
         default:
             break;
@@ -65,32 +69,62 @@ const Notification = (props: NotificationProps): JSX.Element => {
                     <Text>{typeText}</Text>
                 </View>
             </View>
-            <View style={localStyles.buttonContainer}>
-                <Pressable onPress={onAccept}>
-                    <SFSymbol
-                        name="checkmark"
-                        weight="semibold"
-                        scale="large"
-                        color="green"
-                        size={18}
-                        resizeMode="center"
-                        multicolor={false}
-                        style={{ width: 32, height: 32, marginHorizontal: 8 }}
-                    />
-                </Pressable>
-                <Pressable>
-                    <SFSymbol
-                        name="xmark"
-                        weight="semibold"
-                        scale="large"
-                        color="red"
-                        size={18}
-                        resizeMode="center"
-                        multicolor={false}
-                        style={{ width: 32, height: 32, marginHorizontal: 8 }}
-                    />
-                </Pressable>
-            </View>
+            {type === 1 && (
+                <View style={localStyles.buttonContainer}>
+                    <Pressable onPress={onAccept}>
+                        <SFSymbol
+                            name="checkmark"
+                            weight="semibold"
+                            scale="large"
+                            color="green"
+                            size={18}
+                            resizeMode="center"
+                            multicolor={false}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                marginHorizontal: 8,
+                            }}
+                        />
+                    </Pressable>
+                    <Pressable>
+                        <SFSymbol
+                            name="xmark"
+                            weight="semibold"
+                            scale="large"
+                            color="red"
+                            size={18}
+                            resizeMode="center"
+                            multicolor={false}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                marginHorizontal: 8,
+                            }}
+                        />
+                    </Pressable>
+                </View>
+            )}
+            {type === 2 && (
+                <View style={localStyles.buttonContainer}>
+                    <Pressable onPress={onAccept}>
+                        <SFSymbol
+                            name="xmark"
+                            weight="semibold"
+                            scale="large"
+                            color="grey"
+                            size={18}
+                            resizeMode="center"
+                            multicolor={false}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                marginHorizontal: 8,
+                            }}
+                        />
+                    </Pressable>
+                </View>
+            )}
         </View>
     );
 };
@@ -101,6 +135,7 @@ const localStyles = StyleSheet.create({
         flexDirection: "row",
         paddingVertical: 10,
         justifyContent: "space-between",
+        width,
     },
     imageContainer: {
         paddingHorizontal: 10,

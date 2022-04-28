@@ -11,8 +11,8 @@ const SearchScreen = (props: SearchScreenProps) => {
     return (
         <View>
             <SearchBarComponent
-                onResultPress={(id: string) =>
-                    navigation.navigate("ProfileScreen", { id })
+                onResultPress={(id?: string) =>
+                    navigation.navigate("ProfileScreen", { id: id ?? "" })
                 }
             />
         </View>

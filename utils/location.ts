@@ -21,6 +21,7 @@ import {
 import { CloseContact, PublicUser } from "./types/user";
 import { getCloseContacts } from "../api/firestore/accounts";
 import { CurrentTripInfo } from "./types/currentTripInfo";
+import { createLocationNotification } from "../api/firestore/notifications";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
@@ -82,7 +83,6 @@ export const checkTimer = async () => {
                 await getCloseContacts();
             if (contacts) {
                 contacts.forEach((contact: CurrentTripInfo) => {
-                    // console.warn(contact);
                     contact.expoNotificationIds.forEach((id: string) => {
                         ids.push(id);
                     });
@@ -95,10 +95,13 @@ export const checkTimer = async () => {
                 } was inactive for over an hour!`,
                 "Go and check his location!",
             );
+
+            createLocationNotification(
+                getUserId(store.getState()),
+                contacts?.map((c) => c.id) ?? [],
+            );
         })();
     }
-
-    // add push to close contacts
 
     store.dispatch(addLastMovementTime(1));
 };

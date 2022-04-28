@@ -91,14 +91,54 @@ export const createCloseContactNotification = async (
     await setDoc(notificationDoc, notificationData);
 };
 
+export const createLocationNotification = async (
+    senderId: string,
+    receiverIds: string[],
+): Promise<void> => {
+    const sender = await getUserById(senderId);
+
+    const senderUsername = sender?.username;
+    const senderProfilePicture = sender?.profilePicture;
+    const time = new Date().getTime();
+
+    receiverIds.forEach(async (receiverId: string) => {
+        const notificationDoc: DocumentReference<DocumentData> = doc(
+            db,
+            "notifications",
+            `${senderId}${receiverId}loc${time}`,
+        );
+
+        const receiver = await getUserById(receiverId);
+
+        const receiverUsername = receiver?.username;
+        const receiverProfilePicture = receiver?.profilePicture;
+
+        const notificationData: DocumentData = {
+            senderId,
+            senderUsername,
+            senderProfilePicture,
+            receiverId,
+            receiverUsername,
+            receiverProfilePicture,
+            status: 0,
+            type: 2,
+            time,
+            createdAt: serverTimestamp(),
+        };
+
+        setDoc(notificationDoc, notificationData);
+    });
+};
+
 export const acceptNotification = async (
     senderId: string,
     receiverId: string,
+    time: number | null,
 ): Promise<void> => {
     const notificationDoc: DocumentReference<DocumentData> = doc(
         db,
         "notifications",
-        `${senderId}${receiverId}`,
+        `${senderId}${receiverId}${time ? "loc" + time : ""}`,
     );
 
     const userDoc: DocumentReference<DocumentData> = doc(

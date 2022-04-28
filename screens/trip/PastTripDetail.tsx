@@ -33,9 +33,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const { navigation, route, userId } = props;
 
     const [trip, setTrip] = useState<Trip>(route.params.trip);
-    const [path, setPath] = useState<GeoPoint[]>(
-        JSON.parse(trip.path) as GeoPoint[],
-    );
+    const [path, setPath] = useState<GeoPoint[]>([] as GeoPoint[]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
     const mapRef = useRef(null);
@@ -44,7 +42,15 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         getCreatedUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
+        console.log(trip);
     }, []);
+
+    useEffect(() => {
+        if (trip.path) {
+            setPath(JSON.parse(trip.path as string) as GeoPoint[]);
+            console.log(trip.path);
+        }
+    }, [trip]);
 
     const onChange = (
         key: keyof Trip,
@@ -226,21 +232,25 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             strokeWidth={3}
                             strokeColor={tintColorLight}
                         />
-                        <Marker
-                            coordinate={{
-                                latitude: path[0].latitude,
-                                longitude: path[0].longitude,
-                            }}
-                            title={"Start"}
-                            pinColor={"lime"}
-                        />
-                        <Marker
-                            coordinate={{
-                                latitude: path[path.length - 1].latitude,
-                                longitude: path[path.length - 1].longitude,
-                            }}
-                            title={"End"}
-                        />
+                        {path[0] && (
+                            <Marker
+                                coordinate={{
+                                    latitude: path[0].latitude,
+                                    longitude: path[0].longitude,
+                                }}
+                                title={"Start"}
+                                pinColor={"lime"}
+                            />
+                        )}
+                        {path[path.length - 1] && (
+                            <Marker
+                                coordinate={{
+                                    latitude: path[path.length - 1].latitude,
+                                    longitude: path[path.length - 1].longitude,
+                                }}
+                                title={"End"}
+                            />
+                        )}
                     </MapView>
                 </View>
                 <View style={{ marginTop: 20 }}>

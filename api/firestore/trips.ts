@@ -9,6 +9,7 @@ import {
     getDoc,
     getDocs,
     onSnapshot,
+    orderBy,
     query,
     setDoc,
     where,
@@ -51,6 +52,7 @@ export const getCreatedUserTrips = async (id: string): Promise<Trip[]> => {
     const tripsQuery = query(
         collection(db, "users", id, "trips"),
         where("status", "==", "created"),
+        orderBy("startTime", "desc"),
     );
 
     const trips = await getDocs(tripsQuery);
@@ -70,6 +72,7 @@ export const getEndedUserTrips = async (id: string): Promise<Trip[]> => {
     const tripsQuery = query(
         collection(db, "users", id, "trips"),
         where("status", "==", "ended"),
+        orderBy("startTime", "desc"),
     );
 
     const trips = await getDocs(tripsQuery);
@@ -236,6 +239,7 @@ export const getCreatedUserHoliday = async (id: string): Promise<Holiday[]> => {
     const holidayQuery = query(
         collection(db, "users", id, "holidays"),
         where("endTime", ">", new Date()),
+        // orderBy("startTime", "desc"),
     );
 
     const holiday = await getDocs(holidayQuery);
@@ -256,6 +260,7 @@ export const getEndedUserHoliday = async (id: string): Promise<Holiday[]> => {
     const holidayQuery = query(
         collection(db, "users", id, "holidays"),
         where("endTime", "<", currentDate),
+        // orderBy("startTime", "desc"),
     );
 
     const holiday = await getDocs(holidayQuery);

@@ -15,8 +15,21 @@ const NotificationScreen = (): JSX.Element => {
         getUserNotifications(userId).then(setNotifications);
     }, []);
 
+    useEffect(() => {
+        console.log("notifications", notifications);
+    }, [notifications]);
+
     return (
-        <View style={styles.container}>
+        <View
+            style={[
+                styles.container,
+                {
+                    justifyContent:
+                        notifications?.length === 0 ? "center" : "flex-start",
+                    flexGrow: 1,
+                },
+            ]}
+        >
             {notifications?.length === 0 && (
                 <Text
                     style={{ textAlign: "center", padding: 25, fontSize: 24 }}
@@ -26,7 +39,7 @@ const NotificationScreen = (): JSX.Element => {
             )}
             {notifications?.map((notification) => (
                 <Pressable
-                    key={notification.senderId}
+                    key={`${notification.senderId}-${notification.createdAt}`}
                     styles={{ backgroundColor: "transparent" }}
                 >
                     <Notification
@@ -39,6 +52,7 @@ const NotificationScreen = (): JSX.Element => {
                             acceptNotification(
                                 notification.senderId,
                                 notification.receiverId,
+                                notification.time || null,
                             );
 
                             setNotifications(
