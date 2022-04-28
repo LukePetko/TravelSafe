@@ -177,6 +177,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                                                     user?.profilePicture || "",
                                                 location: path[path.length - 1],
                                                 tripName: tripName || "",
+                                                expoNotificationIds: [],
                                             }}
                                             userLocation={async () => null}
                                             isOwn={true}

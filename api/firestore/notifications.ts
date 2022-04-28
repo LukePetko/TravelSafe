@@ -1,7 +1,5 @@
 import {
-    addDoc,
     collection,
-    collectionGroup,
     doc,
     DocumentData,
     DocumentReference,
@@ -13,7 +11,6 @@ import {
     updateDoc,
     where,
 } from "firebase/firestore";
-import { useEffect } from "react";
 import { db } from "../../Firebase";
 import { getUserById } from "./accounts";
 

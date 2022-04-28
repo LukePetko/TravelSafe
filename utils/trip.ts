@@ -37,8 +37,8 @@ export const endTrip = async () => {
     const state = store.getState();
     const userId = getUserId(state);
     const tripId = getTripId(state);
-    const path = await getPath(state);
-    const distance = await getDistance(state);
+    const path = getPath(state);
+    const distance = getDistance(state);
 
     const tripDoc = doc(db, `users`, userId, "trips", tripId);
 
