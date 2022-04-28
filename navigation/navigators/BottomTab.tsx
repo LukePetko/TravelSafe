@@ -2,23 +2,24 @@ import { Feather, FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { useColorScheme } from "react-native";
-import {
-    ColorSchemeEnum,
-    ColorType,
-    HomeStackNavigator,
-    ProfileStackNavigator,
-    SearchStackNavigator,
-    TripStackNavigator,
-} from "..";
 import { Pressable } from "../../components/Themed";
 import Colors from "../../constants/Colors";
 import MapScreen from "../../screens/map/MapScreen";
-import { RootTabParamList, RootTabScreenProps } from "../../types";
+import {
+    ColorSchemeEnum,
+    ColorType,
+    RootTabParamList,
+    RootTabScreenProps,
+} from "../../types";
+import { HomeStackNavigator } from "./tabs/HomeStack";
+import { ProfileStackNavigator } from "./tabs/ProfileStack";
+import { SearchStackNavigator } from "./tabs/SearchStack";
+import { TripStackNavigator } from "./tabs/TripStack";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 export const BottomTabNavigator = (): JSX.Element => {
-    const colorScheme: ColorSchemeEnum = useColorScheme();
+    const colorScheme: ColorSchemeEnum = useColorScheme() as ColorSchemeEnum;
 
     return (
         <BottomTab.Navigator
