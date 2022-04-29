@@ -8,6 +8,7 @@ import {
     FlatList,
     RefreshControl,
     StyleSheet,
+    useColorScheme,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
@@ -25,6 +26,7 @@ import {
 } from "../../api/firestore/accounts";
 import PostComponent from "../../components/PostComponent";
 import { connect } from "react-redux";
+import { tintColorLight } from "../../constants/Colors";
 
 type ProfileProps = {
     navigation: any;
@@ -48,12 +50,16 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         !route.params || userID === ownUserID,
     );
 
+    const colorScheme = useColorScheme();
+
     useEffect(() => {
         console.log(userID, ownUserID);
     }, [userID]);
 
     navigation.setOptions({
         title: user?.username ?? "Profile",
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
     });
 
     const pickImage = async () => {

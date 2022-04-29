@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Button, useColorScheme } from "react-native";
 import React, { useEffect, useState } from "react";
 import { KeyboardAvoidingView, ScrollView } from "../../components/Themed";
 import ListInput from "../../components/ListInput";
@@ -44,8 +44,21 @@ const EditTripScreen = (props: EditTripScreenProps) => {
 
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
+    const colorScheme = useColorScheme();
 
     const dispatch: Dispatch<any> = useDispatch<any>();
+
+    navigation.setOptions({
+        headerRight: () => (
+            <Button
+                title="Save"
+                color={tintColorLight}
+                onPress={() => onSave()}
+            />
+        ),
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+    });
 
     const onChange = (
         key: keyof NewTripState,
@@ -55,6 +68,10 @@ const EditTripScreen = (props: EditTripScreenProps) => {
             ...tripState,
             [key]: value,
         });
+    };
+
+    const onSave = async () => {
+        console.log("saving trip");
     };
 
     const onStart = async () => {

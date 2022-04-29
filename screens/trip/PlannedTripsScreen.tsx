@@ -7,12 +7,13 @@ import {
     ScrollView,
     Pressable,
 } from "../../components/Themed";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, useColorScheme } from "react-native";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
 import { Trip } from "../../utils/types/trip";
 import { getCreatedUserHoliday } from "../../api/firestore/trips";
 import { Holiday } from "../../utils/types/holiday";
+import { tintColorLight } from "../../constants/Colors";
 
 type PlannedTripsScreenProps = {
     navigation: any;
@@ -33,6 +34,13 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
             setHolidays(holidays);
         });
     }, []);
+
+    const colorScheme = useColorScheme();
+
+    navigation.setOptions({
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+    });
 
     return (
         <KeyboardAvoidingView

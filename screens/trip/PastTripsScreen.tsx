@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, useColorScheme } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -16,6 +16,7 @@ import {
     getCreatedUserHoliday,
     getEndedUserHoliday,
 } from "../../api/firestore/trips";
+import { tintColorLight } from "../../constants/Colors";
 
 type PastTripScreenProps = {
     navigation: any;
@@ -27,6 +28,13 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
     const userId = getUserId(store.getState());
     const [trips, setTrips] = useState<Trip[]>([]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
+
+    const colorScheme = useColorScheme();
+
+    navigation.setOptions({
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+    });
 
     useEffect(() => {
         getEndedUserTrips(userId).then((trips) => {

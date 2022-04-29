@@ -1,5 +1,6 @@
 import { GeoPoint } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
+import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
 import { getCreatedUserHoliday } from "../../api/firestore/trips";
@@ -38,6 +39,8 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const [showHoliday, setShowHoliday] = useState(false);
     const mapRef = useRef(null);
 
+    const colorScheme = useColorScheme();
+
     useEffect(() => {
         getCreatedUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
@@ -52,6 +55,19 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         }
     }, [trip]);
 
+    navigation.setOptions({
+        title: trip.name,
+        headerRight: () => (
+            <Button
+                title="Save"
+                color={tintColorLight}
+                onPress={() => onSave()}
+            />
+        ),
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+    });
+
     const onChange = (
         key: keyof Trip,
         value: string | Date | Holiday | null,
@@ -62,7 +78,9 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         });
     };
 
-    console.log(trip.holidayId);
+    const onSave = async () => {
+        console.log(trip);
+    };
 
     return (
         <KeyboardAvoidingView
@@ -263,10 +281,16 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                     >
                         Thumbnail
                     </Text>
-                    <ProfilePicture
-                        photoURL={trip.thumbnail || ""}
-                        onPress={() => {}}
-                    />
+                    <View
+                        style={{
+                            alignContent: "center",
+                        }}
+                    >
+                        <ProfilePicture
+                            photoURL={trip.thumbnail || ""}
+                            onPress={() => {}}
+                        />
+                    </View>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

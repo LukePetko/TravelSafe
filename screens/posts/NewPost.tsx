@@ -17,7 +17,7 @@ import store from "../../redux/store";
 import { Timestamp } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import { getPictureBlob } from "../../utils/files";
-import { Image, Pressable } from "react-native";
+import { Image, Pressable, useColorScheme } from "react-native";
 import { createPost } from "../../api/firestore/posts";
 import Spinner from "react-native-spinkit";
 
@@ -51,6 +51,8 @@ const NewPost = (props: NewPostProps) => {
         description: "",
         photos: [],
     });
+
+    const colorScheme = useColorScheme();
 
     const onChange = (
         key: keyof NewPostState,
@@ -121,6 +123,12 @@ const NewPost = (props: NewPostProps) => {
         });
         console.log(tripId);
     }, []);
+
+    navigation.setOptions({
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+        title: "New Post",
+    });
 
     return (
         <>

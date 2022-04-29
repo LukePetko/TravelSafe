@@ -24,6 +24,8 @@ const ProfilePicture = (props: ProfilePictureProps): JSX.Element => {
 const localStyles = StyleSheet.create({
     container: {
         borderRadius: 125,
+        backgroundColor: "transparent",
+        alignItems: "center",
     },
     image: {
         width: 250,

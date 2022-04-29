@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, useColorScheme } from "react-native";
 import React, { useState } from "react";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -54,6 +54,8 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
 
     const userId = getUserId(store.getState());
 
+    const colorScheme = useColorScheme();
+
     const onSubmit = () => {
         console.log(newHolidayValidation(tripState));
 
@@ -70,37 +72,6 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
     };
 
     navigation.setOptions({
-        headerLeft: () => (
-            <Pressable
-                onPress={() => {
-                    navigation.goBack();
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: "row",
-                        backgroundColor: "transparent",
-                    }}
-                >
-                    <SFSymbol
-                        name="chevron.backward"
-                        size={18}
-                        color={tintColorLight}
-                        style={{
-                            marginHorizontal: 10,
-                        }}
-                    />
-                    <Text
-                        style={{
-                            color: tintColorLight,
-                            fontSize: 18,
-                        }}
-                    >
-                        Back
-                    </Text>
-                </View>
-            </Pressable>
-        ),
         headerRight: () => (
             <Pressable onPress={onSubmit}>
                 <Text
@@ -113,6 +84,8 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                 </Text>
             </Pressable>
         ),
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
     });
 
     return (

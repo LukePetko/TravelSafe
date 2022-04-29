@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useColorScheme } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
 import { createTrip } from "../../api/firestore";
 import { getCreatedUserHoliday } from "../../api/firestore/trips";
@@ -62,6 +63,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
     const userId = getUserId(store.getState());
 
+    const colorScheme = useColorScheme();
+
     useEffect(() => {
         getCreatedUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
@@ -88,37 +91,6 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
     navigation.setOptions({
         headerTitle: "New Trip",
-        headerLeft: () => (
-            <Pressable
-                onPress={() => {
-                    navigation.goBack();
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: "row",
-                        backgroundColor: "transparent",
-                    }}
-                >
-                    <SFSymbol
-                        name="chevron.backward"
-                        size={18}
-                        color={tintColorLight}
-                        style={{
-                            marginHorizontal: 10,
-                        }}
-                    />
-                    <Text
-                        style={{
-                            color: tintColorLight,
-                            fontSize: 18,
-                        }}
-                    >
-                        Back
-                    </Text>
-                </View>
-            </Pressable>
-        ),
         headerRight: () => (
             <Pressable onPress={onSubmit}>
                 <Text
@@ -131,6 +103,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                 </Text>
             </Pressable>
         ),
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
     });
 
     return (
