@@ -92,6 +92,7 @@ export const startTrip = async (
     id: string,
     location: GeoPoint | undefined,
     tripName: string,
+    tripId?: string,
 ): Promise<boolean> => {
     const currentTripDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -101,6 +102,25 @@ export const startTrip = async (
         "currentTrip",
     );
     const locationSnap: DocumentData = await getDoc(currentTripDoc);
+
+    if (tripId) {
+        const tripDoc: DocumentReference<DocumentData> = doc(
+            db,
+            "users",
+            id,
+            "trips",
+            tripId,
+        );
+
+        const tripSnap: DocumentData = await getDoc(tripDoc);
+
+        if (tripSnap.exists()) {
+            await setDoc(tripDoc, {
+                ...tripSnap.data(),
+                startTime: new Date(),
+            });
+        }
+    }
 
     if (locationSnap.exists()) {
         const currentTrip: DocumentData = locationSnap.data();
