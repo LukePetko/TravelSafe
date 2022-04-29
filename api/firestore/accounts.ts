@@ -43,8 +43,6 @@ export const createUserAccount = async (
         followingCount: 0,
         closeContactCount: 0,
 
-        profilePicture: "",
-
         createdAt: new Date(),
         updatedAt: new Date(),
     };
@@ -61,20 +59,20 @@ export const createUserAccount = async (
         followerCount: 0,
         followingCount: 0,
 
-        profilePicture: "",
-
-        notificationIds: [],
+        profilePicture: userInfo.profilePicture,
 
         createdAt: new Date(),
         updatedAt: new Date(),
     };
 
-    const currentTrip = {
+    const currentTrip: CurrentTripInfo = {
         id,
         location: null,
         username: userInfo.username,
-        profilePicture: "",
+        profilePicture: userInfo.profilePicture,
         tripName: "",
+
+        expoNotificationIds: [],
 
         createdAt: new Date(),
         updatedAt: new Date(),

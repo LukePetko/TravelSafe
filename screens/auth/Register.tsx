@@ -19,6 +19,7 @@ import { login } from "../../redux/stores/user";
 import { Dispatch } from "@reduxjs/toolkit";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { storeData } from "../../async-storage";
+import { uploadProfileImage } from "../../api/storage";
 
 type RegisterProps = {
     navigation: any;
@@ -64,20 +65,37 @@ const Register = (props: RegisterProps): JSX.Element => {
                 state.password,
             );
 
-            const userId: string = user.user.uid;
-            const userData: BasicUserInfo = {
-                username: state.username,
-                email: state.email,
-                birthDate: state.birthDate,
-            };
+            fetch(
+                `https://avatars.dicebear.com/api/initials/${state.username}.jpg`,
+            )
+                .then((res) => res.blob())
+                .then(async (blob) => {
+                    const response = await uploadProfileImage(
+                        blob,
+                        user.user.uid,
+                    );
 
-            const userDoc: boolean = await createUserAccount(userId, userData);
+                    console.error(response);
 
-            if (userDoc) {
-                dispatch(login(userId));
-                dispatch(login(userId));
-                storeData("userId", userId);
-            }
+                    const userId: string = user.user.uid;
+                    const userData: BasicUserInfo = {
+                        username: state.username,
+                        email: state.email,
+                        birthDate: state.birthDate,
+                        profilePicture: response,
+                    };
+
+                    const userDoc: boolean = await createUserAccount(
+                        userId,
+                        userData,
+                    );
+
+                    if (userDoc) {
+                        dispatch(login(userId));
+                        // dispatch(login(userId));
+                        storeData("userId", userId);
+                    }
+                });
         }
     };
 

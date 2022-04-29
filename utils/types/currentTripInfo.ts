@@ -15,6 +15,6 @@ export type CurrentTripInfo = {
     profilePicture: string;
     tripName: string;
     expoNotificationIds: string[];
-    createdAt?: Timestamp;
+    createdAt?: Timestamp | Date;
     updatedAt?: Timestamp | Date;
 };
