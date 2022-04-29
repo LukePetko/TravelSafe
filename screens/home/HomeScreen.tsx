@@ -42,27 +42,34 @@ const HomeScreen = (props: HomeScreenProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-            {posts.length > 0 ? (
-                <FlatList
-                    data={posts}
-                    renderItem={({ item }) => (
-                        <PostComponent post={item} navigation={navigation} />
-                    )}
-                    keyExtractor={(item: Post) => `item ${item.id}`}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={false}
-                            onRefresh={() => {
-                                loadPosts();
-                            }}
-                        />
-                    }
-                />
-            ) : (
+            {/* {posts.length > 0 ? ( */}
+            <FlatList
+                ListEmptyComponent={
+                    <View style={styles.container}>
+                        <Text style={{ fontWeight: "600", marginTop: 50 }}>
+                            No posts to show
+                        </Text>
+                    </View>
+                }
+                data={posts}
+                renderItem={({ item }) => (
+                    <PostComponent post={item} navigation={navigation} />
+                )}
+                keyExtractor={(item: Post) => `item ${item.id}`}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {
+                            loadPosts();
+                        }}
+                    />
+                }
+            />
+            {/* ) : (
                 <View style={styles.container}>
                     <Text style={{ fontWeight: "600" }}>No posts to show</Text>
                 </View>
-            )}
+            )} */}
         </View>
     );
 };

@@ -52,6 +52,10 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         console.log(userID, ownUserID);
     }, [userID]);
 
+    navigation.setOptions({
+        title: user?.username ?? "Profile",
+    });
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -141,22 +145,53 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                                 }
                                 onPress={onPress}
                             />
-                            <Text>email: {user?.email}</Text>
-                            <Text>followers: {user?.followerCount}</Text>
-                            <Text>following: {user?.followingCount}</Text>
-                            {isOwn &&
-                                user?.closeContacts?.map((contact: any) => (
-                                    <Text key={contact.id}>
-                                        {contact.id} {contact.username}
-                                    </Text>
-                                ))}
+                            <Text
+                                style={{
+                                    fontWeight: "bold",
+                                    fontSize: 24,
+                                    marginVertical: 10,
+                                }}
+                            >
+                                {user?.username}
+                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        alignItems: "center",
+                                        marginHorizontal: 10,
+                                        marginBottom: 20,
+                                    }}
+                                >
+                                    <Text>Followers</Text>
+                                    <Text>{user?.followerCount}</Text>
+                                </View>
+                                <View
+                                    style={{
+                                        alignItems: "center",
+                                        marginHorizontal: 10,
+                                        marginBottom: 20,
+                                    }}
+                                >
+                                    <Text>Following</Text>
+                                    <Text>{user?.followingCount}</Text>
+                                </View>
+                            </View>
                             {isOwn && (
-                                <Button
-                                    title="new post"
+                                <ListLabel
                                     onPress={() =>
                                         navigation.navigate("NewPost")
                                     }
-                                />
+                                    borderRadius={{
+                                        top: true,
+                                        bottom: true,
+                                    }}
+                                >
+                                    New Post
+                                </ListLabel>
                             )}
                             {!isOwn && (
                                 <ListLabel
