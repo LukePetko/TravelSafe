@@ -1,14 +1,7 @@
-import { Alert, View } from "react-native";
-import { Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
-import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
-import { Trip } from "../../utils/types/trip";
-import { GeoPoint } from "firebase/firestore";
-import { createTrip } from "../../api/firestore";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
-import * as Location from "expo-location";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { end, getTripId, resetDistance, start } from "../../redux/stores/trip";
@@ -18,6 +11,7 @@ import {
     stopLocationTracking,
 } from "../../api/backgroundLocation";
 import { createTripAlertButton } from "../../utils/alers";
+import { ScrollView, View } from "../../components/Themed";
 
 type TripScreenProps = {
     navigation: any;
@@ -46,67 +40,73 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
     return (
         <View
             style={{
-                alignItems: "center",
-                paddingTop: 30,
+                flex: 1,
             }}
         >
-            <ListLabel
-                borderRadius={{ top: true }}
-                separator={true}
-                onPress={() => createQuckTrip()}
-            >
-                New Quick Trip
-            </ListLabel>
-            <ListLabel
-                separator={true}
-                onPress={() => navigation.navigate("NewTrip")}
-            >
-                New Trip
-            </ListLabel>
-            <ListLabel
-                borderRadius={{ bottom: true }}
-                onPress={() => navigation.navigate("NewHoliday")}
-            >
-                New Holiday
-            </ListLabel>
-
-            <ListLabel
-                borderRadius={{ top: true }}
-                style={{ marginTop: 20 }}
-                separator={true}
-                onPress={() => navigation.navigate("PlannedTrips")}
-            >
-                Planned Trips
-            </ListLabel>
-            <ListLabel
-                borderRadius={{ bottom: true }}
-                onPress={() => navigation.navigate("PastTrips")}
-            >
-                Past Trips
-            </ListLabel>
-
-            <ListLabel
-                borderRadius={{ top: true, bottom: true }}
-                style={{ marginTop: 20 }}
-                onPress={() => navigation.navigate("Holiday")}
-            >
-                Holidays
-            </ListLabel>
-
-            <ListLabel
-                borderRadius={{ top: true, bottom: true }}
-                style={{ marginTop: 20 }}
-                onPress={async () => {
-                    if (getTripId(store.getState())) {
-                        stopLocationTracking();
-                        endTrip();
-                        dispatch(end());
-                        dispatch(resetDistance());
-                    }
+            <ScrollView
+                style={{
+                    alignItems: "center",
+                    paddingTop: 30,
                 }}
             >
-                End Trip
-            </ListLabel>
+                <ListLabel
+                    borderRadius={{ top: true }}
+                    separator={true}
+                    onPress={() => createQuckTrip()}
+                >
+                    New Quick Trip
+                </ListLabel>
+                <ListLabel
+                    separator={true}
+                    onPress={() => navigation.navigate("NewTrip")}
+                >
+                    New Trip
+                </ListLabel>
+                <ListLabel
+                    borderRadius={{ bottom: true }}
+                    onPress={() => navigation.navigate("NewHoliday")}
+                >
+                    New Holiday
+                </ListLabel>
+
+                <ListLabel
+                    borderRadius={{ top: true }}
+                    style={{ marginTop: 20 }}
+                    separator={true}
+                    onPress={() => navigation.navigate("PlannedTrips")}
+                >
+                    Planned Trips
+                </ListLabel>
+                <ListLabel
+                    borderRadius={{ bottom: true }}
+                    onPress={() => navigation.navigate("PastTrips")}
+                >
+                    Past Trips
+                </ListLabel>
+
+                <ListLabel
+                    borderRadius={{ top: true, bottom: true }}
+                    style={{ marginTop: 20 }}
+                    onPress={() => navigation.navigate("Holiday")}
+                >
+                    Holidays
+                </ListLabel>
+
+                <ListLabel
+                    borderRadius={{ top: true, bottom: true }}
+                    style={{ marginTop: 20 }}
+                    onPress={async () => {
+                        if (getTripId(store.getState())) {
+                            stopLocationTracking();
+                            endTrip();
+                            dispatch(end());
+                            dispatch(resetDistance());
+                        }
+                    }}
+                >
+                    End Trip
+                </ListLabel>
+            </ScrollView>
         </View>
     );
 };
