@@ -1,4 +1,9 @@
-import { RefreshControl, StyleSheet, Image } from "react-native";
+import {
+    RefreshControl,
+    StyleSheet,
+    Image,
+    useColorScheme,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -11,6 +16,7 @@ import { Holiday } from "../../utils/types/holiday";
 import { getUserHoliday } from "../../api/firestore/trips";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
+import { tintColorLight } from "../../constants/Colors";
 
 type HolidayScreenProps = {
     navigation: any;
@@ -20,11 +26,19 @@ const HolidayScreen = (props: HolidayScreenProps) => {
     const { navigation } = props;
     const [holidays, setHolidays] = useState<Holiday[]>([]);
 
+    const colorScheme = useColorScheme();
+
     useEffect(() => {
         getUserHoliday(getUserId(store.getState())).then((holidays) => {
             setHolidays(holidays);
         });
     }, []);
+
+    navigation.setOptions({
+        title: "Holidays",
+        headerTintColor: tintColorLight,
+        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
+    });
 
     return (
         <KeyboardAvoidingView

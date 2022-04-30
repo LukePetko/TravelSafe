@@ -1,7 +1,7 @@
 import { GeoPoint, Timestamp } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { LatLng, Marker, Polyline } from "react-native-maps";
 import { getHolidayTrips, updateHoliday } from "../../api/firestore/trips";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
@@ -48,7 +48,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
         navigation.goBack();
     };
 
-    const mapRef = useRef(null);
+    const mapRef = useRef() as React.MutableRefObject<MapView>;
 
     navigation.setOptions({
         title: holiday.name,
@@ -231,7 +231,27 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                         ref={mapRef}
                         onLayout={() => {
                             mapRef.current.fitToCoordinates(
-                                trips.map((trip) => trip.path).flat(),
+                                trips
+                                    .map((trip) => trip.path)
+                                    .flat()
+                                    .map(
+                                        (
+                                            coords:
+                                                | GeoPoint
+                                                | string
+                                                | undefined,
+                                        ) =>
+                                            ({
+                                                latitude:
+                                                    typeof coords !== "string"
+                                                        ? coords!.latitude
+                                                        : 0,
+                                                longitude:
+                                                    typeof coords !== "string"
+                                                        ? coords!.longitude
+                                                        : 0,
+                                            } as LatLng),
+                                    ),
 
                                 {
                                     edgePadding: {
