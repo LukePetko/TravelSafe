@@ -64,7 +64,6 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     };
 
     const onSave = async () => {
-        console.log("saving trip");
         await updateTrip(trip!);
         navigation.goBack();
     };
@@ -79,7 +78,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                 location.coords.latitude,
                 location.coords.longitude,
             );
-            console.log(await startTrip(userId, geoPoint, tripName, tripId));
+            await startTrip(userId, geoPoint, tripName, tripId);
             dispatch(start(tripId));
             startLocationTracking(userId);
             setTripActive(getUserId(store.getState()), tripId);

@@ -52,10 +52,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const colorScheme = useColorScheme();
 
-    useEffect(() => {
-        console.log(userID, ownUserID);
-    }, [userID]);
-
     navigation.setOptions({
         title: user?.username ?? "Profile",
         headerTintColor: tintColorLight,
@@ -97,7 +93,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
         );
 
     const loadUser = async () => {
-        console.log("loading user");
         if (isOwn) {
             const user = (await getUserById(userID)) as User;
             setUser(user);
@@ -116,17 +111,14 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     .includes(ownUserId),
             );
         }
-        console.log("user loaded");
     };
 
     const loadPosts = async () => {
-        console.log("Loading Posts");
         const user = await getUserById(getUserId(store.getState()));
 
         if (user) {
             setPosts((await getPostsFromUsers([userID])) as Post[]);
         }
-        console.log(`Loaded ${posts.length} posts`);
     };
 
     useEffect((): void => {

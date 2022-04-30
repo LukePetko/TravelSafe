@@ -48,7 +48,6 @@ export async function registerForPushNotificationsAsync(): Promise<string> {
         return "";
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
 
     return token || "";
 }

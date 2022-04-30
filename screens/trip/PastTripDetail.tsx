@@ -45,13 +45,11 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
-        console.log(trip);
     }, []);
 
     useEffect(() => {
         if (trip.path) {
             setPath(JSON.parse(trip.path as string) as GeoPoint[]);
-            console.log(trip.path);
         }
     }, [trip]);
 
@@ -79,7 +77,6 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     };
 
     const onSave = async () => {
-        console.log(trip.id);
         await updateTrip(trip);
         navigation.goBack();
     };

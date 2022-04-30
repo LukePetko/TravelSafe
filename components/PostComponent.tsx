@@ -22,7 +22,6 @@ const PostComponent = (props: PostComponentProps) => {
         >
             <Pressable
                 onPress={() => {
-                    console.log(post);
                     navigation.navigate("ProfileScreen", {
                         id: post.userId,
                     });

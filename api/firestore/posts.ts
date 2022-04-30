@@ -46,8 +46,6 @@ export const createPost = async (
         );
     });
 
-    console.log(user.username, user.profilePicture);
-
     Promise.all(images).then(async (images: string[]) => {
         const post: Post = {
             id: postId,
@@ -96,7 +94,6 @@ export const getPostsFromUsers = async (
     userIds: string[],
 ): Promise<DocumentData[]> => {
     if (userIds.length === 0) {
-        console.log("No users");
         return [];
     }
 

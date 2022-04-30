@@ -25,16 +25,12 @@ import { createLocationNotification } from "../api/firestore/notifications";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
-        console.log("Error in background location task: ", error);
         return;
     }
 
     store.dispatch(addDistance(10));
     store.dispatch(resetLastMovementTime());
     const distance = getDistance(store.getState());
-    // console.log(distance);
-
-    // console.log(data);
 
     const userId = getUserId(store.getState());
     if (userId && distance % 200 === 0) {
@@ -52,12 +48,8 @@ export const saveLocationToFirestore = async ({ data, error }: any) => {
 
 export const addLocationToPath = ({ data, error }: any) => {
     if (error) {
-        console.log("Error in background location task: ", error);
         return;
     }
-
-    // console.log(data);
-    // console.log("tu");
 
     store.dispatch(
         addPoint({
@@ -69,7 +61,6 @@ export const addLocationToPath = ({ data, error }: any) => {
 
 export const checkTimer = async () => {
     const time = getLastMovementTime(store.getState());
-    console.log(time);
 
     if (time === 5) {
         inactiveLocalNotification();

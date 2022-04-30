@@ -72,7 +72,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     }, []);
 
     const onSubmit = () => {
-        console.log(newTripValidation(tripState));
+        newTripValidation(tripState);
 
         const trip: Trip & { holiday?: Holiday | null } = {
             userId: userId,
@@ -85,7 +85,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
         delete trip.holiday;
 
-        console.log(createTrip(trip));
+        createTrip(trip);
         navigation.goBack();
     };
 

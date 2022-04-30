@@ -58,7 +58,7 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
     const colorScheme = useColorScheme();
 
     const onSubmit = () => {
-        console.log(newHolidayValidation(tripState));
+        newHolidayValidation(tripState);
 
         const holiday: Holiday = {
             userId: userId,
@@ -68,7 +68,7 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
             updatedAt: Timestamp.fromDate(new Date()),
         };
 
-        console.log(createHoliday(holiday));
+        createHoliday(holiday);
         navigation.goBack();
     };
 

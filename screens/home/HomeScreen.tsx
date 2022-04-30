@@ -23,7 +23,6 @@ const HomeScreen = (props: HomeScreenProps) => {
     const [posts, setPosts] = useState<Post[]>([]);
 
     const loadPosts = async () => {
-        console.log("Loading Posts");
         const user = await getUserById(getUserId(store.getState()));
 
         if (user) {
@@ -33,7 +32,6 @@ const HomeScreen = (props: HomeScreenProps) => {
                 )) as Post[],
             );
         }
-        console.log(`Loaded ${posts.length} posts`);
     };
 
     useEffect(() => {

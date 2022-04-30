@@ -93,7 +93,6 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     const snapPoints = useMemo(() => ["5%", "25%", "50%"], []);
 
     const animateToRegion = (coords: MapCoords): void => {
-        console.log(coords);
         map.current.animateToRegion(coords, 1000);
     };
 

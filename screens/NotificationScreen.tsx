@@ -15,10 +15,6 @@ const NotificationScreen = (): JSX.Element => {
         getUserNotifications(userId).then(setNotifications);
     }, []);
 
-    useEffect(() => {
-        console.log("notifications", notifications);
-    }, [notifications]);
-
     return (
         <View
             style={[

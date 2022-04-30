@@ -20,10 +20,6 @@ const SearchBarComponent = (props: SearchBarProps) => {
 
     const [text, setText] = useState("");
 
-    useEffect(() => {
-        console.log(text);
-    }, [text]);
-
     return (
         <InstantSearch searchClient={searchClient} indexName="username">
             <SearchBox />

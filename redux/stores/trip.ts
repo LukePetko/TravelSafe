@@ -31,7 +31,6 @@ export const tripSlice: Slice = createSlice({
     reducers: {
         start: (state, payload?: PayloadAction<string>) => {
             state.trip = payload?.payload;
-            console.log(payload?.payload);
         },
         end: (state?) => {
             state.trip = null;

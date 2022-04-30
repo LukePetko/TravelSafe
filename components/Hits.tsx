@@ -11,8 +11,6 @@ import {
 import { styles } from "../styles/global";
 
 const Hits = connectInfiniteHits(({ hits, hasMore, refine, onPress }: any) => {
-    console.log(hits, hasMore, onPress);
-
     const onEndReached = () => {
         if (hasMore) {
             refine();

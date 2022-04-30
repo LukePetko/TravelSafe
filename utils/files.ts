@@ -4,8 +4,7 @@ export const getPictureBlob = (uri: string): Promise<File> => {
         xhr.onload = function () {
             resolve(xhr.response);
         };
-        xhr.onerror = function (e) {
-            console.log(e);
+        xhr.onerror = (e) => {
             reject(new TypeError("Network request failed"));
         };
         xhr.responseType = "blob";

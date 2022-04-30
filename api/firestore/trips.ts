@@ -263,8 +263,6 @@ export const updateTrip = async (trip: Trip): Promise<boolean> => {
 
     const tripSnap: DocumentData = await getDoc(tripDoc);
 
-    console.log(tripSnap);
-
     if (tripSnap.exists()) {
         const updatedTrip = {
             ...tripSnap.data(),

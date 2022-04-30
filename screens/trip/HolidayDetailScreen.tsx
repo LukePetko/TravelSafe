@@ -43,7 +43,6 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
     };
 
     const onSave = async (): Promise<void> => {
-        console.log(holiday);
         await updateHoliday(holiday);
         navigation.goBack();
     };
@@ -75,10 +74,6 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
             },
         );
     }, []);
-
-    useEffect(() => {
-        console.log(trips.map((trip) => trip.path).flat());
-    }, [trips]);
 
     return (
         <KeyboardAvoidingView

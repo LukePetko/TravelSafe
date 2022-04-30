@@ -97,13 +97,11 @@ const NewPost = (props: NewPostProps) => {
         const userId = getUserId(store.getState());
         const tripId = postState.trip?.id;
 
-        console.log(
-            await createPost(
-                userId,
-                tripId ? tripId : null,
-                description,
-                photos.map((p) => p.file),
-            ),
+        await createPost(
+            userId,
+            tripId ? tripId : null,
+            description,
+            photos.map((p) => p.file),
         );
 
         setShowLoading(false);
@@ -112,7 +110,6 @@ const NewPost = (props: NewPostProps) => {
     };
 
     useEffect(() => {
-        console.log(route.params);
         setTripId(route.params?.tripId);
         getEndedUserTrips(getUserId(store.getState())).then((trips) => {
             setTrips(trips);
@@ -121,7 +118,6 @@ const NewPost = (props: NewPostProps) => {
                 trip: trips.find((trip) => trip.id === tripId) || null,
             });
         });
-        console.log(tripId);
     }, []);
 
     navigation.setOptions({
