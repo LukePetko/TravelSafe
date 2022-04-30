@@ -101,7 +101,11 @@ const HolidayScreen = (props: HolidayScreenProps) => {
                                 <Text style={{ fontWeight: "bold" }}>
                                     {item.name}
                                 </Text>
-                                <Text>Time</Text>
+                                <Text>
+                                    {item.startTime.toDate().toDateString()}{" "}
+                                    {item.endTime ? "-" : ""}{" "}
+                                    {item.endTime?.toDate().toDateString()}
+                                </Text>
                             </View>
                         </View>
                     </Pressable>

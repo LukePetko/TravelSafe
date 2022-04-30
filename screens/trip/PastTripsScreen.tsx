@@ -101,7 +101,9 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
                                 <Text style={{ fontWeight: "bold" }}>
                                     {item.name}
                                 </Text>
-                                <Text>Time</Text>
+                                <Text>
+                                    {item.startTime.toDate().toDateString()}
+                                </Text>
                             </View>
                         </View>
                     </Pressable>
