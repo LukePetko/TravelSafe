@@ -82,7 +82,14 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
                     </Text>
                 )}
                 {holidays.map((holiday) => (
-                    <Pressable key={holiday.holidayId}>
+                    <Pressable
+                        key={holiday.holidayId}
+                        onPress={() => {
+                            navigation.navigate("PlannedHolidayDetail", {
+                                holiday,
+                            });
+                        }}
+                    >
                         <View style={localStyles.container}>
                             <View style={localStyles.imageContainer}>
                                 <Image

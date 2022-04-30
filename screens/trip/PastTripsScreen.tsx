@@ -68,6 +68,10 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
                         getEndedUserTrips(userId).then((trips) => {
                             setTrips(trips);
                         });
+
+                        getEndedUserHoliday(userId).then((holidays) => {
+                            setHolidays(holidays);
+                        });
                     }}
                 />
                 {holidays.length > 0 && (
@@ -82,7 +86,14 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
                     </Text>
                 )}
                 {holidays.map((holiday) => (
-                    <Pressable key={holiday.holidayId}>
+                    <Pressable
+                        key={holiday.holidayId}
+                        onPress={() => {
+                            navigation.navigate("PastHolidayDetail", {
+                                holiday,
+                            });
+                        }}
+                    >
                         <View style={localStyles.container}>
                             <View style={localStyles.imageContainer}>
                                 <Image

@@ -321,3 +321,27 @@ export const updateTrip = async (trip: Trip): Promise<boolean> => {
     }
     return false;
 };
+
+export const updateHoliday = async (holiday: Holiday): Promise<boolean> => {
+    const holidayDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        holiday.userId,
+        "holidays",
+        holiday.holidayId!,
+    );
+
+    const holidaySnap: DocumentData = await getDoc(holidayDoc);
+
+    if (holidaySnap.exists()) {
+        const updatedHoliday = {
+            ...holidaySnap.data(),
+            ...holiday,
+        };
+
+        return await setDoc(holidayDoc, updatedHoliday)
+            .then(() => true)
+            .catch(() => false);
+    }
+    return false;
+};
