@@ -1,4 +1,5 @@
 import {
+    FlatList,
     Image,
     RefreshControl,
     StyleSheet,
@@ -9,19 +10,8 @@ import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { getEndedUserTrips } from "../../api/firestore";
 import { Trip } from "../../utils/types/trip";
-import {
-    View,
-    Text,
-    KeyboardAvoidingView,
-    Pressable,
-    ScrollView,
-} from "../../components/Themed";
-import { Holiday } from "../../utils/types/holiday";
-import {
-    getCreatedUserHoliday,
-    getEndedUserHoliday,
-} from "../../api/firestore/trips";
-import { tintColorLight } from "../../constants/Colors";
+import { View, Text, Pressable } from "../../components/Themed";
+import Colors, { tintColorLight } from "../../constants/Colors";
 
 type PastTripScreenProps = {
     navigation: any;
@@ -47,48 +37,55 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
     }, []);
 
     return (
-        <KeyboardAvoidingView
-            behavior={"padding"}
-            style={{
-                flex: 1,
-                height: "100%",
-            }}
-            enabled
-            keyboardVerticalOffset={90}
-        >
-            <ScrollView>
-                <RefreshControl
-                    refreshing={false}
-                    onRefresh={() => {
-                        getEndedUserTrips(userId).then((trips) => {
-                            setTrips(trips);
-                        });
-                    }}
-                />
-                <Text
-                    style={{
-                        fontWeight: "bold",
-                        fontSize: 32,
-                        padding: 10,
-                    }}
-                >
-                    Past Trips
-                </Text>
-                {trips.map((trip) => (
+        <View style={{ flex: 1 }}>
+            <FlatList
+                data={trips}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {
+                            getEndedUserTrips(userId).then((trips) => {
+                                setTrips(trips);
+                            });
+                        }}
+                    />
+                }
+                ListHeaderComponent={
+                    <Text
+                        style={{
+                            fontWeight: "bold",
+                            fontSize: 32,
+                            padding: 10,
+                        }}
+                    >
+                        Past Trips
+                    </Text>
+                }
+                renderItem={({ item }) => (
                     <Pressable
-                        key={trip.id}
+                        key={item.id}
                         onPress={() => {
                             navigation.navigate("PastTripDetail", {
-                                trip,
+                                item,
                             });
                         }}
                     >
-                        <View style={localStyles.container}>
+                        <View
+                            style={[
+                                localStyles.container,
+                                {
+                                    borderBottomColor:
+                                        colorScheme === "dark"
+                                            ? Colors.dark.bottomBorderColor
+                                            : Colors.light.bottomBorderColor,
+                                },
+                            ]}
+                        >
                             <View style={localStyles.imageContainer}>
                                 <Image
                                     source={{
                                         uri:
-                                            trip.thumbnail ||
+                                            item.thumbnail ||
                                             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
                                     }}
                                     style={{
@@ -102,15 +99,15 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
                             </View>
                             <View style={localStyles.textContainer}>
                                 <Text style={{ fontWeight: "bold" }}>
-                                    {trip.name}
+                                    {item.name}
                                 </Text>
                                 <Text>Time</Text>
                             </View>
                         </View>
                     </Pressable>
-                ))}
-            </ScrollView>
-        </KeyboardAvoidingView>
+                )}
+            />
+        </View>
     );
 };
 

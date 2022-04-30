@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { getCreatedUserTrips } from "../../api/firestore";
-import {
-    View,
-    Text,
-    KeyboardAvoidingView,
-    ScrollView,
-    Pressable,
-} from "../../components/Themed";
+import { View, Text, Pressable } from "../../components/Themed";
 import {
     StyleSheet,
     Image,
     useColorScheme,
     RefreshControl,
+    FlatList,
 } from "react-native";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
 import { Trip } from "../../utils/types/trip";
-import { tintColorLight } from "../../constants/Colors";
+import Colors, { tintColorLight } from "../../constants/Colors";
 
 type PlannedTripsScreenProps = {
     navigation: any;
@@ -41,71 +36,79 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
     });
 
     return (
-        <KeyboardAvoidingView
-            behavior={"padding"}
-            style={{
-                flex: 1,
-                height: "100%",
-            }}
-            enabled
-            keyboardVerticalOffset={90}
-        >
-            <ScrollView>
-                <RefreshControl
-                    refreshing={false}
-                    onRefresh={() => {
-                        getCreatedUserTrips(userId).then((trips) => {
-                            setTrips(trips);
-                        });
-                    }}
-                />
-
-                <Text
-                    style={{
-                        fontWeight: "bold",
-                        fontSize: 32,
-                        padding: 10,
-                    }}
-                >
-                    Planned Trips
-                </Text>
-                {trips.map((trip) => (
-                    <Pressable
-                        key={trip.id}
-                        onPress={() =>
-                            navigation.navigate("PlannedTripDetail", {
-                                trip,
-                            })
-                        }
+        <View style={{ flex: 1 }}>
+            <FlatList
+                data={trips}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {
+                            getCreatedUserTrips(userId).then((trips) => {
+                                setTrips(trips);
+                            });
+                        }}
+                    />
+                }
+                ListHeaderComponent={
+                    <Text
+                        style={{
+                            fontWeight: "bold",
+                            fontSize: 32,
+                            padding: 10,
+                        }}
                     >
-                        <View style={localStyles.container}>
-                            <View style={localStyles.imageContainer}>
-                                <Image
-                                    source={{
-                                        uri:
-                                            trip.thumbnail ||
-                                            "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-                                    }}
-                                    style={{
-                                        width: 50,
-                                        height: 50,
-                                        borderRadius: 25,
-                                        borderColor: "white",
-                                        borderWidth: 2,
-                                    }}
-                                />
+                        Past Trips
+                    </Text>
+                }
+                renderItem={({ item }) => {
+                    return (
+                        <Pressable
+                            onPress={() => {
+                                navigation.navigate("Trip", {
+                                    tripId: item.id,
+                                });
+                            }}
+                        >
+                            <View
+                                style={[
+                                    localStyles.container,
+                                    {
+                                        borderBottomColor:
+                                            colorScheme === "dark"
+                                                ? Colors.dark.bottomBorderColor
+                                                : Colors.light
+                                                      .bottomBorderColor,
+                                    },
+                                ]}
+                            >
+                                <View style={localStyles.imageContainer}>
+                                    <Image
+                                        source={{
+                                            uri:
+                                                item.thumbnail ||
+                                                "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+                                        }}
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: 25,
+                                            borderColor: "white",
+                                            borderWidth: 2,
+                                        }}
+                                    />
+                                </View>
+                                <View style={localStyles.textContainer}>
+                                    <Text style={{ fontWeight: "bold" }}>
+                                        {item.name}
+                                    </Text>
+                                    <Text>Time</Text>
+                                </View>
                             </View>
-                            <View style={localStyles.textContainer}>
-                                <Text style={{ fontWeight: "bold" }}>
-                                    {trip.name}
-                                </Text>
-                                <Text>Time</Text>
-                            </View>
-                        </View>
-                    </Pressable>
-                ))}
-            </ScrollView>
-        </KeyboardAvoidingView>
+                        </Pressable>
+                    );
+                }}
+            />
+        </View>
     );
 };
 
