@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import EditTripScreen from "../../../screens/trip/EditTripScreen";
+import HolidayDetailScreen from "../../../screens/trip/HolidayDetailScreen";
+import HolidayScreen from "../../../screens/trip/HolidayScreen";
 import NewHolidayScreen from "../../../screens/trip/NewHolidayScreen";
 import NewTripScreen from "../../../screens/trip/NewTripScreen";
 import PastHolidayDetailScreen from "../../../screens/trip/PastHolidayDetailScreen";
@@ -64,15 +66,15 @@ export const TripStackNavigator = (): JSX.Element => {
                 }}
             />
             <TripStack.Screen
-                name="PlannedHolidayDetail"
-                component={PlannedHolidayDetailScreen}
+                name="Holiday"
+                component={HolidayScreen}
                 options={{
                     headerShown: true,
                 }}
             />
             <TripStack.Screen
-                name="PastHolidayDetail"
-                component={PastHolidayDetailScreen}
+                name="HolidayDetail"
+                component={HolidayDetailScreen}
                 options={{
                     headerShown: true,
                 }}

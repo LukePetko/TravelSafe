@@ -5,6 +5,7 @@ import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import {
     getCreatedUserHoliday,
+    getUserHoliday,
     setTripActive,
     startTrip,
     updateTrip,
@@ -101,7 +102,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
     const userId = getUserId(store.getState());
 
     useEffect(() => {
-        getCreatedUserHoliday(userId).then((holidays) => {
+        getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
 

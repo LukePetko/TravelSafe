@@ -3,7 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
-import { getCreatedUserHoliday, updateTrip } from "../../api/firestore/trips";
+import {
+    getCreatedUserHoliday,
+    getUserHoliday,
+    updateTrip,
+} from "../../api/firestore/trips";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -42,7 +46,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const colorScheme = useColorScheme();
 
     useEffect(() => {
-        getCreatedUserHoliday(userId).then((holidays) => {
+        getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
         console.log(trip);

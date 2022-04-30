@@ -88,6 +88,14 @@ const TripScreen = (props: TripScreenProps): JSX.Element => {
             <ListLabel
                 borderRadius={{ top: true, bottom: true }}
                 style={{ marginTop: 20 }}
+                onPress={() => navigation.navigate("Holiday")}
+            >
+                Holidays
+            </ListLabel>
+
+            <ListLabel
+                borderRadius={{ top: true, bottom: true }}
+                style={{ marginTop: 20 }}
                 onPress={async () => {
                     if (getTripId(store.getState())) {
                         stopLocationTracking();

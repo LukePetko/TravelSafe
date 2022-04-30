@@ -18,12 +18,12 @@ import { getUserId } from "../../redux/stores/user";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 
-type PastHolidayDetailScreenProps = {
+type HolidayDetailScreenProps = {
     navigation: any;
     route: any;
 };
 
-const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
+const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
     const { navigation, route } = props;
 
     const [holiday, setHoliday] = useState<Holiday>(route.params.holiday);
@@ -183,10 +183,15 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
 
                     {trips.map((trip) => (
                         <ListLabel
-                            key={trip.tripId}
+                            key={trip.id}
                             showChevron={true}
                             borderRadius={{ top: true }}
                             separator={true}
+                            onPress={() => {
+                                navigation.navigate("PastTripDetail", {
+                                    trip,
+                                });
+                            }}
                         >
                             {trip.name}
                         </ListLabel>
@@ -197,4 +202,4 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
     );
 };
 
-export default PastHolidayDetailScreen;
+export default HolidayDetailScreen;

@@ -367,3 +367,22 @@ export const getHolidayTrips = async (
 
     return tripData;
 };
+
+export const getUserHoliday = async (id: string): Promise<Holiday[]> => {
+    const holidayQuery = query(
+        collection(db, "users", id, "holidays"),
+        orderBy("startTime", "desc"),
+    );
+
+    const holiday = await getDocs(holidayQuery);
+
+    const holidayData: Holiday[] = [];
+
+    holiday.forEach((holiday: DocumentData) => {
+        if (holiday.exists()) {
+            holidayData.push({ holidayId: holiday.id, ...holiday.data() });
+        }
+    });
+
+    return holidayData;
+};

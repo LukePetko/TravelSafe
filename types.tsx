@@ -59,8 +59,8 @@ export type TripStackParamList = {
     PlannedTrips: undefined;
     EditTrip: undefined;
     PastTripDetail: undefined;
-    PlannedHolidayDetail: undefined;
-    PastHolidayDetail: undefined;
+    Holiday: undefined;
+    HolidayDetail: undefined;
 };
 
 export type ProfileStackParamList = {
