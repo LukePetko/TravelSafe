@@ -1,6 +1,7 @@
-import { Timestamp } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { GeoPoint, Timestamp } from "firebase/firestore";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import { getHolidayTrips, updateHoliday } from "../../api/firestore/trips";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
@@ -47,6 +48,8 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
         navigation.goBack();
     };
 
+    const mapRef = useRef(null);
+
     navigation.setOptions({
         title: holiday.name,
         headerTintColor: tintColorLight,
@@ -63,10 +66,19 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
     useEffect(() => {
         getHolidayTrips(getUserId(store.getState()), holiday.holidayId!).then(
             (trips) => {
-                setTrips(trips);
+                setTrips(
+                    trips.map((trip) => ({
+                        ...trip,
+                        path: JSON.parse(trip.path as string),
+                    })),
+                );
             },
         );
-    });
+    }, []);
+
+    useEffect(() => {
+        console.log(trips.map((trip) => trip.path).flat());
+    }, [trips]);
 
     return (
         <KeyboardAvoidingView
@@ -181,21 +193,102 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                         </Text>
                     )}
 
-                    {trips.map((trip) => (
+                    {trips.map((trip, index) => (
                         <ListLabel
                             key={trip.id}
                             showChevron={true}
-                            borderRadius={{ top: true }}
-                            separator={true}
+                            borderRadius={{
+                                top: index === 0,
+                                bottom: index === trips.length - 1,
+                            }}
+                            separator={index !== trips.length - 1}
                             onPress={() => {
-                                navigation.navigate("PastTripDetail", {
-                                    trip,
-                                });
+                                navigation.navigate(
+                                    trip.status === "ended"
+                                        ? "PastTripDetail"
+                                        : "EditTrip",
+                                    {
+                                        trip: {
+                                            ...trip,
+                                            path: JSON.stringify(
+                                                trip.path as GeoPoint[],
+                                            ),
+                                        },
+                                    },
+                                );
                             }}
                         >
                             {trip.name}
                         </ListLabel>
                     ))}
+
+                    <MapView
+                        style={{
+                            height: 200,
+                            width: "100%",
+                            marginTop: 20,
+                        }}
+                        ref={mapRef}
+                        onLayout={() => {
+                            mapRef.current.fitToCoordinates(
+                                trips.map((trip) => trip.path).flat(),
+
+                                {
+                                    edgePadding: {
+                                        top: 50,
+                                        right: 50,
+                                        bottom: 50,
+                                        left: 50,
+                                    },
+                                    animated: true,
+                                },
+                            );
+                        }}
+                    >
+                        {trips.map((trip) => (
+                            <>
+                                {trip.path && (
+                                    <>
+                                        <Marker
+                                            coordinate={{
+                                                latitude: (
+                                                    trip.path[0] as GeoPoint
+                                                ).latitude,
+                                                longitude: (
+                                                    trip.path[0] as GeoPoint
+                                                ).longitude,
+                                            }}
+                                            title={`${trip.name} Start`}
+                                            pinColor={"lime"}
+                                        />
+                                        <Marker
+                                            coordinate={{
+                                                latitude: (
+                                                    trip.path[
+                                                        trip.path.length - 1
+                                                    ] as GeoPoint
+                                                ).latitude,
+                                                longitude: (
+                                                    trip.path[
+                                                        trip.path.length - 1
+                                                    ] as GeoPoint
+                                                ).longitude,
+                                            }}
+                                            title={`${trip.name} End`}
+                                            pinColor={"red"}
+                                        />
+                                        <Polyline
+                                            coordinates={
+                                                trip.path as GeoPoint[]
+                                            }
+                                            strokeWidth={3}
+                                            strokeColor={tintColorLight}
+                                        />
+                                    </>
+                                )}
+                            </>
+                        ))}
+                    </MapView>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
