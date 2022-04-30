@@ -26,14 +26,16 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
         getCreatedUserTrips(userId).then((trips) => {
             setTrips(trips);
         });
+
+        navigation.setOptions({
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
     }, []);
 
     const colorScheme = useColorScheme();
-
-    navigation.setOptions({
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
 
     return (
         <View style={{ flex: 1 }}>

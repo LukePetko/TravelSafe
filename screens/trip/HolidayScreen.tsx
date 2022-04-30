@@ -27,13 +27,15 @@ const HolidayScreen = (props: HolidayScreenProps) => {
         getUserHoliday(getUserId(store.getState())).then((holidays) => {
             setHolidays(holidays);
         });
-    }, []);
 
-    navigation.setOptions({
-        title: "Holidays",
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
+        navigation.setOptions({
+            title: "Holidays",
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
+    }, []);
 
     return (
         <View style={{ flex: 1 }}>

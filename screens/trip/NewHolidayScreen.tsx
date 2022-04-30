@@ -1,5 +1,5 @@
 import { View, Text, useColorScheme } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import {
@@ -72,22 +72,26 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
         navigation.goBack();
     };
 
-    navigation.setOptions({
-        headerRight: () => (
-            <Pressable onPress={onSubmit}>
-                <Text
-                    style={{
-                        color: tintColorLight,
-                        fontSize: 18,
-                    }}
-                >
-                    Save
-                </Text>
-            </Pressable>
-        ),
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Pressable onPress={onSubmit}>
+                    <Text
+                        style={{
+                            color: tintColorLight,
+                            fontSize: 18,
+                        }}
+                    >
+                        Save
+                    </Text>
+                </Pressable>
+            ),
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
+    }, []);
 
     return (
         <KeyboardAvoidingView

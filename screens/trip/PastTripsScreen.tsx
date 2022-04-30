@@ -25,14 +25,16 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
 
     const colorScheme = useColorScheme();
 
-    navigation.setOptions({
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
-
     useEffect(() => {
         getEndedUserTrips(userId).then((trips) => {
             setTrips(trips);
+        });
+
+        navigation.setOptions({
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
         });
     }, []);
 
