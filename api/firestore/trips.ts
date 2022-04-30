@@ -8,7 +8,6 @@ import {
     GeoPoint,
     getDoc,
     getDocs,
-    onSnapshot,
     orderBy,
     query,
     setDoc,
@@ -17,10 +16,8 @@ import {
 import { db } from "../../Firebase";
 import store from "../../redux/store";
 import { addStartTime, addTripName } from "../../redux/stores/trip";
-import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
-import { getUserDocById } from "./accounts";
 
 export const getUserTripData = async (
     id: string,
@@ -253,47 +250,6 @@ export const createHoliday = async (holiday: Holiday): Promise<string> => {
         });
 
     return result;
-};
-
-export const getCreatedUserHoliday = async (id: string): Promise<Holiday[]> => {
-    const holidayQuery = query(
-        collection(db, "users", id, "holidays"),
-        where("endTime", ">", new Date()),
-        // orderBy("startTime", "desc"),
-    );
-
-    const holiday = await getDocs(holidayQuery);
-
-    const holidayData: Holiday[] = [];
-
-    holiday.forEach((holiday: DocumentData) => {
-        if (holiday.exists()) {
-            holidayData.push({ holidayId: holiday.id, ...holiday.data() });
-        }
-    });
-
-    return holidayData;
-};
-
-export const getEndedUserHoliday = async (id: string): Promise<Holiday[]> => {
-    const currentDate = new Date();
-    const holidayQuery = query(
-        collection(db, "users", id, "holidays"),
-        where("endTime", "<", currentDate),
-        // orderBy("startTime", "desc"),
-    );
-
-    const holiday = await getDocs(holidayQuery);
-
-    const holidayData: Holiday[] = [];
-
-    holiday.forEach((holiday: DocumentData) => {
-        if (holiday.exists()) {
-            holidayData.push({ holidayId: holiday.id, ...holiday.data() });
-        }
-    });
-
-    return holidayData;
 };
 
 export const updateTrip = async (trip: Trip): Promise<boolean> => {

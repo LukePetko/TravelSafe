@@ -4,7 +4,6 @@ import { KeyboardAvoidingView, ScrollView } from "../../components/Themed";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import {
-    getCreatedUserHoliday,
     getUserHoliday,
     setTripActive,
     startTrip,

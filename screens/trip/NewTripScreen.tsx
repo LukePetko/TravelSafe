@@ -1,9 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { SFSymbol } from "react-native-sfsymbols";
 import { createTrip } from "../../api/firestore";
-import { getCreatedUserHoliday } from "../../api/firestore/trips";
+import { getUserHoliday } from "../../api/firestore/trips";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -15,7 +14,7 @@ import {
     ScrollView,
     Pressable,
 } from "../../components/Themed";
-import { tintColorDark, tintColorLight } from "../../constants/Colors";
+import { tintColorLight } from "../../constants/Colors";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
 import { Holiday } from "../../utils/types/holiday";
@@ -67,7 +66,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const colorScheme = useColorScheme();
 
     useEffect(() => {
-        getCreatedUserHoliday(userId).then((holidays) => {
+        getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
     }, []);

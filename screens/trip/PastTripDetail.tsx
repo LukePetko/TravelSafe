@@ -3,11 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
-import {
-    getCreatedUserHoliday,
-    getUserHoliday,
-    updateTrip,
-} from "../../api/firestore/trips";
+import { getUserHoliday, updateTrip } from "../../api/firestore/trips";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import ProfilePicture from "../../components/ProfilePicture";
