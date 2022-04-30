@@ -1,11 +1,10 @@
 import { View, Image, useColorScheme } from "react-native";
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styles } from "../../styles/global";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 import * as Location from "expo-location";
 import { connect } from "react-redux";
-import { getUserTripDocumentRef } from "../../api/firestore";
 
 import { Pressable, BottomSheet, Text } from "../../components/Themed";
 import ContactDetail from "./ContactDetail";

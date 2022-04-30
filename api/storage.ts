@@ -1,9 +1,4 @@
-import {
-    ref,
-    getDownloadURL,
-    uploadBytes,
-    uploadString,
-} from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from "../Firebase";
 
 export const uploadProfileImage = async (data: File | Blob, userID: string) => {

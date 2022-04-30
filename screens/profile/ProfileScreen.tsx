@@ -4,7 +4,6 @@ import { getUserById, updateProfilePicture } from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import {
     ActionSheetIOS,
-    Button,
     FlatList,
     RefreshControl,
     StyleSheet,

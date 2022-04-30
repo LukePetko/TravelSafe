@@ -1,14 +1,12 @@
 import { Text, FlatList, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getUser, getUserId } from "../../redux/stores/user";
+import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { getUserById } from "../../api/firestore";
 import { FollowUser } from "../../utils/types/user";
 import { Post } from "../../utils/types/post";
 import { getPostsFromUsers } from "../../api/firestore/posts";
 import PostComponent from "../../components/PostComponent";
-import { tintColorLight } from "../../constants/Colors";
-import colors from "../../constants/Colors";
 import { View } from "../../components/Themed";
 import { styles } from "../../styles/global";
 

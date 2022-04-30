@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { connectSearchBox } from "react-instantsearch-native";
 import { SearchBar } from "react-native-ios-kit";

@@ -9,10 +9,9 @@ import {
     startTrip,
     updateTrip,
 } from "../../api/firestore/trips";
-import { getUser, getUserId } from "../../redux/stores/user";
+import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Holiday } from "../../utils/types/holiday";
-import { NewTripState } from "./NewTripScreen";
 import ListCalendar from "../../components/ListCalendar";
 import ProfilePicture from "../../components/ProfilePicture";
 import { Trip } from "../../utils/types/trip";

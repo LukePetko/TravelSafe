@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { GeoPoint } from "firebase/firestore";
-import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { RootState } from "../store";
 
 export interface Location {

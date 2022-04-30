@@ -1,31 +1,22 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { getSentNotifications, getUserDocById } from "../../api/firestore";
+import { connect, useDispatch } from "react-redux";
+import { getSentNotifications } from "../../api/firestore";
 import { removeNotificationId } from "../../api/firestore/accounts";
-import { removeData, getData, storeData } from "../../async-storage";
+import { removeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
-import {
-    View,
-    Text,
-    ScrollView,
-    KeyboardAvoidingView,
-} from "../../components/Themed";
+import { ScrollView, KeyboardAvoidingView } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
-import { useStoreSelector } from "../../hooks/useStoreSelector";
 import store from "../../redux/store";
 import {
     getNotificationId,
-    getUser,
     getUserId,
     logout,
     resetNotificationId,
 } from "../../redux/stores/user";
 import { styles } from "../../styles/global";
-import { User } from "../../utils/types/user";
 
 type SettingsModalProps = {
     navigation: any;

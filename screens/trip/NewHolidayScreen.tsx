@@ -7,7 +7,6 @@ import {
     Pressable,
     ScrollView,
 } from "../../components/Themed";
-import { SFSymbol } from "react-native-sfsymbols";
 import { tintColorLight } from "../../constants/Colors";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { createCloseContactNotification } from "../../api/firestore";
 import SearchBarComponent from "../../components/SearchBarComponent";

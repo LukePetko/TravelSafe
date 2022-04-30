@@ -1,12 +1,10 @@
 import {
-    collection,
     collectionGroup,
     doc,
     DocumentData,
     DocumentReference,
     getDoc,
     getDocs,
-    onSnapshot,
     Query,
     query,
     QuerySnapshot,
@@ -19,7 +17,7 @@ import store from "../../redux/store";
 import { getUser } from "../../redux/stores/user";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
-import { CloseContact, PublicUser, User } from "../../utils/types/user";
+import { PublicUser, User } from "../../utils/types/user";
 
 /**
  * Creates a new user doc in the users collection after a first registration

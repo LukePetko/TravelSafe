@@ -1,6 +1,5 @@
-import { GeoPoint, getDocs } from "firebase/firestore";
-import { Alert } from "react-native";
-import { getCloseContactsQuery, updateLocation } from "../api/firestore";
+import { GeoPoint } from "firebase/firestore";
+import { updateLocation } from "../api/firestore";
 import store from "../redux/store";
 import {
     addDistance,
@@ -12,13 +11,10 @@ import {
 } from "../redux/stores/trip";
 import { getUser, getUserId } from "../redux/stores/user";
 import { inactivityAlert } from "./alers";
-import * as Notifications from "expo-notifications";
-import { Notification } from "expo-notifications";
 import {
     inactiveLocalNotification,
     sendPushNotification,
 } from "./notifications";
-import { CloseContact, PublicUser } from "./types/user";
 import { getCloseContacts } from "../api/firestore/accounts";
 import { CurrentTripInfo } from "./types/currentTripInfo";
 import { createLocationNotification } from "../api/firestore/notifications";

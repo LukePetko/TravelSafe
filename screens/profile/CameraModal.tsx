@@ -12,7 +12,6 @@ import {
 import { getPictureBlob } from "../../utils/files";
 import { uploadProfileImage } from "../../api/storage";
 import { updateProfilePicture } from "../../api/firestore";
-import { useSelector } from "react-redux";
 import { useStoreSelector } from "../../hooks/useStoreSelector";
 
 type Props = {

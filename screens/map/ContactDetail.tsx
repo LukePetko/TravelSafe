@@ -17,7 +17,6 @@ import {
 import store from "../../redux/store";
 import { stopLocationTracking } from "../../api/backgroundLocation";
 import { connect, useDispatch } from "react-redux";
-import { getUserId } from "../../redux/stores/user";
 import { createPostAlertButton, endTripAlertButton } from "../../utils/alers";
 import { endTrip } from "../../utils/trip";
 import { getDistance as reduxGetDistance } from "../../redux/stores/trip";

@@ -1,7 +1,5 @@
 import {
-    addDoc,
     collection,
-    CollectionReference,
     doc,
     DocumentData,
     DocumentReference,
@@ -9,7 +7,6 @@ import {
     orderBy,
     Query,
     query,
-    serverTimestamp,
     setDoc,
     Timestamp,
     where,
