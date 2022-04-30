@@ -8,9 +8,6 @@ export type Trip = {
     startTime: Timestamp;
     endTime?: Timestamp;
 
-    startPlace?: GeoPoint;
-    endPlace?: GeoPoint;
-
     description?: string;
 
     invitedUsers?: string[];

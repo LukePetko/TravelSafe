@@ -141,22 +141,6 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                             End Time
                         </ListCalendar>
                     )}
-
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ top: true }}
-                        separator={true}
-                        style={{ marginTop: 20 }}
-                    >
-                        Start Place
-                    </ListLabel>
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ bottom: true }}
-                    >
-                        End Place
-                    </ListLabel>
-
                     <ListInput
                         value={holiday?.description}
                         onChangeText={(value: string): void => {

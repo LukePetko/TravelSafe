@@ -8,8 +8,6 @@ export type Holiday = {
     startTime: Timestamp;
     endTime?: Timestamp;
 
-    destination?: GeoPoint;
-
     description?: string;
 
     invitedUsers?: string[];

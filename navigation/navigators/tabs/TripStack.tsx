@@ -1,13 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import EditTripScreen from "../../../screens/trip/EditTripScreen";
+import PlannedTripDetailScreen from "../../../screens/trip/PlannedTripDetailScreen";
 import HolidayDetailScreen from "../../../screens/trip/HolidayDetailScreen";
 import HolidayScreen from "../../../screens/trip/HolidayScreen";
 import NewHolidayScreen from "../../../screens/trip/NewHolidayScreen";
 import NewTripScreen from "../../../screens/trip/NewTripScreen";
-import PastHolidayDetailScreen from "../../../screens/trip/PastHolidayDetailScreen";
 import PastTripDetail from "../../../screens/trip/PastTripDetail";
 import PastTripsScreen from "../../../screens/trip/PastTripsScreen";
-import PlannedHolidayDetailScreen from "../../../screens/trip/PlannedHolidayDetailScreen";
 import PlannedTripsScreen from "../../../screens/trip/PlannedTripsScreen";
 import TripScreen from "../../../screens/trip/TripScreen";
 import { TripStackParamList } from "../../../types";
@@ -51,8 +49,8 @@ export const TripStackNavigator = (): JSX.Element => {
                 }}
             />
             <TripStack.Screen
-                name="EditTrip"
-                component={EditTripScreen}
+                name="PlannedTripDetail"
+                component={PlannedTripDetailScreen}
                 options={{
                     headerShown: true,
                     title: "Edit Trip",

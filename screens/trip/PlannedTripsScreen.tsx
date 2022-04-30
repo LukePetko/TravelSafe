@@ -73,7 +73,7 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
                     <Pressable
                         key={trip.id}
                         onPress={() =>
-                            navigation.navigate("EditTrip", {
+                            navigation.navigate("PlannedTripDetail", {
                                 trip,
                             })
                         }

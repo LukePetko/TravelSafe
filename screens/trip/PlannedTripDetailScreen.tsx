@@ -31,18 +31,9 @@ type EditTripScreenProps = {
     route: any;
 };
 
-const EditTripScreen = (props: EditTripScreenProps) => {
+const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     const { navigation, route } = props;
 
-    const [tripState, setTripState] = useState<NewTripState>({
-        name: "",
-        description: "",
-        holiday: null,
-        startTime: new Date(),
-        endTime: new Date(),
-        thumbnail:
-            "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-    });
     const [trip, setTrip] = useState<Trip>();
 
     const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -220,22 +211,6 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                     >
                         End Time
                     </ListCalendar>
-
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ top: true }}
-                        separator={true}
-                        style={{ marginTop: 20 }}
-                    >
-                        Start Place
-                    </ListLabel>
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ bottom: true }}
-                    >
-                        End Place
-                    </ListLabel>
-
                     <ListInput
                         value={trip?.description}
                         onChangeText={(value: string): void => {
@@ -272,4 +247,4 @@ const EditTripScreen = (props: EditTripScreenProps) => {
     );
 };
 
-export default EditTripScreen;
+export default PlannedTripDetailScreen;

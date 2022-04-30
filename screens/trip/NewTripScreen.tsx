@@ -221,22 +221,6 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     >
                         End Time
                     </ListCalendar>
-
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ top: true }}
-                        separator={true}
-                        style={{ marginTop: 20 }}
-                    >
-                        Start Place
-                    </ListLabel>
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ bottom: true }}
-                    >
-                        End Place
-                    </ListLabel>
-
                     <ListInput
                         value={tripState.description}
                         onChangeText={(value: string): void => {
