@@ -1,4 +1,4 @@
-import { GeoPoint, Timestamp } from "@firebase/firestore";
+import { Timestamp } from "@firebase/firestore";
 
 export type Holiday = {
     id?: string;
