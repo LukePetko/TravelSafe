@@ -161,7 +161,6 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
 
 const localStyles = StyleSheet.create({
     container: {
-        borderBottomWidth: 1,
         flexDirection: "row",
         paddingVertical: 10,
     },

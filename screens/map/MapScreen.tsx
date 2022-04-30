@@ -1,4 +1,4 @@
-import { View, Image } from "react-native";
+import { View, Image, useColorScheme } from "react-native";
 import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { styles } from "../../styles/global";
 import MapView, { Marker, Polyline } from "react-native-maps";
@@ -23,7 +23,7 @@ import {
     getTripId,
     getTripName,
 } from "../../redux/stores/trip";
-import { tintColorLight } from "../../constants/Colors";
+import Colors, { tintColorLight } from "../../constants/Colors";
 
 type MapCoords = {
     latitude: number;
@@ -58,6 +58,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
         [],
     );
     const [followUserLocation, setFollowUserLocation] = useState<boolean>(true);
+    const colorScheme = useColorScheme();
 
     useEffect(() => {
         (async () => {
@@ -197,6 +198,14 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                             {contactsTripInfo?.map((contact: any) => (
                                 <Pressable
                                     key={contact.username}
+                                    style={{
+                                        borderBottomColor:
+                                            colorScheme === "dark"
+                                                ? Colors.dark.bottomBorderColor
+                                                : Colors.light
+                                                      .bottomBorderColor,
+                                        borderBottomWidth: 1,
+                                    }}
                                     onPress={() => {
                                         !!contact.location &&
                                             animateToRegion(contact.location);
