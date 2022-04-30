@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
-import { getCreatedUserHoliday } from "../../api/firestore/trips";
+import { getCreatedUserHoliday, updateTrip } from "../../api/firestore/trips";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -79,7 +79,9 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     };
 
     const onSave = async () => {
-        console.log(trip);
+        console.log(trip.id);
+        await updateTrip(trip);
+        navigation.goBack();
     };
 
     return (

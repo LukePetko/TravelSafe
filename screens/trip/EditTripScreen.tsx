@@ -7,6 +7,7 @@ import {
     getCreatedUserHoliday,
     setTripActive,
     startTrip,
+    updateTrip,
 } from "../../api/firestore/trips";
 import { getUser, getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -41,6 +42,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
         thumbnail:
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
+    const [trip, setTrip] = useState<Trip>();
 
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
@@ -61,17 +63,19 @@ const EditTripScreen = (props: EditTripScreenProps) => {
     });
 
     const onChange = (
-        key: keyof NewTripState,
+        key: keyof Trip,
         value: string | Date | Holiday | null,
     ): void => {
-        setTripState({
-            ...tripState,
+        setTrip({
+            ...trip,
             [key]: value,
         });
     };
 
     const onSave = async () => {
         console.log("saving trip");
+        await updateTrip(trip!);
+        navigation.goBack();
     };
 
     const onStart = async () => {
@@ -102,17 +106,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
         });
 
         const trip: Trip = route.params.trip;
-
-        setTripState({
-            name: trip.name,
-            description: trip.description || "",
-            holiday:
-                holidays.find((holiday) => holiday.id === trip.holidayId) ||
-                null,
-            startTime: trip.startTime.toDate() || new Date(),
-            endTime: trip.endTime?.toDate() || new Date(),
-            thumbnail: trip.thumbnail || "",
-        });
+        setTrip(trip);
     }, []);
 
     return (
@@ -137,7 +131,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                 </Text>
                 <View style={{ alignItems: "center", marginTop: 20 }}>
                     <ListInput
-                        value={tripState.name}
+                        value={trip?.name}
                         onChangeText={(value: string): void => {
                             onChange("name", value);
                         }}
@@ -155,7 +149,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                             separator={showHoliday}
                             rotateChevron={showHoliday}
                             onPress={() => setShowHoliday(!showHoliday)}
-                            fieldValue={tripState.holiday?.name}
+                            fieldValue={trip?.holiday?.name}
                         >
                             Holiday
                         </ListLabel>
@@ -203,8 +197,8 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         setTime={(time: Date): void => {
                             onChange("startTime", time);
                         }}
-                        date={tripState.startTime}
-                        time={tripState.startTime}
+                        date={trip?.startTime.toDate()}
+                        time={trip?.startTime.toDate()}
                         minimumDate={new Date()}
                     >
                         Start Time
@@ -219,9 +213,9 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         setTime={(time: Date): void => {
                             onChange("endTime", time);
                         }}
-                        date={tripState.endTime}
-                        time={tripState.endTime}
-                        minimumDate={tripState.startTime}
+                        date={trip?.endTime.toDate()}
+                        time={trip?.endTime.toDate()}
+                        minimumDate={trip?.startTime.toDate()}
                     >
                         End Time
                     </ListCalendar>
@@ -242,7 +236,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                     </ListLabel>
 
                     <ListInput
-                        value={tripState.description}
+                        value={trip?.description}
                         onChangeText={(value: string): void => {
                             onChange("description", value);
                         }}
@@ -260,7 +254,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         Thumbnail
                     </Text>
                     <ProfilePicture
-                        photoURL={tripState.thumbnail}
+                        photoURL={trip?.thumbnail!}
                         onPress={() => {}}
                     />
                     <ListLabel

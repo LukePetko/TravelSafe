@@ -295,3 +295,29 @@ export const getEndedUserHoliday = async (id: string): Promise<Holiday[]> => {
 
     return holidayData;
 };
+
+export const updateTrip = async (trip: Trip): Promise<boolean> => {
+    const tripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        trip.userId,
+        "trips",
+        trip.id!,
+    );
+
+    const tripSnap: DocumentData = await getDoc(tripDoc);
+
+    console.log(tripSnap);
+
+    if (tripSnap.exists()) {
+        const updatedTrip = {
+            ...tripSnap.data(),
+            ...trip,
+        };
+
+        return await setDoc(tripDoc, updatedTrip)
+            .then(() => true)
+            .catch(() => false);
+    }
+    return false;
+};

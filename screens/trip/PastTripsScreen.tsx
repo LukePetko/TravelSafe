@@ -1,4 +1,9 @@
-import { Image, StyleSheet, useColorScheme } from "react-native";
+import {
+    Image,
+    RefreshControl,
+    StyleSheet,
+    useColorScheme,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
@@ -57,6 +62,14 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
             keyboardVerticalOffset={90}
         >
             <ScrollView>
+                <RefreshControl
+                    refreshing={false}
+                    onRefresh={() => {
+                        getEndedUserTrips(userId).then((trips) => {
+                            setTrips(trips);
+                        });
+                    }}
+                />
                 {holidays.length > 0 && (
                     <Text
                         style={{

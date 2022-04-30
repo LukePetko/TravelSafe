@@ -7,7 +7,12 @@ import {
     ScrollView,
     Pressable,
 } from "../../components/Themed";
-import { StyleSheet, Image, useColorScheme } from "react-native";
+import {
+    StyleSheet,
+    Image,
+    useColorScheme,
+    RefreshControl,
+} from "react-native";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
 import { Trip } from "../../utils/types/trip";
@@ -53,6 +58,18 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
             keyboardVerticalOffset={90}
         >
             <ScrollView>
+                <RefreshControl
+                    refreshing={false}
+                    onRefresh={() => {
+                        getCreatedUserTrips(userId).then((trips) => {
+                            setTrips(trips);
+                        });
+
+                        getCreatedUserHoliday(userId).then((holidays) => {
+                            setHolidays(holidays);
+                        });
+                    }}
+                />
                 {holidays.length > 0 && (
                     <Text
                         style={{
