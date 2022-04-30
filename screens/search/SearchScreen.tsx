@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
 import React from "react";
 import SearchBarComponent from "../../components/SearchBarComponent";
+import { View } from "../../components/Themed";
 
 type SearchScreenProps = {
     navigation: any;
@@ -9,7 +9,11 @@ type SearchScreenProps = {
 const SearchScreen = (props: SearchScreenProps) => {
     const { navigation } = props;
     return (
-        <View>
+        <View
+            style={{
+                flex: 1,
+            }}
+        >
             <SearchBarComponent
                 onResultPress={(id?: string) =>
                     navigation.navigate("ProfileScreen", { id: id ?? "" })

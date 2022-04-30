@@ -1,14 +1,8 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { FlatList, StyleSheet, useColorScheme } from "react-native";
 import { connectInfiniteHits } from "react-instantsearch-native";
-import {
-    KeyboardAvoidingView,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
-} from "./Themed";
-import { styles } from "../styles/global";
+import { Pressable, Text } from "./Themed";
+import Colors from "../constants/Colors";
 
 const Hits = connectInfiniteHits(({ hits, hasMore, refine, onPress }: any) => {
     const onEndReached = () => {
@@ -17,33 +11,38 @@ const Hits = connectInfiniteHits(({ hits, hasMore, refine, onPress }: any) => {
         }
     };
 
+    const colorScheme = useColorScheme();
+
     return (
         <>
             {hits.length > 0 &&
                 hits[0]._highlightResult.username.matchLevel !== "none" && (
-                    <KeyboardAvoidingView
-                        behavior={"padding"}
-                        style={{
-                            // flex: 1,
-                            height: "100%",
-                        }}
-                        enabled
-                        keyboardVerticalOffset={90}
-                    >
-                        <ScrollView>
-                            {hits.map((hit: any) => (
-                                <Pressable
-                                    onPress={() => {
-                                        onPress(hit.objectID);
-                                    }}
-                                    style={localStyles.hit}
-                                    key={hit.objectID}
-                                >
-                                    <Text>{hit.username}</Text>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
-                    </KeyboardAvoidingView>
+                    <FlatList
+                        data={hits}
+                        renderItem={({ item }: any) => (
+                            <Pressable
+                                onPress={() => {
+                                    onPress(item.objectID);
+                                }}
+                                style={[
+                                    localStyles.hit,
+                                    {
+                                        borderBottomColor:
+                                            colorScheme === "dark"
+                                                ? Colors.dark.bottomBorderColor
+                                                : Colors.light
+                                                      .bottomBorderColor,
+                                    },
+                                ]}
+                                key={item.objectID}
+                            >
+                                <Text>{item.username}</Text>
+                            </Pressable>
+                        )}
+                        keyExtractor={(item: any) => item.objectID}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.5}
+                    />
                 )}
         </>
     );
