@@ -106,6 +106,7 @@ const HolidayScreen = (props: HolidayScreenProps) => {
                         </View>
                     </Pressable>
                 )}
+                keyExtractor={(item) => item.holidayId || ""}
             />
         </View>
     );
