@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
@@ -30,8 +31,8 @@ export type NewTripState = {
     name: string;
     description: string;
     holiday: Holiday | null;
-    startTime: Date;
-    endTime: Date;
+    startTime: Timestamp;
+    endTime: Timestamp;
     thumbnail: string;
 };
 
@@ -42,8 +43,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         name: "",
         description: "",
         holiday: null,
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: Timestamp.fromDate(new Date()),
+        endTime: Timestamp.fromDate(new Date()),
         thumbnail:
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
@@ -53,7 +54,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
     const onChange = (
         key: keyof NewTripState,
-        value: string | Date | Holiday | null,
+        value: string | Timestamp | Holiday | null,
     ): void => {
         setTripState({
             ...tripState,
@@ -79,8 +80,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
             ...tripState,
             holidayId: tripState.holiday?.holidayId || null,
             status: "created",
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: Timestamp.fromDate(new Date()),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         delete trip.holiday;
@@ -193,13 +194,13 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("startTime", date);
+                            onChange("startTime", Timestamp.fromDate(date));
                         }}
                         setTime={(time: Date): void => {
-                            onChange("startTime", time);
+                            onChange("startTime", Timestamp.fromDate(time));
                         }}
-                        date={tripState.startTime}
-                        time={tripState.startTime}
+                        date={tripState.startTime.toDate()}
+                        time={tripState.startTime.toDate()}
                         minimumDate={new Date()}
                     >
                         Start Time
@@ -209,14 +210,14 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("endTime", date);
+                            onChange("endTime", Timestamp.fromDate(date));
                         }}
                         setTime={(time: Date): void => {
-                            onChange("endTime", time);
+                            onChange("endTime", Timestamp.fromDate(time));
                         }}
-                        date={tripState.endTime}
-                        time={tripState.endTime}
-                        minimumDate={tripState.startTime}
+                        date={tripState.endTime.toDate()}
+                        time={tripState.endTime.toDate()}
+                        minimumDate={tripState.startTime.toDate()}
                     >
                         End Time
                     </ListCalendar>

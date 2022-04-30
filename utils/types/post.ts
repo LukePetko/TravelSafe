@@ -6,8 +6,8 @@ export type Comment = {
     userId: string;
     postId: string;
     content: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };
 
 export type Post = {

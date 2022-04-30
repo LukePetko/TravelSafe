@@ -1,5 +1,11 @@
 import * as Location from "expo-location";
-import { doc, GeoPoint, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+    doc,
+    GeoPoint,
+    serverTimestamp,
+    Timestamp,
+    updateDoc,
+} from "firebase/firestore";
 import { createTrip, startTrip } from "../api/firestore";
 import { Trip } from "./types/trip";
 import store from "../redux/store";
@@ -15,7 +21,7 @@ export const startNewQuickTrip = async () => {
     const trip: Trip = {
         userId,
         name: "Quick Trip",
-        startTime: new Date(),
+        startTime: Timestamp.fromDate(new Date()),
         startPlace: new GeoPoint(
             location.coords.latitude,
             location.coords.longitude,
@@ -23,8 +29,8 @@ export const startNewQuickTrip = async () => {
 
         status: "active",
 
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Timestamp.fromDate(new Date()),
+        updatedAt: Timestamp.fromDate(new Date()),
     };
 
     const tripId = await createTrip(trip);

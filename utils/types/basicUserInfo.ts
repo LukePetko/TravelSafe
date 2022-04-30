@@ -1,6 +1,8 @@
+import { Timestamp } from "firebase/firestore";
+
 export type BasicUserInfo = {
     username: string;
     email: string;
-    birthDate: Date;
+    birthDate: Timestamp;
     profilePicture: string;
 };

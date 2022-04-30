@@ -5,8 +5,8 @@ export type Trip = {
     userId: string;
     name: string;
     holidayId?: string | null;
-    startTime: Date | Timestamp;
-    endTime?: Date | Timestamp;
+    startTime: Timestamp;
+    endTime?: Timestamp;
 
     startPlace?: GeoPoint;
     endPlace?: GeoPoint;
@@ -22,6 +22,6 @@ export type Trip = {
 
     status: string;
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };

@@ -1,6 +1,7 @@
+import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Button, useColorScheme } from "react-native";
-import { updateHoliday } from "../../api/firestore/trips";
+import { getHolidayTrips, updateHoliday } from "../../api/firestore/trips";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -12,7 +13,10 @@ import {
     Text,
 } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
+import store from "../../redux/store";
+import { getUserId } from "../../redux/stores/user";
 import { Holiday } from "../../utils/types/holiday";
+import { Trip } from "../../utils/types/trip";
 
 type PastHolidayDetailScreenProps = {
     navigation: any;
@@ -23,12 +27,13 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
     const { navigation, route } = props;
 
     const [holiday, setHoliday] = useState<Holiday>(route.params.holiday);
+    const [trips, setTrips] = useState<Trip[]>([]);
 
     const colorScheme = useColorScheme();
 
     const onChange = (
         key: keyof Holiday,
-        value: string | Date | null,
+        value: string | Timestamp | null,
     ): void => {
         setHoliday({
             ...holiday,
@@ -53,6 +58,14 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
                 onPress={() => onSave()}
             />
         ),
+    });
+
+    useEffect(() => {
+        getHolidayTrips(getUserId(store.getState()), holiday.holidayId!).then(
+            (trips) => {
+                setTrips(trips);
+            },
+        );
     });
 
     return (
@@ -95,7 +108,7 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
                             separator={true}
                             showDatePicker={true}
                             setDate={(date: Date): void => {
-                                onChange("startTime", date);
+                                onChange("startTime", Timestamp.fromDate(date));
                             }}
                             date={holiday?.startTime.toDate()}
                             minimumDate={new Date()}
@@ -108,7 +121,7 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
                             borderRadius={{ bottom: true }}
                             showDatePicker={true}
                             setDate={(date: Date): void => {
-                                onChange("endTime", date);
+                                onChange("endTime", Timestamp.fromDate(date));
                             }}
                             date={holiday?.endTime.toDate()}
                             minimumDate={holiday?.startTime.toDate()}
@@ -144,7 +157,7 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
                     <Text
                         style={{
                             fontWeight: "bold",
-                            fontSize: 32,
+                            fontSize: 24,
                             padding: 10,
                         }}
                     >
@@ -154,6 +167,30 @@ const PastHolidayDetailScreen = (props: PastHolidayDetailScreenProps) => {
                         photoURL={holiday?.thumbnail!}
                         onPress={() => {}}
                     />
+                    {trips.length > 0 && (
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 32,
+                                padding: 10,
+                                marginTop: 20,
+                                alignSelf: "flex-start",
+                            }}
+                        >
+                            Holiday Trips
+                        </Text>
+                    )}
+
+                    {trips.map((trip) => (
+                        <ListLabel
+                            key={trip.tripId}
+                            showChevron={true}
+                            borderRadius={{ top: true }}
+                            separator={true}
+                        >
+                            {trip.name}
+                        </ListLabel>
+                    ))}
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

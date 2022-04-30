@@ -19,7 +19,7 @@ import { Trip } from "../../utils/types/trip";
 import { tintColorLight } from "../../constants/Colors";
 import { getTripId, start } from "../../redux/stores/trip";
 import * as Location from "expo-location";
-import { GeoPoint } from "@firebase/firestore";
+import { GeoPoint, Timestamp } from "@firebase/firestore";
 import { createTripAlertButton } from "../../utils/alers";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -64,7 +64,7 @@ const EditTripScreen = (props: EditTripScreenProps) => {
 
     const onChange = (
         key: keyof Trip,
-        value: string | Date | Holiday | null,
+        value: string | Timestamp | Holiday | null,
     ): void => {
         setTrip({
             ...trip,
@@ -192,10 +192,10 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("startTime", date);
+                            onChange("startTime", Timestamp.fromDate(date));
                         }}
                         setTime={(time: Date): void => {
-                            onChange("startTime", time);
+                            onChange("startTime", Timestamp.fromDate(time));
                         }}
                         date={trip?.startTime.toDate()}
                         time={trip?.startTime.toDate()}
@@ -208,13 +208,13 @@ const EditTripScreen = (props: EditTripScreenProps) => {
                         showDatePicker={true}
                         showTimePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("endTime", date);
+                            onChange("endTime", Timestamp.fromDate(date));
                         }}
                         setTime={(time: Date): void => {
-                            onChange("endTime", time);
+                            onChange("endTime", Timestamp.fromDate(time));
                         }}
-                        date={trip?.endTime.toDate()}
-                        time={trip?.endTime.toDate()}
+                        date={trip?.endTime!.toDate()}
+                        time={trip?.endTime!.toDate()}
                         minimumDate={trip?.startTime.toDate()}
                     >
                         End Time

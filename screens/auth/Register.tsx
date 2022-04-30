@@ -20,6 +20,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { storeData } from "../../async-storage";
 import { uploadProfileImage } from "../../api/storage";
+import { Timestamp } from "firebase/firestore";
 
 type RegisterProps = {
     navigation: any;
@@ -81,7 +82,7 @@ const Register = (props: RegisterProps): JSX.Element => {
                     const userData: BasicUserInfo = {
                         username: state.username,
                         email: state.email,
-                        birthDate: state.birthDate,
+                        birthDate: Timestamp.fromDate(state.birthDate),
                         profilePicture: response,
                     };
 

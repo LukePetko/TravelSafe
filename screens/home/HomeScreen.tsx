@@ -42,7 +42,6 @@ const HomeScreen = (props: HomeScreenProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-            {/* {posts.length > 0 ? ( */}
             <FlatList
                 ListEmptyComponent={
                     <View style={styles.container}>
@@ -65,11 +64,6 @@ const HomeScreen = (props: HomeScreenProps) => {
                     />
                 }
             />
-            {/* ) : (
-                <View style={styles.container}>
-                    <Text style={{ fontWeight: "600" }}>No posts to show</Text>
-                </View>
-            )} */}
         </View>
     );
 };

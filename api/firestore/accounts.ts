@@ -11,6 +11,7 @@ import {
     query,
     QuerySnapshot,
     setDoc,
+    Timestamp,
     where,
 } from "firebase/firestore";
 import { db } from "../../Firebase";
@@ -43,8 +44,8 @@ export const createUserAccount = async (
         followingCount: 0,
         closeContactCount: 0,
 
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Timestamp.fromDate(new Date()),
+        updatedAt: Timestamp.fromDate(new Date()),
     };
 
     const publicUser: PublicUser = {
@@ -61,8 +62,8 @@ export const createUserAccount = async (
 
         profilePicture: userInfo.profilePicture,
 
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Timestamp.fromDate(new Date()),
+        updatedAt: Timestamp.fromDate(new Date()),
     };
 
     const currentTrip: CurrentTripInfo = {
@@ -74,8 +75,8 @@ export const createUserAccount = async (
 
         expoNotificationIds: [],
 
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Timestamp.fromDate(new Date()),
+        updatedAt: Timestamp.fromDate(new Date()),
     };
 
     const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
@@ -186,17 +187,17 @@ export const updateProfilePicture = async (
         const updatedUser: User = {
             ...user,
             profilePicture,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedPublicUser: PublicUser = {
             ...publicUser,
             profilePicture,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedCurrentTrip: DocumentData = {
             ...currentTrip,
             profilePicture,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         const result = await setDoc(userDoc, updatedUser)
@@ -299,7 +300,7 @@ export const followUser = async (
                 },
             ],
             followingCount: ownUser.followingCount + 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedUser: User = {
             ...user,
@@ -312,7 +313,7 @@ export const followUser = async (
                 },
             ],
             followerCount: user.followerCount + 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedOwnUserPublicUser: PublicUser = {
             ...(ownUserPublicUserSnap.data() as PublicUser),
@@ -325,7 +326,7 @@ export const followUser = async (
                 },
             ],
             followingCount: ownUser.followingCount + 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedUserPublicUser: PublicUser = {
             ...(userPublicUserSnap.data() as PublicUser),
@@ -338,7 +339,7 @@ export const followUser = async (
                 },
             ],
             followerCount: user.followerCount + 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         const result = await setDoc(ownUserDoc, updatedOwnUser)
@@ -391,25 +392,25 @@ export const unfollowUser = async (
             ...ownUser,
             following: ownUser.following.filter((el) => el.id !== userId),
             followingCount: ownUser.followingCount - 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedUser: User = {
             ...user,
             followers: user.followers.filter((el) => el.id !== ownId),
             followerCount: user.followerCount - 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedOwnUserPublicUser: PublicUser = {
             ...(ownUserPublicUserSnap.data() as PublicUser),
             following: ownUser.following.filter((el) => el.id !== userId),
             followingCount: ownUser.followingCount - 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
         const updatedUserPublicUser: PublicUser = {
             ...(userPublicUserSnap.data() as PublicUser),
             followers: user.followers.filter((el) => el.id !== ownId),
             followerCount: user.followerCount - 1,
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         const result = await setDoc(ownUserDoc, updatedOwnUser)
@@ -448,7 +449,7 @@ export const addNotificationId = async (
         const updatedUser: CurrentTripInfo = {
             ...user,
             expoNotificationIds: [...user.expoNotificationIds, notificationId],
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         const result = await setDoc(userDoc, updatedUser)
@@ -482,7 +483,7 @@ export const removeNotificationId = async (
             expoNotificationIds: user.expoNotificationIds.filter(
                 (el) => el !== notificationId,
             ),
-            updatedAt: new Date(),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         const result = await setDoc(userDoc, updatedUser)

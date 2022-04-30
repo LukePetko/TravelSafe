@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import { updateHoliday } from "../../api/firestore/trips";
@@ -28,7 +29,7 @@ const PlannedHolidayDetailScreen = (props: PlannedHolidayDetailScreenProps) => {
 
     const onChange = (
         key: keyof Holiday,
-        value: string | Date | null,
+        value: string | Timestamp | null,
     ): void => {
         setHoliday({
             ...holiday,
@@ -95,7 +96,7 @@ const PlannedHolidayDetailScreen = (props: PlannedHolidayDetailScreenProps) => {
                             separator={true}
                             showDatePicker={true}
                             setDate={(date: Date): void => {
-                                onChange("startTime", date);
+                                onChange("startTime", Timestamp.fromDate(date));
                             }}
                             date={holiday?.startTime.toDate()}
                             minimumDate={new Date()}
@@ -108,7 +109,7 @@ const PlannedHolidayDetailScreen = (props: PlannedHolidayDetailScreenProps) => {
                             borderRadius={{ bottom: true }}
                             showDatePicker={true}
                             setDate={(date: Date): void => {
-                                onChange("endTime", date);
+                                onChange("endTime", Timestamp.fromDate(date));
                             }}
                             date={holiday?.endTime.toDate()}
                             minimumDate={holiday?.startTime.toDate()}

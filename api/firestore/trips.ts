@@ -345,3 +345,25 @@ export const updateHoliday = async (holiday: Holiday): Promise<boolean> => {
     }
     return false;
 };
+
+export const getHolidayTrips = async (
+    id: string,
+    holidayId: string,
+): Promise<Trip[]> => {
+    const tripQuery = query(
+        collection(db, "users", id, "trips"),
+        where("holidayId", "==", holidayId),
+    );
+
+    const trips = await getDocs(tripQuery);
+
+    const tripData: Trip[] = [];
+
+    trips.forEach((trip: DocumentData) => {
+        if (trip.exists()) {
+            tripData.push({ tripId: trip.id, ...trip.data() });
+        }
+    });
+
+    return tripData;
+};

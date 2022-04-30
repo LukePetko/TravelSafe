@@ -1,4 +1,4 @@
-import { GeoPoint } from "firebase/firestore";
+import { GeoPoint, Timestamp } from "firebase/firestore";
 
 export type FollowUser = {
     id: string;
@@ -17,7 +17,7 @@ export type User = {
     username: string;
     email: string;
 
-    birthDate: Date;
+    birthDate: Timestamp;
 
     lastLocation?: GeoPoint;
 
@@ -32,8 +32,8 @@ export type User = {
 
     profilePicture: string;
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };
 
 export type PublicUser = {
@@ -50,6 +50,6 @@ export type PublicUser = {
 
     profilePicture: string;
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 };

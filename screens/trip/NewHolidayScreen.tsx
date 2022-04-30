@@ -16,6 +16,7 @@ import ProfilePicture from "../../components/ProfilePicture";
 import { newHolidayValidation } from "../../utils/validations";
 import { Holiday } from "../../utils/types/holiday";
 import { createHoliday } from "../../api/firestore/trips";
+import { Timestamp } from "firebase/firestore";
 
 type NewHolidayScreenProps = {
     navigation: any;
@@ -25,8 +26,8 @@ type NewHolidayScreenProps = {
 export type NewHolidayState = {
     name: string;
     description: string;
-    startTime: Date;
-    endTime: Date;
+    startTime: Timestamp;
+    endTime: Timestamp;
     thumbnail: string;
 };
 
@@ -36,15 +37,15 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
     const [tripState, setTripState] = useState<NewHolidayState>({
         name: "",
         description: "",
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: Timestamp.fromDate(new Date()),
+        endTime: Timestamp.fromDate(new Date()),
         thumbnail:
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
 
     const onChange = (
         key: keyof NewHolidayState,
-        value: string | Date,
+        value: string | Timestamp,
     ): void => {
         setTripState({
             ...tripState,
@@ -63,8 +64,8 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
             userId: userId,
             ...tripState,
             status: "created",
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: Timestamp.fromDate(new Date()),
+            updatedAt: Timestamp.fromDate(new Date()),
         };
 
         console.log(createHoliday(holiday));
@@ -124,9 +125,9 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                         separator={true}
                         showDatePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("startTime", date);
+                            onChange("startTime", Timestamp.fromDate(date));
                         }}
-                        date={tripState.startTime}
+                        date={tripState.startTime.toDate()}
                         minimumDate={new Date()}
                     >
                         Start Date
@@ -135,10 +136,10 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                         borderRadius={{ bottom: true }}
                         showDatePicker={true}
                         setDate={(date: Date): void => {
-                            onChange("endTime", date);
+                            onChange("endTime", Timestamp.fromDate(date));
                         }}
-                        date={tripState.endTime}
-                        minimumDate={tripState.startTime}
+                        date={tripState.endTime.toDate()}
+                        minimumDate={tripState.startTime.toDate()}
                     >
                         End Date
                     </ListCalendar>
