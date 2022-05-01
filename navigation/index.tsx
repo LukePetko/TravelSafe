@@ -40,7 +40,7 @@ const Navigation = ({
 
     useEffect(() => {
         (async () => {
-            const userId = await getData("userId");
+            const userId = (await getData("userId")) as string;
 
             if (userId) {
                 dispatch(login(userId));

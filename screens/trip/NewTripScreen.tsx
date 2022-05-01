@@ -69,6 +69,26 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
+
+        navigation.setOptions({
+            headerTitle: "New Trip",
+            headerRight: () => (
+                <Pressable onPress={onSubmit}>
+                    <Text
+                        style={{
+                            color: tintColorLight,
+                            fontSize: 18,
+                        }}
+                    >
+                        Save
+                    </Text>
+                </Pressable>
+            ),
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
     }, []);
 
     const onSubmit = () => {
@@ -88,24 +108,6 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         createTrip(trip);
         navigation.goBack();
     };
-
-    navigation.setOptions({
-        headerTitle: "New Trip",
-        headerRight: () => (
-            <Pressable onPress={onSubmit}>
-                <Text
-                    style={{
-                        color: tintColorLight,
-                        fontSize: 18,
-                    }}
-                >
-                    Save
-                </Text>
-            </Pressable>
-        ),
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
 
     return (
         <KeyboardAvoidingView
