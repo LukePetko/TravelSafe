@@ -15,9 +15,10 @@ import {
     inactiveLocalNotification,
     sendPushNotification,
 } from "./notifications";
-import { getCloseContacts } from "../api/firestore/accounts";
+import { getCloseContacts, getUserById } from "../api/firestore/accounts";
 import { CurrentTripInfo } from "./types/currentTripInfo";
 import { createLocationNotification } from "../api/firestore/notifications";
+import { User } from "./types/user";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {
     if (error) {
@@ -75,11 +76,14 @@ export const checkTimer = async () => {
                     });
                 });
             }
+
+            const user = (await getUserById(
+                getUserId(store.getState()),
+            )) as User;
+
             sendPushNotification(
                 ids,
-                `${
-                    getUser(store.getState()).username
-                } was inactive for over an hour!`,
+                `${user.username} was inactive for over an hour!`,
                 "Go and check his location!",
             );
 

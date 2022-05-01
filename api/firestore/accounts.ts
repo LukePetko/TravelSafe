@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import store from "../../redux/store";
-import { getUser } from "../../redux/stores/user";
+import { getUser, getUserId } from "../../redux/stores/user";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { PublicUser, User } from "../../utils/types/user";
@@ -217,7 +217,7 @@ export const getCloseContactsQuery = async (): Promise<
     // const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
     // const userSnap: DocumentData = await getDoc(userDoc);
 
-    const user = getUser(store.getState());
+    const user = (await getUserById(getUserId(store.getState()))) as User;
 
     const closeContactsIds: string[] = user.closeContacts.map((el) => el.id);
 
