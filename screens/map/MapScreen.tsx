@@ -61,12 +61,6 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
 
     useEffect(() => {
         (async () => {
-            setUser((await getUserById(userId || "")) as User);
-        })();
-    }, []);
-
-    useEffect(() => {
-        (async () => {
             const query = await getCloseContactsQuery();
             onSnapshot(query!, (snapshot) => {
                 setContactsTripInfo(

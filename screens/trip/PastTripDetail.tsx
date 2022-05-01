@@ -45,6 +45,21 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
+
+        navigation.setOptions({
+            title: trip.name,
+            headerRight: () => (
+                <Button
+                    title="Save"
+                    color={tintColorLight}
+                    onPress={() => onSave()}
+                />
+            ),
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
     }, []);
 
     useEffect(() => {
@@ -52,19 +67,6 @@ const PastTripDetail = (props: PastTripDetailProps) => {
             setPath(JSON.parse(trip.path as string) as GeoPoint[]);
         }
     }, [trip]);
-
-    navigation.setOptions({
-        title: trip.name,
-        headerRight: () => (
-            <Button
-                title="Save"
-                color={tintColorLight}
-                onPress={() => onSave()}
-            />
-        ),
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
 
     const onChange = (
         key: keyof Trip,

@@ -118,13 +118,15 @@ const NewPost = (props: NewPostProps) => {
                 trip: trips.find((trip) => trip.id === tripId) || null,
             });
         });
-    }, []);
 
-    navigation.setOptions({
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-        title: "New Post",
-    });
+        navigation.setOptions({
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+            title: "New Post",
+        });
+    }, []);
 
     return (
         <>

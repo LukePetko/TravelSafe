@@ -40,18 +40,6 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
 
     const dispatch: Dispatch<any> = useDispatch<any>();
 
-    navigation.setOptions({
-        headerRight: () => (
-            <Button
-                title="Save"
-                color={tintColorLight}
-                onPress={() => onSave()}
-            />
-        ),
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
-
     const onChange = (
         key: keyof Trip,
         value: string | Timestamp | Holiday | null,
@@ -96,6 +84,20 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
 
         const trip: Trip = route.params.trip;
         setTrip(trip);
+
+        navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    title="Save"
+                    color={tintColorLight}
+                    onPress={() => onSave()}
+                />
+            ),
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
     }, []);
 
     return (

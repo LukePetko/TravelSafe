@@ -51,12 +51,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
 
     const colorScheme = useColorScheme();
 
-    navigation.setOptions({
-        title: user?.username ?? "Profile",
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-    });
-
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -123,6 +117,14 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     useEffect((): void => {
         loadUser();
         loadPosts();
+
+        navigation.setOptions({
+            title: user?.username ?? "Profile",
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+        });
     }, []);
 
     if (!user) {

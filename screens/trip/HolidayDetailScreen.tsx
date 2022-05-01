@@ -49,19 +49,6 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
 
     const mapRef = useRef() as React.MutableRefObject<MapView>;
 
-    navigation.setOptions({
-        title: holiday.name,
-        headerTintColor: tintColorLight,
-        headerTitleStyle: { color: colorScheme === "dark" ? "#fff" : "#000" },
-        headerRight: () => (
-            <Button
-                title="Save"
-                color={tintColorLight}
-                onPress={() => onSave()}
-            />
-        ),
-    });
-
     useEffect(() => {
         getHolidayTrips(getUserId(store.getState()), holiday.holidayId!).then(
             (trips) => {
@@ -73,6 +60,20 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                 );
             },
         );
+        navigation.setOptions({
+            title: holiday.name,
+            headerTintColor: tintColorLight,
+            headerTitleStyle: {
+                color: colorScheme === "dark" ? "#fff" : "#000",
+            },
+            headerRight: () => (
+                <Button
+                    title="Save"
+                    color={tintColorLight}
+                    onPress={() => onSave()}
+                />
+            ),
+        });
     }, []);
 
     return (
