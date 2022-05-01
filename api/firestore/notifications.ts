@@ -130,15 +130,53 @@ export const createLocationNotification = async (
     });
 };
 
+export const createLikeNotification = async (
+    senderId: string,
+    receiverId: string,
+    postId: string,
+): Promise<void> => {
+    const sender = await getUserById(senderId);
+
+    const senderUsername = sender?.username;
+    const senderProfilePicture = sender?.profilePicture;
+
+    const receiver = await getUserById(receiverId);
+
+    const receiverUsername = receiver?.username;
+    const receiverProfilePicture = receiver?.profilePicture;
+
+    const notificationDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "notifications",
+        `${senderId}${receiverId}${postId}`,
+    );
+
+    const notificationData: DocumentData = {
+        senderId,
+        senderUsername,
+        senderProfilePicture,
+        receiverId,
+        receiverUsername,
+        receiverProfilePicture,
+        status: 0,
+        type: 3,
+        postId,
+        createdAt: serverTimestamp(),
+    };
+
+    setDoc(notificationDoc, notificationData);
+};
+
 export const acceptNotification = async (
     senderId: string,
     receiverId: string,
     time: number | null,
+    postId: string | null,
 ): Promise<void> => {
     const notificationDoc: DocumentReference<DocumentData> = doc(
         db,
         "notifications",
-        `${senderId}${receiverId}${time ? "loc" + time : ""}`,
+        `${senderId}${receiverId}${time ? "loc" + time : ""}${postId ?? ""}`,
     );
 
     const userDoc: DocumentReference<DocumentData> = doc(

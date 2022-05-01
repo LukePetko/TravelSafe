@@ -38,6 +38,9 @@ const Notification = (props: NotificationProps): JSX.Element => {
         case 2:
             typeText = `${username} didn't move for over an hour`;
             break;
+        case 3:
+            typeText = `${username} liked your post`;
+            break;
         default:
             break;
     }
@@ -105,7 +108,7 @@ const Notification = (props: NotificationProps): JSX.Element => {
                     </Pressable>
                 </View>
             )}
-            {type === 2 && (
+            {(type === 2 || type === 3) && (
                 <View style={localStyles.buttonContainer}>
                     <Pressable onPress={onAccept}>
                         <SFSymbol

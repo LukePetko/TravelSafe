@@ -60,6 +60,8 @@ export const createUserAccount = async (
 
         profilePicture: userInfo.profilePicture,
 
+        expoNotificationIds: [],
+
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
     };
@@ -437,6 +439,16 @@ export const addNotificationId = async (
     );
     const userSnap: DocumentData = await getDoc(userDoc);
 
+    const publicUserDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        userId,
+        "public",
+        "profile",
+    );
+
+    const publicUserSnap: DocumentData = await getDoc(publicUserDoc);
+
     if (userSnap.exists()) {
         const user: CurrentTripInfo = userSnap.data() as CurrentTripInfo;
 
@@ -450,7 +462,14 @@ export const addNotificationId = async (
             updatedAt: Timestamp.fromDate(new Date()),
         };
 
+        const updatedPublicUser: PublicUser = {
+            ...(publicUserSnap.data() as PublicUser),
+            expoNotificationIds: [...user.expoNotificationIds, notificationId],
+            updatedAt: Timestamp.fromDate(new Date()),
+        };
+
         const result = await setDoc(userDoc, updatedUser)
+            .then(() => setDoc(publicUserDoc, updatedPublicUser))
             .then(() => true)
             .catch(() => false);
 

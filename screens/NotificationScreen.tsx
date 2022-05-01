@@ -49,6 +49,7 @@ const NotificationScreen = (): JSX.Element => {
                                 notification.senderId,
                                 notification.receiverId,
                                 notification.time || null,
+                                notification.postId || null,
                             );
 
                             setNotifications(

@@ -1,13 +1,14 @@
 import { View, Image, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Post } from "../utils/types/post";
 import { width } from "../utils/dimensions";
 import { Pressable, Text } from "./Themed";
 import { SFSymbol } from "react-native-sfsymbols";
 import { getTimeDifference } from "../utils/time";
-import { likePost, removeLikePost } from "../api/firestore/posts";
+import { removeLikePost } from "../api/firestore/posts";
 import { getUserId } from "../redux/stores/user";
 import store from "../redux/store";
+import { handleLike } from "../utils/likes";
 
 type PostComponentProps = {
     post: Post;
@@ -17,10 +18,17 @@ type PostComponentProps = {
 const PostComponent = (props: PostComponentProps) => {
     const { post, navigation } = props;
 
+    const userId = getUserId(store.getState());
     const isLiked = () => {
-        const userId = getUserId(store.getState());
         return post.likes.map((u) => u.id).includes(userId);
     };
+
+    const [liked, setLiked] = useState<boolean>(false);
+    const [likes, setLikes] = useState<number>(post.likes.length);
+
+    useEffect(() => {
+        setLiked(isLiked());
+    }, []);
 
     return (
         <View
@@ -56,26 +64,41 @@ const PostComponent = (props: PostComponentProps) => {
             <View style={localStyles.buttonContainer}>
                 <Pressable
                     onPress={() => {
-                        if (post.likes && !isLiked()) {
-                            likePost(getUserId(store.getState()), post.id!);
+                        if (!liked) {
+                            handleLike(
+                                getUserId(store.getState()),
+                                post.id!,
+                                post.userId,
+                            );
+                            setLiked(true);
+                            setLikes(likes + 1);
                         } else {
                             removeLikePost(
                                 getUserId(store.getState()),
                                 post.id!,
                             );
+                            setLiked(false);
+                            setLikes(likes - 1);
                         }
                     }}
                 >
                     <View style={localStyles.innerContainer}>
-                        <SFSymbol
-                            name={isLiked() ? "heart.fill" : "heart"}
-                            size={32}
-                            color={isLiked() ? "red" : "#000000"}
-                            style={localStyles.innerIcon}
-                        />
-                        <Text style={localStyles.innerText}>
-                            {post.likes.length}
-                        </Text>
+                        {liked ? (
+                            <SFSymbol
+                                name="heart.fill"
+                                size={32}
+                                color="red"
+                                style={localStyles.innerIcon}
+                            />
+                        ) : (
+                            <SFSymbol
+                                name="heart"
+                                size={32}
+                                color="#000000"
+                                style={localStyles.innerIcon}
+                            />
+                        )}
+                        <Text style={localStyles.innerText}>{likes}</Text>
                     </View>
                 </Pressable>
                 <View style={localStyles.innerContainer}>

@@ -50,6 +50,8 @@ export type PublicUser = {
 
     profilePicture: string;
 
+    expoNotificationIds: string[];
+
     createdAt: Timestamp;
     updatedAt: Timestamp;
 };
