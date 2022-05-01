@@ -5,6 +5,9 @@ import { width } from "../utils/dimensions";
 import { Pressable, Text } from "./Themed";
 import { SFSymbol } from "react-native-sfsymbols";
 import { getTimeDifference } from "../utils/time";
+import { likePost, removeLikePost } from "../api/firestore/posts";
+import { getUserId } from "../redux/stores/user";
+import store from "../redux/store";
 
 type PostComponentProps = {
     post: Post;
@@ -13,6 +16,11 @@ type PostComponentProps = {
 
 const PostComponent = (props: PostComponentProps) => {
     const { post, navigation } = props;
+
+    const isLiked = () => {
+        const userId = getUserId(store.getState());
+        return post.likes.map((u) => u.id).includes(userId);
+    };
 
     return (
         <View
@@ -46,17 +54,30 @@ const PostComponent = (props: PostComponentProps) => {
             </Pressable>
             <Image source={{ uri: post.images[0] }} style={localStyles.image} />
             <View style={localStyles.buttonContainer}>
-                <View style={localStyles.innerContainer}>
-                    <SFSymbol
-                        name="heart"
-                        size={32}
-                        color={"#000000"}
-                        style={localStyles.innerIcon}
-                    />
-                    <Text style={localStyles.innerText}>
-                        {post.likes.length}
-                    </Text>
-                </View>
+                <Pressable
+                    onPress={() => {
+                        if (post.likes && !isLiked()) {
+                            likePost(getUserId(store.getState()), post.id!);
+                        } else {
+                            removeLikePost(
+                                getUserId(store.getState()),
+                                post.id!,
+                            );
+                        }
+                    }}
+                >
+                    <View style={localStyles.innerContainer}>
+                        <SFSymbol
+                            name={isLiked() ? "heart.fill" : "heart"}
+                            size={32}
+                            color={isLiked() ? "red" : "#000000"}
+                            style={localStyles.innerIcon}
+                        />
+                        <Text style={localStyles.innerText}>
+                            {post.likes.length}
+                        </Text>
+                    </View>
+                </Pressable>
                 <View style={localStyles.innerContainer}>
                     <SFSymbol
                         name="message"

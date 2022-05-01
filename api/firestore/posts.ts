@@ -3,6 +3,7 @@ import {
     doc,
     DocumentData,
     DocumentReference,
+    getDoc,
     getDocs,
     orderBy,
     Query,
@@ -113,4 +114,56 @@ export const getPostsFromUsers = async (
     });
 
     return postsData;
+};
+
+export const likePost = async (
+    userId: string,
+    postId: string,
+): Promise<boolean> => {
+    const postDocumentRef: DocumentReference<DocumentData> = doc(
+        db,
+        "posts",
+        postId,
+    );
+
+    const post = (await getDoc(postDocumentRef)).data() as Post;
+
+    if (post.likes.map((u) => u.id).includes(userId)) {
+        return false;
+    }
+
+    const user = (await getUserById(userId)) as User;
+
+    post.likes.push({
+        id: userId,
+        username: user.username,
+        profilePicture: user.profilePicture,
+    });
+
+    return await setDoc(postDocumentRef, post)
+        .then(() => true)
+        .catch(() => false);
+};
+
+export const removeLikePost = async (
+    userId: string,
+    postId: string,
+): Promise<boolean> => {
+    const postDocumentRef: DocumentReference<DocumentData> = doc(
+        db,
+        "posts",
+        postId,
+    );
+
+    const post = (await getDoc(postDocumentRef)).data() as Post;
+
+    if (!post.likes.map((u) => u.id).includes(userId)) {
+        return false;
+    }
+
+    post.likes = post.likes.filter((u) => u.id !== userId);
+
+    return await setDoc(postDocumentRef, post)
+        .then(() => true)
+        .catch(() => false);
 };
