@@ -17,7 +17,6 @@ type HomeScreenProps = {
 const HomeScreen = (props: HomeScreenProps) => {
     const { navigation } = props;
 
-    const [followed, setFollowed] = useState<string[]>([]);
     const [posts, setPosts] = useState<Post[]>([]);
 
     const loadPosts = async () => {

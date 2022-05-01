@@ -1,10 +1,11 @@
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet, useColorScheme } from "react-native";
 import React from "react";
 import { getTimeDifference } from "../utils/time";
 import { View, Text } from "./Themed";
 import { Timestamp } from "firebase/firestore";
 import { SFSymbol } from "react-native-sfsymbols";
 import { width } from "../utils/dimensions";
+import Colors from "../constants/Colors";
 
 type NotificationProps = {
     type: number;
@@ -29,6 +30,8 @@ const Notification = (props: NotificationProps): JSX.Element => {
         onDecline,
     } = props;
 
+    const colorScheme = useColorScheme();
+
     let typeText;
 
     switch (type) {
@@ -46,7 +49,17 @@ const Notification = (props: NotificationProps): JSX.Element => {
     }
 
     return (
-        <View style={localStyles.container}>
+        <View
+            style={[
+                localStyles.container,
+                {
+                    borderBottomColor:
+                        colorScheme === "dark"
+                            ? Colors.dark.bottomBorderColor
+                            : Colors.light.bottomBorderColor,
+                },
+            ]}
+        >
             <View style={{ flexDirection: "row" }}>
                 <View style={localStyles.imageContainer}>
                     <Image

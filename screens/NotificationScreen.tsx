@@ -6,6 +6,7 @@ import { getUserId } from "../redux/stores/user";
 import Notification from "../components/Notification";
 import store from "../redux/store";
 import { acceptNotification } from "../api/firestore/notifications";
+import { FlatList } from "react-native";
 
 const NotificationScreen = (): JSX.Element => {
     const userId = getUserId(store.getState());
@@ -16,56 +17,58 @@ const NotificationScreen = (): JSX.Element => {
     }, []);
 
     return (
-        <View
-            style={[
-                styles.container,
-                {
-                    justifyContent:
-                        notifications?.length === 0 ? "center" : "flex-start",
-                    flexGrow: 1,
-                },
-            ]}
-        >
-            {notifications?.length === 0 && (
-                <Text
-                    style={{ textAlign: "center", padding: 25, fontSize: 24 }}
-                >
-                    No notifications
-                </Text>
-            )}
-            {notifications?.map((notification) => (
-                <Pressable
-                    key={`${notification.senderId}-${notification.createdAt}`}
-                    styles={{ backgroundColor: "transparent" }}
-                >
-                    <Notification
-                        type={notification.type}
-                        senderId={notification.senderId}
-                        username={notification.senderUsername}
-                        profilePicture={notification.senderProfilePicture}
-                        createdAt={notification.createdAt}
-                        onAccept={() => {
-                            acceptNotification(
-                                notification.senderId,
-                                notification.receiverId,
-                                notification.time || null,
-                                notification.postId || null,
-                            );
+        <View style={{ flex: 1 }}>
+            <FlatList
+                ListEmptyComponent={
+                    <View style={styles.container}>
+                        <Text style={{ fontWeight: "600", marginTop: 50 }}>
+                            No notifications
+                        </Text>
+                    </View>
+                }
+                data={notifications}
+                renderItem={({ item }) => (
+                    <Pressable
+                        key={`${item.senderId}-${item.createdAt}`}
+                        styles={{ backgroundColor: "transparent" }}
+                    >
+                        <Notification
+                            type={item.type}
+                            senderId={item.senderId}
+                            username={item.senderUsername}
+                            profilePicture={item.senderProfilePicture}
+                            createdAt={item.createdAt}
+                            onAccept={() => {
+                                acceptNotification(
+                                    item.senderId,
+                                    item.receiverId,
+                                    item.time || null,
+                                    item.postId || null,
+                                );
 
-                            setNotifications(
-                                (notifications) =>
-                                    notifications &&
-                                    notifications.filter(
-                                        (n) =>
-                                            n.senderId !==
-                                            notification.senderId,
-                                    ),
-                            );
-                        }}
-                        onDecline={() => {}}
-                    />
-                </Pressable>
-            ))}
+                                setNotifications(
+                                    (notifications) =>
+                                        notifications &&
+                                        notifications.filter(
+                                            (n) =>
+                                                n.senderId !== item.senderId &&
+                                                (!!n.time
+                                                    ? n.time !== item.time
+                                                    : true) &&
+                                                (!!n.postId
+                                                    ? n.postId !== item.postId
+                                                    : true),
+                                        ),
+                                );
+                            }}
+                            onDecline={() => {}}
+                        />
+                    </Pressable>
+                )}
+                keyExtractor={(item) =>
+                    `${item.senderId}${item.receiverId}${item.time}${item.postId}`
+                }
+            />
         </View>
     );
 };
