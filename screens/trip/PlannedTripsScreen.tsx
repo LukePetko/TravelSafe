@@ -59,7 +59,7 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
                             padding: 10,
                         }}
                     >
-                        Past Trips
+                        Planned Trips
                     </Text>
                 }
                 renderItem={({ item }) => {
