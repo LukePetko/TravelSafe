@@ -73,6 +73,7 @@
         "@types/react-instantsearch-native": "^6.3.2",
         "@types/react-native": "~0.64.12",
         "@types/react-native-background-timer": "^2.0.0",
+        "@types/react-native-snap-carousel": "^3.8.5",
         "@types/uuid": "^8.3.4",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
         "enzyme": "^3.11.0",

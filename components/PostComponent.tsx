@@ -1,5 +1,5 @@
 import { View, Image, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Post } from "../utils/types/post";
 import { width } from "../utils/dimensions";
 import { Pressable, Text } from "./Themed";
@@ -9,6 +9,7 @@ import { removeLikePost } from "../api/firestore/posts";
 import { getUserId } from "../redux/stores/user";
 import store from "../redux/store";
 import { handleLike } from "../utils/likes";
+import Carousel, { getInputRangeFromIndexes } from "react-native-snap-carousel";
 
 type PostComponentProps = {
     post: Post;
@@ -25,6 +26,21 @@ const PostComponent = (props: PostComponentProps) => {
 
     const [liked, setLiked] = useState<boolean>(false);
     const [likes, setLikes] = useState<number>(post.likes.length);
+    const [photoIndex, setPhotoIndex] = useState<number>(0);
+
+    let carousel = useRef();
+
+    const scrollInterpolator = (index: number, carouselProps: any) => {
+        const range = [1, 0, -1];
+        const inputRange = getInputRangeFromIndexes(
+            range,
+            index,
+            carouselProps,
+        );
+        const outputRange = range;
+
+        return { inputRange, outputRange };
+    };
 
     useEffect(() => {
         setLiked(isLiked());
@@ -60,7 +76,31 @@ const PostComponent = (props: PostComponentProps) => {
                     </Text>
                 </View>
             </Pressable>
-            <Image source={{ uri: post.images[0] }} style={localStyles.image} />
+            <Carousel
+                ref={(c: any) => (carousel = c)}
+                data={post.images}
+                renderItem={(item) => (
+                    <Image
+                        source={{ uri: item.item }}
+                        style={localStyles.image}
+                    />
+                )}
+                sliderWidth={width}
+                itemWidth={width}
+                inactiveSlideShift={0}
+                onSnapToItem={(index) => setPhotoIndex(index)}
+                scrollInterpolator={scrollInterpolator}
+                useScrollView={true}
+            />
+            <Text
+                style={{
+                    fontSize: 12,
+                    fontWeight: "500",
+                    marginLeft: 10,
+                }}
+            >
+                {photoIndex + 1}/{post.images.length}
+            </Text>
             <View style={localStyles.buttonContainer}>
                 <Pressable
                     onPress={() => {
