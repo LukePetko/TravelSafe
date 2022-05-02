@@ -90,7 +90,7 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                 color: colorScheme === "dark" ? "#fff" : "#000",
             },
         });
-    }, []);
+    }, [tripState]);
 
     return (
         <KeyboardAvoidingView

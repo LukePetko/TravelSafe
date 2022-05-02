@@ -39,7 +39,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const { navigation, route } = props;
 
     const [tripState, setTripState] = useState<NewTripState>({
-        name: "",
+        name: "123",
         description: "",
         holiday: null,
         startTime: Timestamp.fromDate(new Date()),
@@ -48,6 +48,10 @@ const NewTripScreen = (props: NewTripScreenProps) => {
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
 
+    useEffect(() => {
+        console.log(tripState);
+    }, [tripState]);
+
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
 
@@ -55,10 +59,10 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         key: keyof NewTripState,
         value: string | Timestamp | Holiday | null,
     ): void => {
-        setTripState({
-            ...tripState,
+        setTripState((currentValue) => ({
+            ...currentValue,
             [key]: value,
-        });
+        }));
     };
 
     const userId = getUserId(store.getState());
@@ -69,7 +73,9 @@ const NewTripScreen = (props: NewTripScreenProps) => {
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
         });
+    }, []);
 
+    useEffect(() => {
         navigation.setOptions({
             headerTitle: "New Trip",
             headerRight: () => (
@@ -89,10 +95,12 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                 color: colorScheme === "dark" ? "#fff" : "#000",
             },
         });
-    }, []);
+    }, [tripState]);
 
     const onSubmit = () => {
-        newTripValidation(tripState);
+        // newTripValidation(tripState);
+
+        console.log(tripState.name);
 
         const trip: Trip & { holiday?: Holiday | null } = {
             userId: userId,
@@ -133,8 +141,14 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     <ListInput
                         value={tripState.name}
                         onChangeText={(value: string): void => {
-                            onChange("name", value);
+                            setTripState((currentValue) => ({
+                                ...currentValue,
+                                name: value,
+                            }));
                         }}
+                        // onChangeText={(value: string): void => {
+                        //     onChange("name", value);
+                        // }}
                         placeholder={"Enter trip name"}
                         separator={holidays.length > 0}
                         borderRadius={{

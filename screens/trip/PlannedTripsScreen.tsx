@@ -66,7 +66,7 @@ const PlannedTripsScreen = (props: PlannedTripsScreenProps) => {
                     return (
                         <Pressable
                             onPress={() => {
-                                navigation.navigate("Trip", {
+                                navigation.navigate("PlannedTripDetail", {
                                     tripId: item.id,
                                 });
                             }}
