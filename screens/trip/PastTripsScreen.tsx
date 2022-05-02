@@ -68,7 +68,7 @@ const PastTripsScreen = (props: PastTripScreenProps) => {
                         key={item.id}
                         onPress={() => {
                             navigation.navigate("PastTripDetail", {
-                                item,
+                                trip: item,
                             });
                         }}
                     >

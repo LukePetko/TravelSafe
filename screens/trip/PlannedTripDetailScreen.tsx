@@ -45,7 +45,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
         value: string | Timestamp | Holiday | null,
     ): void => {
         setTrip({
-            ...trip,
+            ...trip!,
             [key]: value,
         });
     };

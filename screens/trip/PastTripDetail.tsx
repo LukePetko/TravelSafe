@@ -33,7 +33,7 @@ const mapStateToProps = (state: any) => {
 const PastTripDetail = (props: PastTripDetailProps) => {
     const { navigation, route, userId } = props;
 
-    const [trip, setTrip] = useState<Trip>(route.params.trip);
+    const [trip, setTrip] = useState<Trip>();
     const [path, setPath] = useState<GeoPoint[]>([] as GeoPoint[]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
@@ -46,8 +46,11 @@ const PastTripDetail = (props: PastTripDetailProps) => {
             setHolidays(holidays);
         });
 
+        const trip = route.params.trip;
+        setTrip(trip);
+
         navigation.setOptions({
-            title: trip.name,
+            title: trip?.name,
             headerRight: () => (
                 <Button
                     title="Save"
@@ -63,7 +66,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     }, []);
 
     useEffect(() => {
-        if (trip.path) {
+        if (trip?.path) {
             setPath(JSON.parse(trip.path as string) as GeoPoint[]);
         }
     }, [trip]);
@@ -73,13 +76,13 @@ const PastTripDetail = (props: PastTripDetailProps) => {
         value: string | Date | Holiday | null,
     ): void => {
         setTrip({
-            ...trip,
+            ...trip!,
             [key]: value,
         });
     };
 
     const onSave = async () => {
-        await updateTrip(trip);
+        await updateTrip(trip!);
         navigation.goBack();
     };
 
@@ -105,7 +108,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                 </Text>
                 <View style={{ alignItems: "center", marginTop: 20 }}>
                     <ListInput
-                        value={trip.name}
+                        value={trip?.name}
                         onChangeText={(value: string): void => {
                             onChange("name", value);
                         }}
@@ -124,7 +127,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             rotateChevron={showHoliday}
                             onPress={() => setShowHoliday(!showHoliday)}
                             fieldValue={
-                                trip.holidayId
+                                trip?.holidayId
                                     ? holidays.find(
                                           (h) => h.id === trip.holidayId,
                                       )?.name
@@ -168,7 +171,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                         </>
                     )}
                     <ListInput
-                        value={trip.description}
+                        value={trip?.description}
                         style={{ marginTop: 20 }}
                         onChangeText={(value: string): void => {
                             onChange("description", value);
@@ -196,9 +199,9 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             padding: 10,
                         }}
                     >
-                        {trip.startTime.toDate().toLocaleString()}
+                        {trip?.startTime.toDate().toLocaleString()}
                     </Text>
-                    {trip.endTime && (
+                    {trip?.endTime && (
                         <>
                             <Text
                                 style={{
@@ -288,7 +291,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                         }}
                     >
                         <ProfilePicture
-                            photoURL={trip.thumbnail || ""}
+                            photoURL={trip?.thumbnail || ""}
                             onPress={() => {}}
                         />
                     </View>
