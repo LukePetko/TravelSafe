@@ -39,7 +39,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const { navigation, route } = props;
 
     const [tripState, setTripState] = useState<NewTripState>({
-        name: "123",
+        name: "",
         description: "",
         holiday: null,
         startTime: Timestamp.fromDate(new Date()),
