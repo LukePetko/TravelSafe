@@ -48,10 +48,6 @@ const NewTripScreen = (props: NewTripScreenProps) => {
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
 
-    useEffect(() => {
-        console.log(tripState);
-    }, [tripState]);
-
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
 
