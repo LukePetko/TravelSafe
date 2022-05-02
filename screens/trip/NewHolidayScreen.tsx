@@ -147,14 +147,6 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                         End Date
                     </ListCalendar>
 
-                    <ListLabel
-                        showChevron={true}
-                        borderRadius={{ top: true, bottom: true }}
-                        style={{ marginTop: 20 }}
-                    >
-                        Destination
-                    </ListLabel>
-
                     <ListInput
                         value={tripState.description}
                         onChangeText={(value: string): void => {
