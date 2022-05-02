@@ -52,6 +52,8 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
 
     const dispatch = useDispatch();
 
+    console.log(contact.username);
+
     const endTripAction = () => {
         if (getTripId(store.getState())) {
             stopLocationTracking();
@@ -103,7 +105,7 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
             </View>
             <View style={localStyles.textContainer}>
                 <Text style={{ fontWeight: "bold" }}>{contact.username}</Text>
-                {contact.location && !isOwn && (
+                {contact.tripName && !isOwn && (
                     <Text>
                         {distanceText(distance)} ⦁ {contact.tripName} ⦁{" "}
                         {contact &&
@@ -111,7 +113,7 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
                             getTimeDifference(contact.updatedAt.toDate())}
                     </Text>
                 )}
-                {!contact.location && !isOwn && <Text>No active trip</Text>}
+                {!contact.tripName && !isOwn && <Text>No active trip</Text>}
                 {isOwn && (
                     <Text>
                         {ownTripName} ⦁ {distanceText(ownDistance)} ⦁

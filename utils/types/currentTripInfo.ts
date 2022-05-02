@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { LatLng } from "react-native-maps";
 
 export type CurrentTripInfo = {
     id: string;
@@ -11,7 +12,8 @@ export type CurrentTripInfo = {
               longitudeDelta: number;
           }
         | undefined
-        | null;
+        | null
+        | LatLng;
     profilePicture: string;
     tripName: string;
     expoNotificationIds: string[];

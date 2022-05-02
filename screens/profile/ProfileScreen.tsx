@@ -26,6 +26,7 @@ import {
 import PostComponent from "../../components/PostComponent";
 import { connect } from "react-redux";
 import { tintColorLight } from "../../constants/Colors";
+import { width } from "../../utils/dimensions";
 
 type ProfileProps = {
     navigation: any;
@@ -179,41 +180,55 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                                     <Text>{user?.followingCount}</Text>
                                 </View>
                             </View>
-                            {isOwn && (
-                                <ListLabel
-                                    onPress={() =>
-                                        navigation.navigate("NewPost")
-                                    }
-                                    borderRadius={{
-                                        top: true,
-                                        bottom: true,
-                                    }}
-                                >
-                                    New Post
-                                </ListLabel>
-                            )}
-                            {!isOwn && (
-                                <ListLabel
-                                    borderRadius={{ top: true, bottom: true }}
-                                    onPress={() => {
-                                        isFollowing
-                                            ? unfollowUser(
-                                                  getUserId(store.getState()),
-                                                  userID,
-                                              )
-                                            : followUser(
-                                                  getUserId(store.getState()),
-                                                  userID,
-                                              );
-                                    }}
-                                >
-                                    {isFollowing
-                                        ? "Unfollow"
-                                        : isFollower
-                                        ? "Follow Back"
-                                        : "Follow"}
-                                </ListLabel>
-                            )}
+                            <View
+                                style={{
+                                    width,
+                                    alignItems: "center",
+                                }}
+                            >
+                                {isOwn && (
+                                    <ListLabel
+                                        onPress={() =>
+                                            navigation.navigate("NewPost")
+                                        }
+                                        borderRadius={{
+                                            top: true,
+                                            bottom: true,
+                                        }}
+                                    >
+                                        New Post
+                                    </ListLabel>
+                                )}
+                                {!isOwn && (
+                                    <ListLabel
+                                        borderRadius={{
+                                            top: true,
+                                            bottom: true,
+                                        }}
+                                        onPress={() => {
+                                            isFollowing
+                                                ? unfollowUser(
+                                                      getUserId(
+                                                          store.getState(),
+                                                      ),
+                                                      userID,
+                                                  )
+                                                : followUser(
+                                                      getUserId(
+                                                          store.getState(),
+                                                      ),
+                                                      userID,
+                                                  );
+                                        }}
+                                    >
+                                        {isFollowing
+                                            ? "Unfollow"
+                                            : isFollower
+                                            ? "Follow Back"
+                                            : "Follow"}
+                                    </ListLabel>
+                                )}
+                            </View>
                         </View>
                     );
                 }}

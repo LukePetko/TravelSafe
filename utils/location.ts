@@ -59,12 +59,12 @@ export const addLocationToPath = ({ data, error }: any) => {
 export const checkTimer = async () => {
     const time = getLastMovementTime(store.getState());
 
-    if (time === 5) {
+    if (time === 60 * 60) {
         inactiveLocalNotification();
         inactivityAlert(() => store.dispatch(resetLastMovementTime()));
     }
 
-    if (time === 10) {
+    if (time === 80 * 60) {
         (async () => {
             const ids: string[] = [];
             const contacts: CurrentTripInfo[] | undefined =

@@ -68,7 +68,7 @@ export const createUserAccount = async (
 
     const currentTrip: CurrentTripInfo = {
         id,
-        location: null,
+        location: { latitude: 0.0, longitude: 0.0 },
         username: userInfo.username,
         profilePicture: userInfo.profilePicture,
         tripName: "",

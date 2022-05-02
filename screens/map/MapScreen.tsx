@@ -1,7 +1,7 @@
 import { View, Image, useColorScheme } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styles } from "../../styles/global";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { LatLng, Marker, Polyline, Region } from "react-native-maps";
 
 import * as Location from "expo-location";
 import { connect } from "react-redux";
@@ -48,15 +48,20 @@ const mapStateToProps = (state: any) => ({
     tripName: getTripName(state),
 });
 
+type CloseContact = CurrentTripInfo & {
+    marker?: any;
+};
+
 const MapScreen = (props: MapScreenProps): JSX.Element => {
     const { navigation, userId, tripId, path, distance, tripName } = props;
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<User | null>(null);
-    const [contactsTripInfo, setContactsTripInfo] = useState<CurrentTripInfo[]>(
+    const [contactsTripInfo, setContactsTripInfo] = useState<CloseContact[]>(
         [],
     );
     const [followUserLocation, setFollowUserLocation] = useState<boolean>(true);
+    const [markers, setMarkers] = useState<any[]>([]);
     const colorScheme = useColorScheme();
 
     useEffect(() => {
@@ -64,7 +69,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
             const query = await getCloseContactsQuery();
             onSnapshot(query!, (snapshot) => {
                 setContactsTripInfo(
-                    snapshot.docs.map((doc) => doc.data() as CurrentTripInfo),
+                    snapshot.docs.map((doc) => doc.data() as CloseContact),
                 );
             });
         })();
@@ -79,7 +84,32 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
             }
             setIsLoading(false);
         })();
+
+        (async () => {
+            const user = (await getUserById(userId!)) as User;
+            setUser(user);
+
+            console.log(user);
+        })();
     }, []);
+
+    useEffect(() => {
+        console.log(
+            contactsTripInfo[0]?.location,
+            contactsTripInfo[0]?.username,
+        );
+
+        setMarkers(
+            contactsTripInfo.map((contact) => ({
+                coords: {
+                    latitude: contact.location?.latitude || 0,
+                    longitude: contact.location?.longitude || 0,
+                },
+                username: contact.username,
+                profilePicture: contact.profilePicture,
+            })),
+        );
+    }, [contactsTripInfo]);
 
     const map = useRef() as React.MutableRefObject<MapView>;
 
@@ -87,7 +117,13 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
     const snapPoints = useMemo(() => ["5%", "25%", "50%"], []);
 
     const animateToRegion = (coords: MapCoords): void => {
-        map.current.animateToRegion(coords, 1000);
+        const region: Region = {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+        };
+        map.current.animateToRegion(region, 1000);
     };
 
     return (
@@ -109,31 +145,29 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                             strokeWidth={5}
                             strokeColor={tintColorLight}
                         />
-                        {contactsTripInfo?.map(
-                            (contact: any) =>
-                                contact.location && (
-                                    <Marker
-                                        key={contact.username}
-                                        coordinate={contact.location}
-                                        title={contact.username}
-                                    >
-                                        <Image
-                                            source={{
-                                                uri:
-                                                    contact.profilePicture ||
-                                                    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
-                                            }}
-                                            style={{
-                                                width: 50,
-                                                height: 50,
-                                                borderRadius: 25,
-                                                borderColor: "white",
-                                                borderWidth: 2,
-                                            }}
-                                        />
-                                    </Marker>
-                                ),
-                        )}
+                        {markers.map((marker: any) => (
+                            <Marker
+                                key={marker.username}
+                                coordinate={marker.coords}
+                                title={marker.username}
+                                tracksViewChanges={false}
+                            >
+                                <Image
+                                    source={{
+                                        uri:
+                                            marker.profilePicture ||
+                                            "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+                                    }}
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: 25,
+                                        borderColor: "white",
+                                        borderWidth: 2,
+                                    }}
+                                />
+                            </Marker>
+                        ))}
                     </MapView>
                     <BottomSheet
                         // ref={bottomSheetRef}
@@ -172,7 +206,11 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                                                 tripName: tripName || "",
                                                 expoNotificationIds: [],
                                             }}
-                                            userLocation={async () => null}
+                                            userLocation={async () =>
+                                                animateToRegion(
+                                                    path[path.length - 1],
+                                                )
+                                            }
                                             isOwn={true}
                                             navigation={navigation}
                                         />
@@ -200,7 +238,7 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
                                         borderBottomWidth: 1,
                                     }}
                                     onPress={() => {
-                                        !!contact.location &&
+                                        !!contact.tripName &&
                                             animateToRegion(contact.location);
                                     }}
                                 >

@@ -178,7 +178,10 @@ export const endTrip = async (id: string): Promise<boolean> => {
         const currentTrip: DocumentData = locationSnap.data();
         const updatedLocation: DocumentData = {
             ...currentTrip,
-            location: null,
+            location: {
+                latitude: 0.0,
+                longitude: 0.0,
+            },
             tripName: null,
             updatedAt: new Date(),
         };
