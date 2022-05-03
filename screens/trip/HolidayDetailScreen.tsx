@@ -246,7 +246,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                         }}
                     >
                         {trips.map((trip) => (
-                            <>
+                            <View key={trip.id}>
                                 {trip.path && (
                                     <>
                                         <Marker
@@ -286,7 +286,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                                         />
                                     </>
                                 )}
-                            </>
+                            </View>
                         ))}
                     </MapView>
                 </View>
