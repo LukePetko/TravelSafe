@@ -34,7 +34,7 @@ const Navigation = ({
 }): JSX.Element => {
     const dispatch: Dispatch<any> = useDispatch<any>();
 
-    const [notification, setNotification] = useState(false);
+    const [notification, setNotification] = useState<any>(false);
     const notificationListener: MutableRefObject<Subscription> = useRef();
     const responseListener: MutableRefObject<Subscription> = useRef();
 
@@ -60,8 +60,8 @@ const Navigation = ({
                     notificationListener.current =
                         Notifications.addNotificationReceivedListener(
                             (notification) => {
-                                // setNotification(notification as Boolean);
-                                console.log("notification", notification);
+                                setNotification(notification);
+                                // console.log("notification", notification);
                             },
                         );
 
