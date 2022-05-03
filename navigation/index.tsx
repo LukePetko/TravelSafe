@@ -7,7 +7,6 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import { useStoreSelector } from "../hooks/useStoreSelector";
-import LinkingConfiguration from "./LinkingConfiguration";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -88,7 +87,6 @@ const Navigation = ({
     const { userId }: UserState = useStoreSelector((state) => state.user);
     return (
         <NavigationContainer
-            linking={LinkingConfiguration}
             theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
             {userId ? <RootNavigator /> : <AuthNavigator />}
