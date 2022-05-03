@@ -13,7 +13,13 @@ const NotificationScreen = (): JSX.Element => {
     const [notifications, setNotifications] = useState<any[] | null>([]);
 
     useEffect(() => {
-        getUserNotifications(userId).then(setNotifications);
+        getUserNotifications(userId).then((notifications) => {
+            if (notifications) {
+                setNotifications(
+                    notifications?.sort((a, b) => b.createdAt - a.createdAt),
+                );
+            }
+        });
     }, []);
 
     return (
