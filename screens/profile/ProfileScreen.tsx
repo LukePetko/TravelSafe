@@ -27,6 +27,7 @@ import PostComponent from "../../components/PostComponent";
 import { connect } from "react-redux";
 import { tintColorLight } from "../../constants/Colors";
 import { width } from "../../utils/dimensions";
+import { openImageDialog } from "../../utils/imagePicker";
 
 type ProfileProps = {
     navigation: any;
@@ -51,40 +52,6 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     );
 
     const colorScheme = useColorScheme();
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 0.1,
-        });
-
-        if (!result.cancelled) {
-            const blob = await getPictureBlob(result.uri);
-            const response = await uploadProfileImage(blob, userID);
-
-            updateProfilePicture(userID, response);
-        }
-    };
-
-    const onPress = () =>
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options: ["Cancel", "Take A Photo", "Choose From Library"],
-                cancelButtonIndex: 0,
-                userInterfaceStyle: "dark",
-            },
-            (buttonIndex: number): void => {
-                if (buttonIndex === 0) {
-                    // cancel action
-                } else if (buttonIndex === 1) {
-                    navigation.navigate("CameraModal");
-                } else if (buttonIndex === 2) {
-                    pickImage();
-                }
-            },
-        );
 
     const loadUser = async () => {
         if (isOwn) {
@@ -139,11 +106,27 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                     return (
                         <View style={localStyles.innerContainer}>
                             <ProfilePicture
-                                photoURL={
-                                    user?.profilePicture ||
-                                    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
+                                photoURL={user?.profilePicture}
+                                onPress={
+                                    isOwn
+                                        ? () =>
+                                              openImageDialog(
+                                                  navigation,
+                                                  async (blob) => {
+                                                      const response =
+                                                          await uploadProfileImage(
+                                                              blob,
+                                                              userID,
+                                                          );
+
+                                                      updateProfilePicture(
+                                                          userID,
+                                                          response,
+                                                      );
+                                                  },
+                                              )
+                                        : () => {}
                                 }
-                                onPress={onPress}
                             />
                             <Text
                                 style={{

@@ -16,6 +16,9 @@ import { newHolidayValidation } from "../../utils/validations";
 import { Holiday } from "../../utils/types/holiday";
 import { createHoliday } from "../../api/firestore/trips";
 import { Timestamp } from "firebase/firestore";
+import { openImageDialog } from "../../utils/imagePicker";
+import { removeThumbnail, uploadThumbnail } from "../../api/storage";
+import { v4 } from "uuid";
 
 type NewHolidayScreenProps = {
     navigation: any;
@@ -41,6 +44,7 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
         thumbnail:
             "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     });
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const onChange = (
         key: keyof NewHolidayState,
@@ -167,7 +171,24 @@ const NewHolidayScreen = (props: NewHolidayScreenProps) => {
                     </Text>
                     <ProfilePicture
                         photoURL={tripState.thumbnail}
-                        onPress={() => {}}
+                        isLoading={isUploading}
+                        onPress={() =>
+                            openImageDialog(navigation, async (blob) => {
+                                setIsUploading(true);
+                                if (
+                                    tripState.thumbnail !==
+                                    "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                                )
+                                    removeThumbnail(tripState.thumbnail);
+                                const url = await uploadThumbnail(
+                                    blob,
+                                    v4(),
+                                    userId,
+                                );
+                                onChange("thumbnail", url);
+                                setIsUploading(false);
+                            })
+                        }
                     />
                 </View>
             </ScrollView>

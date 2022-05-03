@@ -55,7 +55,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                 setTrips(
                     trips.map((trip) => ({
                         ...trip,
-                        path: JSON.parse(trip.path as string),
+                        path: trip.path ? JSON.parse(trip.path as string) : [],
                     })),
                 );
             },
@@ -186,7 +186,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                                 navigation.navigate(
                                     trip.status === "ended"
                                         ? "PastTripDetail"
-                                        : "EditTrip",
+                                        : "PlannedTripDetail",
                                     {
                                         trip: {
                                             ...trip,
@@ -247,15 +247,15 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                     >
                         {trips.map((trip) => (
                             <View key={trip.id}>
-                                {trip.path && (
+                                {trip.path!.length > 0 && (
                                     <>
                                         <Marker
                                             coordinate={{
                                                 latitude: (
-                                                    trip.path[0] as GeoPoint
+                                                    trip.path![0] as GeoPoint
                                                 ).latitude,
                                                 longitude: (
-                                                    trip.path[0] as GeoPoint
+                                                    trip.path![0] as GeoPoint
                                                 ).longitude,
                                             }}
                                             title={`${trip.name} Start`}
@@ -264,13 +264,13 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                                         <Marker
                                             coordinate={{
                                                 latitude: (
-                                                    trip.path[
-                                                        trip.path.length - 1
+                                                    trip.path![
+                                                        trip.path!.length - 1
                                                     ] as GeoPoint
                                                 ).latitude,
                                                 longitude: (
-                                                    trip.path[
-                                                        trip.path.length - 1
+                                                    trip.path![
+                                                        trip.path!.length - 1
                                                     ] as GeoPoint
                                                 ).longitude,
                                             }}

@@ -23,6 +23,9 @@ import { createTripAlertButton } from "../../utils/alers";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { startLocationTracking } from "../../api/backgroundLocation";
+import { openImageDialog } from "../../utils/imagePicker";
+import { removeThumbnail, uploadThumbnail } from "../../api/storage";
+import { v4 } from "uuid";
 
 type EditTripScreenProps = {
     navigation: any;
@@ -34,8 +37,10 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
 
     const [trip, setTrip] = useState<Trip>();
 
+    const [oldImage, setOldImage] = useState<string>("");
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
     const colorScheme = useColorScheme();
 
     const dispatch: Dispatch<any> = useDispatch<any>();
@@ -51,6 +56,12 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     };
 
     const onSave = async () => {
+        if (
+            trip!.thumbnail !== oldImage &&
+            trip!.thumbnail !==
+                "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+        )
+            removeThumbnail(trip!.thumbnail as string);
         await updateTrip(trip!);
         navigation.goBack();
     };
@@ -84,7 +95,10 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
 
         const trip: Trip = route.params.trip;
         setTrip(trip);
+        setOldImage(trip.thumbnail!);
+    }, []);
 
+    useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <Button
@@ -98,7 +112,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                 color: colorScheme === "dark" ? "#fff" : "#000",
             },
         });
-    }, []);
+    }, [trip]);
 
     return (
         <KeyboardAvoidingView
@@ -230,7 +244,19 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                     </Text>
                     <ProfilePicture
                         photoURL={trip?.thumbnail!}
-                        onPress={() => {}}
+                        isLoading={isUploading}
+                        onPress={() =>
+                            openImageDialog(navigation, async (blob) => {
+                                setIsUploading(true);
+                                const url = await uploadThumbnail(
+                                    blob,
+                                    v4(),
+                                    userId,
+                                );
+                                onChange("thumbnail", url);
+                                setIsUploading(false);
+                            })
+                        }
                     />
                     <ListLabel
                         borderRadius={{ top: true, bottom: true }}

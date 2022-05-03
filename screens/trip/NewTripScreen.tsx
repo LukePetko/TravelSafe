@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { createTrip } from "../../api/firestore";
 import { getUserHoliday } from "../../api/firestore/trips";
+import { removeThumbnail, uploadThumbnail } from "../../api/storage";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -17,9 +18,11 @@ import {
 import { tintColorLight } from "../../constants/Colors";
 import store from "../../redux/store";
 import { getUserId } from "../../redux/stores/user";
+import { openImageDialog } from "../../utils/imagePicker";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 import { newTripValidation } from "../../utils/validations";
+import { v4 } from "uuid";
 
 type NewTripScreenProps = {
     navigation: any;
@@ -49,7 +52,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     });
 
     const [holidays, setHolidays] = useState<Holiday[]>([]);
-    const [showHoliday, setShowHoliday] = useState(false);
+    const [showHoliday, setShowHoliday] = useState<boolean>(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const onChange = (
         key: keyof NewTripState,
@@ -94,7 +98,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     }, [tripState]);
 
     const onSubmit = () => {
-        // newTripValidation(tripState);
+        newTripValidation(tripState);
 
         console.log(tripState.name);
 
@@ -137,14 +141,8 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     <ListInput
                         value={tripState.name}
                         onChangeText={(value: string): void => {
-                            setTripState((currentValue) => ({
-                                ...currentValue,
-                                name: value,
-                            }));
+                            onChange("name", value);
                         }}
-                        // onChangeText={(value: string): void => {
-                        //     onChange("name", value);
-                        // }}
                         placeholder={"Enter trip name"}
                         separator={holidays.length > 0}
                         borderRadius={{
@@ -182,7 +180,7 @@ const NewTripScreen = (props: NewTripScreenProps) => {
 
                             {holidays.map((holiday, index) => (
                                 <ListLabel
-                                    key={holiday.id}
+                                    key={holiday.id!}
                                     borderRadius={{
                                         bottom: index === holidays.length - 1,
                                     }}
@@ -252,7 +250,24 @@ const NewTripScreen = (props: NewTripScreenProps) => {
                     </Text>
                     <ProfilePicture
                         photoURL={tripState.thumbnail}
-                        onPress={() => {}}
+                        isLoading={isUploading}
+                        onPress={() =>
+                            openImageDialog(navigation, async (blob) => {
+                                setIsUploading(true);
+                                if (
+                                    tripState.thumbnail !==
+                                    "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                                )
+                                    removeThumbnail(tripState.thumbnail);
+                                const url = await uploadThumbnail(
+                                    blob,
+                                    v4(),
+                                    userId,
+                                );
+                                onChange("thumbnail", url);
+                                setIsUploading(false);
+                            })
+                        }
                     />
                 </View>
             </ScrollView>
