@@ -44,6 +44,7 @@ const SettingsModal = (props: SettingsModalProps) => {
 
         getSentNotifications(userId).then((data) => {
             data?.map((el) => {
+                if (el.type !== 1) return;
                 const contact = {
                     id: el.receiverId,
                     username: el.receiverUsername,
