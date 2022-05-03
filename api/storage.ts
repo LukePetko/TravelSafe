@@ -13,7 +13,7 @@ export const uploadProfileImage = async (data: File | Blob, userID: string) => {
 };
 
 export const uploadPostImage = async (
-    data: File,
+    data: File | Blob,
     postId: string,
     imageNumber: number,
 ) => {
@@ -24,7 +24,7 @@ export const uploadPostImage = async (
 
 export const uploadThumbnail = async (
     data: File | Blob,
-    id: string,
+    id: string | number,
     userId: string,
 ) => {
     const photosRef = ref(storage, `thumbnails/${userId}/${id}.jpg`);

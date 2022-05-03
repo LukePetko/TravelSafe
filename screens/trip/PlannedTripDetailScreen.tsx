@@ -24,7 +24,12 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { startLocationTracking } from "../../api/backgroundLocation";
 import { openImageDialog } from "../../utils/imagePicker";
-import { removeThumbnail, uploadThumbnail } from "../../api/storage";
+import {
+    removeThumbnail,
+    uploadPostImage,
+    uploadProfileImage,
+    uploadThumbnail,
+} from "../../api/storage";
 import { v4 } from "uuid";
 
 type EditTripScreenProps = {
@@ -56,12 +61,12 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     };
 
     const onSave = async () => {
-        if (
-            trip!.thumbnail !== oldImage &&
-            trip!.thumbnail !==
-                "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-        )
-            removeThumbnail(trip!.thumbnail as string);
+        // if (
+        //     trip!.thumbnail !== oldImage &&
+        //     trip!.thumbnail !==
+        //         "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+        // )
+        //     removeThumbnail(trip!.thumbnail as string);
         await updateTrip(trip!);
         navigation.goBack();
     };
@@ -96,6 +101,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
         const trip: Trip = route.params.trip;
         setTrip(trip);
         setOldImage(trip.thumbnail!);
+        console.log(trip.thumbnail);
     }, []);
 
     useEffect(() => {
@@ -250,7 +256,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                                 setIsUploading(true);
                                 const url = await uploadThumbnail(
                                     blob,
-                                    v4(),
+                                    new Date().getTime(),
                                     userId,
                                 );
                                 onChange("thumbnail", url);
