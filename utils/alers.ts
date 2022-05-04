@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { ActionSheetIOS, Alert, ColorSchemeName } from "react-native";
 
 export const createTripAlertButton = (): void =>
     Alert.alert(
@@ -47,3 +47,22 @@ export const inactivityAlert = (onPress: () => void): void =>
             onPress,
         },
     ]);
+
+export const deletePostAlert = (
+    colorScheme: "light" | "dark" | undefined = "light",
+    onPress: () => void,
+): void =>
+    ActionSheetIOS.showActionSheetWithOptions(
+        {
+            options: ["Cancel", "Delete Post"],
+            cancelButtonIndex: 0,
+            userInterfaceStyle: colorScheme,
+        },
+        (buttonIndex: number): void => {
+            if (buttonIndex === 0) {
+                // cancel action
+            } else if (buttonIndex === 1) {
+                onPress();
+            }
+        },
+    );

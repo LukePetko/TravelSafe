@@ -128,6 +128,10 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                                                       );
                                                       setIsLoading(false);
                                                   },
+                                                  colorScheme as
+                                                      | "light"
+                                                      | "dark"
+                                                      | undefined,
                                               )
                                         : () => {}
                                 }

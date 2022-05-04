@@ -1,5 +1,6 @@
 import {
     collection,
+    deleteDoc,
     doc,
     DocumentData,
     DocumentReference,
@@ -166,4 +167,14 @@ export const removeLikePost = async (
     return await setDoc(postDocumentRef, post)
         .then(() => true)
         .catch(() => false);
+};
+
+export const deletePost = async (postId: string): Promise<void> => {
+    const postDocumentRef: DocumentReference<DocumentData> = doc(
+        db,
+        "posts",
+        postId,
+    );
+
+    return await deleteDoc(postDocumentRef);
 };

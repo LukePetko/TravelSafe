@@ -298,16 +298,20 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             photoURL={trip?.thumbnail || ""}
                             isLoading={isUploading}
                             onPress={() =>
-                                openImageDialog(navigation, async (blob) => {
-                                    setIsUploading(true);
-                                    const url = await uploadThumbnail(
-                                        blob,
-                                        v4(),
-                                        userId,
-                                    );
-                                    onChange("thumbnail", url);
-                                    setIsUploading(false);
-                                })
+                                openImageDialog(
+                                    navigation,
+                                    async (blob) => {
+                                        setIsUploading(true);
+                                        const url = await uploadThumbnail(
+                                            blob,
+                                            v4(),
+                                            userId,
+                                        );
+                                        onChange("thumbnail", url);
+                                        setIsUploading(false);
+                                    },
+                                    colorScheme as "light" | "dark" | undefined,
+                                )
                             }
                         />
                     </View>

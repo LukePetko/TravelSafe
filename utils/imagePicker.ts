@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import { ActionSheetIOS } from "react-native";
+import { ActionSheetIOS, useColorScheme } from "react-native";
 import { getPictureBlob } from "./files";
 
 export const pickImage = async (blobCallback: (blob: Blob) => void) => {
@@ -19,12 +19,13 @@ export const pickImage = async (blobCallback: (blob: Blob) => void) => {
 export const openImageDialog = (
     navigation: any,
     blobCallback: (blob: Blob) => void,
+    colorScheme: "light" | "dark" | undefined = "light",
 ) =>
     ActionSheetIOS.showActionSheetWithOptions(
         {
             options: ["Cancel", "Take A Photo", "Choose From Library"],
             cancelButtonIndex: 0,
-            userInterfaceStyle: "dark",
+            userInterfaceStyle: colorScheme,
         },
         (buttonIndex: number): void => {
             if (buttonIndex === 0) {

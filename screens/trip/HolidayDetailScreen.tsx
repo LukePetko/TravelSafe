@@ -166,16 +166,20 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                         photoURL={holiday?.thumbnail!}
                         isLoading={isUploading}
                         onPress={() =>
-                            openImageDialog(navigation, async (blob) => {
-                                setIsUploading(true);
-                                const url = await uploadThumbnail(
-                                    blob,
-                                    v4(),
-                                    getUserId(store.getState()),
-                                );
-                                onChange("thumbnail", url);
-                                setIsUploading(false);
-                            })
+                            openImageDialog(
+                                navigation,
+                                async (blob) => {
+                                    setIsUploading(true);
+                                    const url = await uploadThumbnail(
+                                        blob,
+                                        v4(),
+                                        getUserId(store.getState()),
+                                    );
+                                    onChange("thumbnail", url);
+                                    setIsUploading(false);
+                                },
+                                colorScheme as "light" | "dark" | undefined,
+                            )
                         }
                     />
                     {trips.length > 0 && (
