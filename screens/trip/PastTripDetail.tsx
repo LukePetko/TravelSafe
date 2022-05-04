@@ -45,7 +45,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const [holidays, setHolidays] = useState<Holiday[]>([]);
     const [showHoliday, setShowHoliday] = useState<boolean>(false);
     const [isUploading, setIsUploading] = useState<boolean>(false);
-    const mapRef = useRef(null);
+    const mapRef = useRef<any>(null);
 
     const colorScheme = useColorScheme();
 
@@ -168,7 +168,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                                     onPress={() => {
                                         onChange(
                                             "holidayId",
-                                            holiday.holidayId,
+                                            holiday.holidayId!,
                                         );
                                         setShowHoliday(false);
                                     }}
