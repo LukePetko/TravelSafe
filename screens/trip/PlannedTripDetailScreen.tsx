@@ -6,10 +6,10 @@ import ListLabel from "../../components/ListLabel";
 import {
     deleteTrip,
     getUserHoliday,
-    setTripActive,
     startTrip,
     updateTrip,
-} from "../../api/firestore/trips";
+} from "../../api/firestore";
+import { setTripActive } from "../../api/firestore";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Holiday } from "../../utils/types/holiday";
@@ -25,12 +25,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { startLocationTracking } from "../../api/backgroundLocation";
 import { openImageDialog } from "../../utils/imagePicker";
-import {
-    removeThumbnail,
-    uploadPostImage,
-    uploadProfileImage,
-    uploadThumbnail,
-} from "../../api/storage";
+import { uploadThumbnail } from "../../api/storage";
 import { v4 } from "uuid";
 
 type EditTripScreenProps = {

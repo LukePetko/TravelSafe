@@ -13,12 +13,11 @@ import { useDispatch } from "react-redux";
 import { getData } from "../async-storage";
 import { login, setNotificationId, setUser } from "../redux/stores/user";
 import { onSnapshot } from "firebase/firestore";
-import { getUserDocById } from "../api/firestore";
+import { getUserDocById, addNotificationId } from "../api/firestore";
 import { Subscription } from "expo-modules-core";
 import { registerForPushNotificationsAsync } from "../utils/notifications";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import { addNotificationId } from "../api/firestore/accounts";
 import { RootNavigator } from "./navigators/RootNavigator";
 import { AuthNavigator } from "./navigators/AuthStack";
 

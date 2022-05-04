@@ -18,11 +18,17 @@ import { Post } from "../../utils/types/post";
 import { uploadPostImage } from "../storage";
 import "react-native-get-random-values";
 import { v4 } from "uuid";
-import { getUser } from "../../redux/stores/user";
-import store from "../../redux/store";
 import { getUserById } from "./accounts";
 import { User } from "../../utils/types/user";
 
+/**
+ * Create a new post for a user
+ * @param userId id of the user
+ * @param tripId id of the trip
+ * @param description trip description
+ * @param imageFiles post images
+ * @returns a `boolean` indicating if the post was created successfully
+ */
 export const createPost = async (
     userId: string,
     tripId: string | null,
@@ -72,6 +78,11 @@ export const createPost = async (
     return true;
 };
 
+/**
+ * Get all the posts from user
+ * @param userId id of the user
+ * @returns posts of user
+ */
 export const getPosts = async (userId: string): Promise<DocumentData[]> => {
     const postsQuery: Query<DocumentData> = query(
         collection(db, "posts"),
@@ -91,6 +102,11 @@ export const getPosts = async (userId: string): Promise<DocumentData[]> => {
     return postsData;
 };
 
+/**
+ * Get all the posts from the users
+ * @param userIds ids of the users
+ * @returns posts of users
+ */
 export const getPostsFromUsers = async (
     userIds: string[],
 ): Promise<DocumentData[]> => {
@@ -117,6 +133,12 @@ export const getPostsFromUsers = async (
     return postsData;
 };
 
+/**
+ * like a users post
+ * @param userId id of the user
+ * @param postId id of the post
+ * @returns a `boolean` indicating if the post was deleted successfully
+ */
 export const likePost = async (
     userId: string,
     postId: string,
@@ -146,6 +168,12 @@ export const likePost = async (
         .catch(() => false);
 };
 
+/**
+ * Remove a like from a users post
+ * @param userId id of the user
+ * @param postId id of the post
+ * @returns a `boolean` indicating if the post was deleted successfully
+ */
 export const removeLikePost = async (
     userId: string,
     postId: string,
@@ -169,6 +197,11 @@ export const removeLikePost = async (
         .catch(() => false);
 };
 
+/**
+ * delete a users post
+ * @param postId id of the post
+ * @returns
+ */
 export const deletePost = async (postId: string): Promise<void> => {
     const postDocumentRef: DocumentReference<DocumentData> = doc(
         db,

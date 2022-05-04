@@ -11,14 +11,13 @@ import { tintColorLight } from "../../constants/Colors";
 import { SFSymbol } from "react-native-sfsymbols";
 import { Trip } from "../../utils/types/trip";
 import React, { useEffect, useState } from "react";
-import { getEndedUserTrips } from "../../api/firestore";
+import { getEndedUserTrips, createPost } from "../../api/firestore";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Timestamp } from "firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import { getPictureBlob } from "../../utils/files";
 import { Image, Pressable, useColorScheme } from "react-native";
-import { createPost } from "../../api/firestore/posts";
 import Spinner from "react-native-spinkit";
 
 type ImageContainer = {

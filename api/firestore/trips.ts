@@ -20,32 +20,11 @@ import { addStartTime, addTripName } from "../../redux/stores/trip";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 
-export const getUserTripData = async (
-    id: string,
-): Promise<DocumentData | null> => {
-    const userDoc: DocumentReference<DocumentData> = doc(
-        db,
-        "users",
-        id,
-        "closeContacts",
-        "currentTrip",
-    );
-
-    const userSnap: DocumentData = await getDoc(userDoc);
-
-    if (userSnap.exists()) {
-        return userSnap.data();
-    } else {
-        return null;
-    }
-};
-
-export const getUserTripDocumentRef = (
-    id: string,
-): DocumentReference<DocumentData> => {
-    return doc(db, "users", id, "closeContacts", "currentTrip");
-};
-
+/**
+ * Get the created trips by user id
+ * @param id id of the user
+ * @returns get all created user trips
+ */
 export const getCreatedUserTrips = async (id: string): Promise<Trip[]> => {
     const tripsQuery = query(
         collection(db, "users", id, "trips"),
@@ -66,6 +45,11 @@ export const getCreatedUserTrips = async (id: string): Promise<Trip[]> => {
     return tripsData;
 };
 
+/**
+ * Get the ended trips by user id
+ * @param id id of the user
+ * @returns get all ended user trips
+ */
 export const getEndedUserTrips = async (id: string): Promise<Trip[]> => {
     const tripsQuery = query(
         collection(db, "users", id, "trips"),
@@ -86,6 +70,14 @@ export const getEndedUserTrips = async (id: string): Promise<Trip[]> => {
     return tripsData;
 };
 
+/**
+ * Start users trip
+ * @param id id of the user
+ * @param location current location of the user
+ * @param tripName name of the trip
+ * @param tripId id of the trip
+ * @returns a `boolean` whether the trip is created successfully
+ */
 export const startTrip = async (
     id: string,
     location: GeoPoint | undefined,
@@ -138,6 +130,12 @@ export const startTrip = async (
     }
 };
 
+/**
+ * Set trip as active
+ * @param userId id of the user
+ * @param tripId id of the trip
+ * @returns a `boolean` whether the trip is ended successfully
+ */
 export const setTripActive = async (
     userId: string,
     tripId: string,
@@ -165,6 +163,11 @@ export const setTripActive = async (
     return false;
 };
 
+/**
+ * End users trip
+ * @param id id of the user
+ * @returns a `boolean` whether the trip is ended successfully
+ */
 export const endTrip = async (id: string): Promise<boolean> => {
     const currentTripDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -194,6 +197,12 @@ export const endTrip = async (id: string): Promise<boolean> => {
     return false;
 };
 
+/**
+ * Update current trip of the user
+ * @param id id of the user
+ * @param location current location of the user
+ * @returns a `boolean` whether the trip is updated successfully
+ */
 export const updateLocation = async (
     id: string,
     location: GeoPoint,
@@ -222,6 +231,11 @@ export const updateLocation = async (
     }
 };
 
+/**
+ * Create new trip
+ * @param trip trip object to be created
+ * @returns id of the trip
+ */
 export const createTrip = async (trip: Trip): Promise<string> => {
     const tripDoc: CollectionReference<DocumentData> = collection(
         db,
@@ -237,6 +251,11 @@ export const createTrip = async (trip: Trip): Promise<string> => {
     return result;
 };
 
+/**
+ * Create users holiday
+ * @param holiday holiday object to be created
+ * @returns id of the holiday
+ */
 export const createHoliday = async (holiday: Holiday): Promise<string> => {
     const holidayDoc: CollectionReference<DocumentData> = collection(
         db,
@@ -256,6 +275,11 @@ export const createHoliday = async (holiday: Holiday): Promise<string> => {
     return result;
 };
 
+/**
+ * Update users trip
+ * @param trip trip object to be updated
+ * @returns a `boolean` whether the trip is updated successfully
+ */
 export const updateTrip = async (trip: Trip): Promise<boolean> => {
     const tripDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -280,6 +304,11 @@ export const updateTrip = async (trip: Trip): Promise<boolean> => {
     return false;
 };
 
+/**
+ * Update users holiday
+ * @param holiday holiday object to be updated
+ * @returns a `boolean` whether the holiday is updated successfully
+ */
 export const updateHoliday = async (holiday: Holiday): Promise<boolean> => {
     const holidayDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -304,6 +333,12 @@ export const updateHoliday = async (holiday: Holiday): Promise<boolean> => {
     return false;
 };
 
+/**
+ * get trips from the holiday
+ * @param id id of the user
+ * @param holidayId id of the holiday
+ * @returns array of trips
+ */
 export const getHolidayTrips = async (
     id: string,
     holidayId: string,
@@ -326,6 +361,11 @@ export const getHolidayTrips = async (
     return tripData;
 };
 
+/**
+ * get users holidays
+ * @param id id of the user
+ * @returns array of holidays
+ */
 export const getUserHoliday = async (id: string): Promise<Holiday[]> => {
     const holidayQuery = query(
         collection(db, "users", id, "holidays"),
@@ -345,6 +385,12 @@ export const getUserHoliday = async (id: string): Promise<Holiday[]> => {
     return holidayData;
 };
 
+/**
+ * delete trip by id
+ * @param id id of the user
+ * @param tripId id of the trip
+ * @returns
+ */
 export const deleteTrip = async (id: string, tripId: string): Promise<void> => {
     const tripDoc: DocumentReference<DocumentData> = doc(
         db,
@@ -357,6 +403,12 @@ export const deleteTrip = async (id: string, tripId: string): Promise<void> => {
     return await deleteDoc(tripDoc);
 };
 
+/**
+ * delete holiday by id
+ * @param id id of the user
+ * @param holidayId id of the holiday
+ * @returns
+ */
 export const deleteHoliday = async (
     id: string,
     holidayId: string,

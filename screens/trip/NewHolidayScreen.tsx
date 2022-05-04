@@ -9,12 +9,11 @@ import {
 } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
 import ListInput from "../../components/ListInput";
-import ListLabel from "../../components/ListLabel";
 import ListCalendar from "../../components/ListCalendar";
 import ProfilePicture from "../../components/ProfilePicture";
 import { newHolidayValidation } from "../../utils/validations";
 import { Holiday } from "../../utils/types/holiday";
-import { createHoliday } from "../../api/firestore/trips";
+import { createHoliday } from "../../api/firestore";
 import { Timestamp } from "firebase/firestore";
 import { openImageDialog } from "../../utils/imagePicker";
 import { removeThumbnail, uploadThumbnail } from "../../api/storage";

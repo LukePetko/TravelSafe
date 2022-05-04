@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getUserNotifications } from "../api/firestore";
+import { getUserNotifications, acceptNotification } from "../api/firestore";
 import { Pressable, Text, View } from "../components/Themed";
 import { styles } from "../styles/global";
 import { getUserId } from "../redux/stores/user";
 import Notification from "../components/Notification";
 import store from "../redux/store";
-import { acceptNotification } from "../api/firestore/notifications";
 import { FlatList } from "react-native";
 
 const NotificationScreen = (): JSX.Element => {

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Pressable, View, Text } from "../../components/Themed";
 import { Holiday } from "../../utils/types/holiday";
-import { getUserHoliday } from "../../api/firestore/trips";
+import { getUserHoliday } from "../../api/firestore";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import Colors, { tintColorLight } from "../../constants/Colors";

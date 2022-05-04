@@ -7,7 +7,7 @@ import {
     deleteHoliday,
     getHolidayTrips,
     updateHoliday,
-} from "../../api/firestore/trips";
+} from "../../api/firestore";
 import { uploadThumbnail } from "../../api/storage";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";

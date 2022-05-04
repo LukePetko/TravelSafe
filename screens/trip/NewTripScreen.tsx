@@ -1,8 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { createTrip } from "../../api/firestore";
-import { getUserHoliday } from "../../api/firestore/trips";
+import { createTrip, getUserHoliday } from "../../api/firestore";
 import { removeThumbnail, uploadThumbnail } from "../../api/storage";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";

@@ -9,15 +9,18 @@ import {
     getLastMovementTime,
     resetLastMovementTime,
 } from "../redux/stores/trip";
-import { getUser, getUserId } from "../redux/stores/user";
+import { getUserId } from "../redux/stores/user";
 import { inactivityAlert } from "./alers";
 import {
     inactiveLocalNotification,
     sendPushNotification,
 } from "./notifications";
-import { getCloseContacts, getUserById } from "../api/firestore/accounts";
+import {
+    getCloseContacts,
+    getUserById,
+    createLocationNotification,
+} from "../api/firestore";
 import { CurrentTripInfo } from "./types/currentTripInfo";
-import { createLocationNotification } from "../api/firestore/notifications";
 import { User } from "./types/user";
 
 export const saveLocationToFirestore = async ({ data, error }: any) => {

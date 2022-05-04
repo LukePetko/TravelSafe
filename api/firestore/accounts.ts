@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../Firebase";
 import store from "../../redux/store";
-import { getUser, getUserId } from "../../redux/stores/user";
+import { getUserId } from "../../redux/stores/user";
 import { BasicUserInfo } from "../../utils/types/basicUserInfo";
 import { CurrentTripInfo } from "../../utils/types/currentTripInfo";
 import { PublicUser, User } from "../../utils/types/user";
@@ -107,7 +107,7 @@ export const createUserAccount = async (
 };
 
 /**
- * Gets a user doc from the users collection based on the user's ID
+ * Gets a user doc data from the users collection based on the user's ID
  * @param id user ID from firebase auth
  * @returns a `User` object
  */
@@ -122,16 +122,20 @@ export const getUserById = async (id: string): Promise<DocumentData | null> => {
     }
 };
 
+/**
+ * Get a user doc from the users collection based on the user's id
+ * @param id
+ * @returns
+ */
 export const getUserDocById = (id: string): DocumentReference<DocumentData> => {
     return doc(db, "users", id);
 };
 
-export const getPublicUserDocById = (
-    id: string,
-): DocumentReference<DocumentData> => {
-    return doc(db, "users", id, "public", "profile");
-};
-
+/**
+ * Get the public user doc data from the users collection based on the user's id
+ * @param id user's id
+ * @returns user's public profile data
+ */
 export const getPublicUserById = async (
     id: string,
 ): Promise<DocumentData | null> => {
@@ -151,6 +155,12 @@ export const getPublicUserById = async (
     }
 };
 
+/**
+ * Update user's profile picture
+ * @param id user's id
+ * @param profilePicture user's profile picture
+ * @returns a `boolean` if the profile picture was updated successfully
+ */
 export const updateProfilePicture = async (
     id: string,
     profilePicture: string,
@@ -213,12 +223,13 @@ export const updateProfilePicture = async (
     }
 };
 
+/**
+ * Get query of user's close contacts
+ * @returns query snapshot of all users
+ */
 export const getCloseContactsQuery = async (): Promise<
     Query<DocumentData> | undefined
 > => {
-    // const userDoc: DocumentReference<DocumentData> = doc(db, "users", id);
-    // const userSnap: DocumentData = await getDoc(userDoc);
-
     const user = (await getUserById(getUserId(store.getState()))) as User;
 
     const closeContactsIds: string[] = user.closeContacts.map((el) => el.id);
@@ -233,6 +244,10 @@ export const getCloseContactsQuery = async (): Promise<
     );
 };
 
+/**
+ * Get data of user's close contacts
+ * @returns query snapshot of all users
+ */
 export const getCloseContacts = async (): Promise<
     CurrentTripInfo[] | undefined
 > => {
@@ -256,6 +271,12 @@ export const getCloseContacts = async (): Promise<
     return closeContacts;
 };
 
+/**
+ * Follow a user
+ * @param ownId current user's id
+ * @param userId id of the user current user wants to follow
+ * @returns a `boolean` if the user was followed successfully
+ */
 export const followUser = async (
     ownId: string,
     userId: string,
@@ -355,6 +376,12 @@ export const followUser = async (
     }
 };
 
+/**
+ * Unfollow a user
+ * @param ownId current user's id
+ * @param userId id of the user current user wants to unfollow
+ * @returns a `boolean` if the user was unfollowed successfully
+ */
 export const unfollowUser = async (
     ownId: string,
     userId: string,
@@ -426,6 +453,12 @@ export const unfollowUser = async (
     }
 };
 
+/**
+ * Add notification id to user's account
+ * @param userId current user's id
+ * @param notificationId notification id of current device
+ * @returns a `boolean` if the notification was deleted successfully
+ */
 export const addNotificationId = async (
     userId: string,
     notificationId: string,
@@ -479,6 +512,12 @@ export const addNotificationId = async (
     return false;
 };
 
+/**
+ * Remove device from user's account
+ * @param userId current user's id
+ * @param notificationId id of the device to remove
+ * @returns a `boolean` if the notification was deleted successfully
+ */
 export const removeNotificationId = async (
     userId: string,
     notificationId: string,

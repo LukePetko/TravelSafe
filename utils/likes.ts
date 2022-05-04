@@ -1,6 +1,9 @@
-import { getPublicUserById, getUserById } from "../api/firestore";
-import { createLikeNotification } from "../api/firestore/notifications";
-import { likePost } from "../api/firestore/posts";
+import {
+    getPublicUserById,
+    getUserById,
+    createLikeNotification,
+    likePost,
+} from "../api/firestore";
 import { sendPushNotification } from "./notifications";
 import { PublicUser, User } from "./types/user";
 

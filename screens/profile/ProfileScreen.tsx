@@ -1,28 +1,25 @@
 import { View, Text } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
-import { getUserById, updateProfilePicture } from "../../api/firestore";
+import {
+    getUserById,
+    getPublicUserById,
+    updateProfilePicture,
+    getPostsFromUsers,
+} from "../../api/firestore";
 import ProfilePicture from "../../components/ProfilePicture";
 import {
-    ActionSheetIOS,
     FlatList,
     RefreshControl,
     StyleSheet,
     useColorScheme,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../../api/storage";
-import { getPictureBlob } from "../../utils/files";
 import { getUserId } from "../../redux/stores/user";
 import store from "../../redux/store";
 import { Post } from "../../utils/types/post";
-import { getPostsFromUsers } from "../../api/firestore/posts";
 import ListLabel from "../../components/ListLabel";
 import { FollowUser, PublicUser, User } from "../../utils/types/user";
-import {
-    followUser,
-    getPublicUserById,
-    unfollowUser,
-} from "../../api/firestore/accounts";
+import { followUser, unfollowUser } from "../../api/firestore";
 import PostComponent from "../../components/PostComponent";
 import { connect } from "react-redux";
 import { tintColorLight } from "../../constants/Colors";

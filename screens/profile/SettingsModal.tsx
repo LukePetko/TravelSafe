@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { SFSymbol } from "react-native-sfsymbols";
 import { connect, useDispatch } from "react-redux";
-import { getSentNotifications } from "../../api/firestore";
-import { removeNotificationId } from "../../api/firestore/accounts";
+import {
+    getSentNotifications,
+    removeNotificationId,
+} from "../../api/firestore";
 import { removeData } from "../../async-storage";
 import ListLabel from "../../components/ListLabel";
 import { ScrollView, KeyboardAvoidingView } from "../../components/Themed";

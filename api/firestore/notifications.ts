@@ -14,6 +14,11 @@ import {
 import { db } from "../../Firebase";
 import { getUserById } from "./accounts";
 
+/**
+ * Get the user's notifications
+ * @param id user's id
+ * @returns get notifications data
+ */
 export const getUserNotifications = async (
     id: string,
 ): Promise<DocumentData[] | null> => {
@@ -35,6 +40,11 @@ export const getUserNotifications = async (
     return data === [] ? null : data;
 };
 
+/**
+ * Get the user's sent notifications
+ * @param id user's id
+ * @returns get sent notifications data
+ */
 export const getSentNotifications = async (
     id: string,
 ): Promise<DocumentData[] | null> => {
@@ -56,6 +66,11 @@ export const getSentNotifications = async (
     return data === [] ? null : data;
 };
 
+/**
+ * create a close contact notification
+ * @param senderId id of the sender
+ * @param receiverId id of the receiver
+ */
 export const createCloseContactNotification = async (
     senderId: string,
     receiverId: string,
@@ -91,6 +106,11 @@ export const createCloseContactNotification = async (
     await setDoc(notificationDoc, notificationData);
 };
 
+/**
+ * Send a location notification to the close contacts
+ * @param senderId id of the sender
+ * @param receiverIds id of the receivers
+ */
 export const createLocationNotification = async (
     senderId: string,
     receiverIds: string[],
@@ -130,6 +150,12 @@ export const createLocationNotification = async (
     });
 };
 
+/**
+ * Create a like notification for a post creator
+ * @param senderId id of the sender
+ * @param receiverId id of the receiver
+ * @param postId id of the post
+ */
 export const createLikeNotification = async (
     senderId: string,
     receiverId: string,
@@ -167,6 +193,13 @@ export const createLikeNotification = async (
     setDoc(notificationDoc, notificationData);
 };
 
+/**
+ * Accept incoming notification
+ * @param senderId id of the sender
+ * @param receiverId id of the receiver
+ * @param time time of the accepting
+ * @param postId id of the post (if post notification)
+ */
 export const acceptNotification = async (
     senderId: string,
     receiverId: string,
