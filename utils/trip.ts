@@ -22,19 +22,23 @@ export const startNewQuickTrip = async () => {
         userId,
         name: "Quick Trip",
         startTime: Timestamp.fromDate(new Date()),
-        startPlace: new GeoPoint(
-            location.coords.latitude,
-            location.coords.longitude,
-        ),
 
         status: "active",
 
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
+
+        thumbnail:
+            "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
     };
 
+    const geoPoint = new GeoPoint(
+        location.coords.latitude,
+        location.coords.longitude,
+    );
+
     const tripId = await createTrip(trip);
-    await startTrip(userId, trip.startPlace, trip.name);
+    await startTrip(userId, geoPoint, trip.name);
 
     return tripId;
 };
