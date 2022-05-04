@@ -2,6 +2,7 @@ import {
     addDoc,
     collection,
     CollectionReference,
+    deleteDoc,
     doc,
     DocumentData,
     DocumentReference,
@@ -342,4 +343,48 @@ export const getUserHoliday = async (id: string): Promise<Holiday[]> => {
     });
 
     return holidayData;
+};
+
+export const deleteTrip = async (id: string, tripId: string): Promise<void> => {
+    const tripDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "trips",
+        tripId,
+    );
+
+    return await deleteDoc(tripDoc);
+};
+
+export const deleteHoliday = async (
+    id: string,
+    holidayId: string,
+): Promise<void> => {
+    const holidayDoc: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        id,
+        "holidays",
+        holidayId,
+    );
+
+    const tripQuery = query(
+        collection(db, "users", id, "trips"),
+        where("holidayId", "==", holidayId),
+    );
+
+    const trips = await getDocs(tripQuery);
+
+    trips.forEach((trip: DocumentData) => {
+        if (trip.exists()) {
+            const updatedTrip: DocumentData = {
+                ...trip.data(),
+                holidayId: null,
+            };
+            setDoc(trip.ref, updatedTrip);
+        }
+    });
+
+    return await deleteDoc(holidayDoc);
 };

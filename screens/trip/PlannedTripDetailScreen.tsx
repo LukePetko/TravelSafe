@@ -4,6 +4,7 @@ import { KeyboardAvoidingView, ScrollView } from "../../components/Themed";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import {
+    deleteTrip,
     getUserHoliday,
     setTripActive,
     startTrip,
@@ -270,11 +271,23 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                     />
                     <ListLabel
                         borderRadius={{ top: true, bottom: true }}
-                        style={{ marginVertical: 20 }}
+                        style={{ marginTop: 20 }}
                         textStyles={{ color: tintColorLight }}
                         onPress={() => onStart()}
                     >
                         Start Trip
+                    </ListLabel>
+
+                    <ListLabel
+                        borderRadius={{ top: true, bottom: true }}
+                        style={{ marginVertical: 20 }}
+                        textStyles={{ color: "red" }}
+                        onPress={() => {
+                            trip!.id ? deleteTrip(userId, trip!.id) : null;
+                            navigation.navigate("Trips");
+                        }}
+                    >
+                        Delete Trip
                     </ListLabel>
                 </View>
             </ScrollView>

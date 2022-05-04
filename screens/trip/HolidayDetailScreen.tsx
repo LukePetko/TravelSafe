@@ -3,7 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { LatLng, Marker, Polyline } from "react-native-maps";
 import { v4 } from "uuid";
-import { getHolidayTrips, updateHoliday } from "../../api/firestore/trips";
+import {
+    deleteHoliday,
+    getHolidayTrips,
+    updateHoliday,
+} from "../../api/firestore/trips";
 import { uploadThumbnail } from "../../api/storage";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
@@ -312,6 +316,22 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                             </View>
                         ))}
                     </MapView>
+                    <ListLabel
+                        borderRadius={{ top: true, bottom: true }}
+                        style={{ marginVertical: 20 }}
+                        textStyles={{ color: "red" }}
+                        onPress={() => {
+                            holiday!.holidayId
+                                ? deleteHoliday(
+                                      getUserId(store.getState()),
+                                      holiday!.holidayId,
+                                  )
+                                : null;
+                            navigation.navigate("Trips");
+                        }}
+                    >
+                        Delete Trip
+                    </ListLabel>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

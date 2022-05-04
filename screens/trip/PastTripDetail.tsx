@@ -4,7 +4,11 @@ import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
 import { v4 } from "uuid";
-import { getUserHoliday, updateTrip } from "../../api/firestore/trips";
+import {
+    deleteTrip,
+    getUserHoliday,
+    updateTrip,
+} from "../../api/firestore/trips";
 import { uploadThumbnail } from "../../api/storage";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -292,6 +296,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                     <View
                         style={{
                             alignContent: "center",
+                            alignItems: "center",
                         }}
                     >
                         <ProfilePicture
@@ -314,6 +319,17 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                                 )
                             }
                         />
+                        <ListLabel
+                            borderRadius={{ top: true, bottom: true }}
+                            style={{ marginVertical: 20 }}
+                            textStyles={{ color: "red" }}
+                            onPress={() => {
+                                trip!.id ? deleteTrip(userId, trip!.id) : null;
+                                navigation.navigate("Trips");
+                            }}
+                        >
+                            Delete Trip
+                        </ListLabel>
                     </View>
                 </View>
             </ScrollView>
