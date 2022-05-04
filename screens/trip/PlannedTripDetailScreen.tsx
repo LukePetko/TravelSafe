@@ -15,7 +15,7 @@ import store from "../../redux/store";
 import { Holiday } from "../../utils/types/holiday";
 import ListCalendar from "../../components/ListCalendar";
 import ProfilePicture from "../../components/ProfilePicture";
-import { Trip } from "../../utils/types/trip";
+import { Trip as DefaultTrip } from "../../utils/types/trip";
 import { tintColorLight } from "../../constants/Colors";
 import { getTripId, start } from "../../redux/stores/trip";
 import * as Location from "expo-location";
@@ -36,6 +36,10 @@ import { v4 } from "uuid";
 type EditTripScreenProps = {
     navigation: any;
     route: any;
+};
+
+type Trip = DefaultTrip & {
+    holiday?: Holiday;
 };
 
 const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
@@ -62,13 +66,12 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     };
 
     const onSave = async () => {
-        // if (
-        //     trip!.thumbnail !== oldImage &&
-        //     trip!.thumbnail !==
-        //         "https://images.unsplash.com/photo-1642543492493-f57f7047be73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-        // )
-        //     removeThumbnail(trip!.thumbnail as string);
-        await updateTrip(trip!);
+        const newTrip: DefaultTrip = {
+            ...trip!,
+            holidayId: trip!.holiday?.holidayId || null,
+        };
+
+        await updateTrip(newTrip);
         navigation.goBack();
     };
 
@@ -95,11 +98,15 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
     const userId = getUserId(store.getState());
 
     useEffect(() => {
+        const trip: Trip = route.params.trip;
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
+
+            trip.holiday = holidays.find(
+                (holiday) => holiday.holidayId === trip?.holidayId,
+            );
         });
 
-        const trip: Trip = route.params.trip;
         setTrip(trip);
         setOldImage(trip.thumbnail!);
     }, []);

@@ -23,12 +23,16 @@ import { tintColorLight } from "../../constants/Colors";
 import { getUserId } from "../../redux/stores/user";
 import { openImageDialog } from "../../utils/imagePicker";
 import { Holiday } from "../../utils/types/holiday";
-import { Trip } from "../../utils/types/trip";
+import { Trip as DefaultTrip } from "../../utils/types/trip";
 
 type PastTripDetailProps = {
     navigation: any;
     route: any;
     userId: string;
+};
+
+type Trip = DefaultTrip & {
+    holiday?: Holiday;
 };
 
 const mapStateToProps = (state: any) => {
@@ -50,11 +54,16 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const colorScheme = useColorScheme();
 
     useEffect(() => {
+        const trip = route.params.trip;
+
         getUserHoliday(userId).then((holidays) => {
             setHolidays(holidays);
+
+            trip.holiday = holidays.find(
+                (holiday) => holiday.holidayId === trip?.holidayId,
+            );
         });
 
-        const trip = route.params.trip;
         setTrip(trip);
     }, []);
 
@@ -90,7 +99,16 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     };
 
     const onSave = async () => {
-        await updateTrip(trip!);
+        const newTrip: DefaultTrip = {
+            ...trip!,
+            holidayId: trip!.holiday?.holidayId,
+        };
+
+        if (!newTrip.holidayId) {
+            newTrip.holidayId = null;
+        }
+
+        await updateTrip(newTrip);
         navigation.goBack();
     };
 
@@ -134,13 +152,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             separator={showHoliday}
                             rotateChevron={showHoliday}
                             onPress={() => setShowHoliday(!showHoliday)}
-                            fieldValue={
-                                trip?.holidayId
-                                    ? holidays.find(
-                                          (h) => h.id === trip.holidayId,
-                                      )?.name
-                                    : ""
-                            }
+                            fieldValue={trip?.holiday?.name ?? ""}
                         >
                             Holiday
                         </ListLabel>
@@ -151,7 +163,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                             <ListLabel
                                 separator={true}
                                 onPress={() => {
-                                    onChange("holidayId", null);
+                                    onChange("holiday", null);
                                     setShowHoliday(false);
                                 }}
                             >
@@ -166,10 +178,7 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                                     }}
                                     separator={index !== holidays.length - 1}
                                     onPress={() => {
-                                        onChange(
-                                            "holidayId",
-                                            holiday.holidayId!,
-                                        );
+                                        onChange("holiday", holiday);
                                         setShowHoliday(false);
                                     }}
                                 >
