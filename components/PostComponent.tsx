@@ -34,18 +34,6 @@ const PostComponent = (props: PostComponentProps) => {
 
     const colorScheme = useColorScheme();
 
-    const scrollInterpolator = (index: number, carouselProps: any) => {
-        const range = [1, 0, -1];
-        const inputRange = getInputRangeFromIndexes(
-            range,
-            index,
-            carouselProps,
-        );
-        const outputRange = range;
-
-        return { inputRange, outputRange };
-    };
-
     useEffect(() => {
         setLiked(isLiked());
     }, []);
@@ -93,7 +81,6 @@ const PostComponent = (props: PostComponentProps) => {
                 itemWidth={width}
                 inactiveSlideShift={0}
                 onSnapToItem={(index) => setPhotoIndex(index)}
-                scrollInterpolator={scrollInterpolator}
                 useScrollView={true}
             />
             <Text
@@ -101,6 +88,7 @@ const PostComponent = (props: PostComponentProps) => {
                     fontSize: 12,
                     fontWeight: "500",
                     marginLeft: 10,
+                    marginTop: 5,
                 }}
             >
                 {photoIndex + 1}/{post.images.length}
