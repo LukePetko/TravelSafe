@@ -9,7 +9,7 @@ import {
 import { createTrip, startTrip } from "../api/firestore";
 import { Trip } from "./types/trip";
 import store from "../redux/store";
-import { getDistance, getPath, getTripId, start } from "../redux/stores/trip";
+import { getDistance, getPath, getTripId } from "../redux/stores/trip";
 import { getUserId } from "../redux/stores/user";
 import { endTrip as endTripAPI } from "../api/firestore";
 import { db } from "../Firebase";
