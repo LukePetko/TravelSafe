@@ -29,7 +29,7 @@ export const saveLocationToFirestore = async ({ data, error }: any) => {
     }
 
     store.dispatch(addDistance(10));
-    store.dispatch(resetLastMovementTime());
+    store.dispatch(resetLastMovementTime({}));
     const distance = getDistance(store.getState());
 
     const userId = getUserId(store.getState());
@@ -64,7 +64,7 @@ export const checkTimer = async () => {
 
     if (time === 60 * 60) {
         inactiveLocalNotification();
-        inactivityAlert(() => store.dispatch(resetLastMovementTime()));
+        inactivityAlert(() => store.dispatch(resetLastMovementTime({})));
     }
 
     if (time === 80 * 60) {

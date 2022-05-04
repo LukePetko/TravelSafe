@@ -1,7 +1,7 @@
 export const getPictureBlob = (uri: string): Promise<File> => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
+        xhr.onload = () => {
             resolve(xhr.response);
         };
         xhr.onerror = (e) => {

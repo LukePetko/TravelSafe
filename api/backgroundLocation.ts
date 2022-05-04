@@ -30,5 +30,5 @@ export const startLocationTracking = async (id: string): Promise<void> => {
 export const stopLocationTracking = async (): Promise<void> => {
     Location.stopLocationUpdatesAsync(BACKGROUND_FIRESTORE_LOCATION_TASK);
     BackgroundTimer.stopBackgroundTimer();
-    store.dispatch(resetLastMovementTime());
+    store.dispatch(resetLastMovementTime({}));
 };

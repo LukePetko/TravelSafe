@@ -1,4 +1,4 @@
-import { ActionSheetIOS, Alert, ColorSchemeName } from "react-native";
+import { ActionSheetIOS, Alert } from "react-native";
 
 export const createTripAlertButton = (): void =>
     Alert.alert(
