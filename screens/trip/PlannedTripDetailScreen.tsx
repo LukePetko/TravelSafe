@@ -256,7 +256,7 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
                                 setIsUploading(true);
                                 const url = await uploadThumbnail(
                                     blob,
-                                    new Date().getTime(),
+                                    v4(),
                                     userId,
                                 );
                                 onChange("thumbnail", url);

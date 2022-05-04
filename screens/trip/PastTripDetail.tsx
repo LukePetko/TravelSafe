@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { connect } from "react-redux";
+import { v4 } from "uuid";
 import { getUserHoliday, updateTrip } from "../../api/firestore/trips";
+import { uploadThumbnail } from "../../api/storage";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -15,6 +17,7 @@ import {
 } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
 import { getUserId } from "../../redux/stores/user";
+import { openImageDialog } from "../../utils/imagePicker";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 
@@ -36,7 +39,8 @@ const PastTripDetail = (props: PastTripDetailProps) => {
     const [trip, setTrip] = useState<Trip>();
     const [path, setPath] = useState<GeoPoint[]>([] as GeoPoint[]);
     const [holidays, setHolidays] = useState<Holiday[]>([]);
-    const [showHoliday, setShowHoliday] = useState(false);
+    const [showHoliday, setShowHoliday] = useState<boolean>(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
     const mapRef = useRef(null);
 
     const colorScheme = useColorScheme();
@@ -48,6 +52,12 @@ const PastTripDetail = (props: PastTripDetailProps) => {
 
         const trip = route.params.trip;
         setTrip(trip);
+    }, []);
+
+    useEffect(() => {
+        if (trip?.path) {
+            setPath(JSON.parse(trip.path as string) as GeoPoint[]);
+        }
 
         navigation.setOptions({
             title: trip?.name,
@@ -63,12 +73,6 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                 color: colorScheme === "dark" ? "#fff" : "#000",
             },
         });
-    }, []);
-
-    useEffect(() => {
-        if (trip?.path) {
-            setPath(JSON.parse(trip.path as string) as GeoPoint[]);
-        }
     }, [trip]);
 
     const onChange = (
@@ -292,7 +296,19 @@ const PastTripDetail = (props: PastTripDetailProps) => {
                     >
                         <ProfilePicture
                             photoURL={trip?.thumbnail || ""}
-                            onPress={() => {}}
+                            isLoading={isUploading}
+                            onPress={() =>
+                                openImageDialog(navigation, async (blob) => {
+                                    setIsUploading(true);
+                                    const url = await uploadThumbnail(
+                                        blob,
+                                        v4(),
+                                        userId,
+                                    );
+                                    onChange("thumbnail", url);
+                                    setIsUploading(false);
+                                })
+                            }
                         />
                     </View>
                 </View>

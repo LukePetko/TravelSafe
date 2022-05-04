@@ -2,7 +2,9 @@ import { GeoPoint, Timestamp } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, useColorScheme } from "react-native";
 import MapView, { LatLng, Marker, Polyline } from "react-native-maps";
+import { v4 } from "uuid";
 import { getHolidayTrips, updateHoliday } from "../../api/firestore/trips";
+import { uploadThumbnail } from "../../api/storage";
 import ListCalendar from "../../components/ListCalendar";
 import ListInput from "../../components/ListInput";
 import ListLabel from "../../components/ListLabel";
@@ -15,7 +17,8 @@ import {
 } from "../../components/Themed";
 import { tintColorLight } from "../../constants/Colors";
 import store from "../../redux/store";
-import { getUserId } from "../../redux/stores/user";
+import { getUser, getUserId } from "../../redux/stores/user";
+import { openImageDialog } from "../../utils/imagePicker";
 import { Holiday } from "../../utils/types/holiday";
 import { Trip } from "../../utils/types/trip";
 
@@ -29,6 +32,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
 
     const [holiday, setHoliday] = useState<Holiday>(route.params.holiday);
     const [trips, setTrips] = useState<Trip[]>([]);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     const colorScheme = useColorScheme();
 
@@ -60,6 +64,9 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                 );
             },
         );
+    }, []);
+
+    useEffect(() => {
         navigation.setOptions({
             title: holiday.name,
             headerTintColor: tintColorLight,
@@ -74,7 +81,7 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                 />
             ),
         });
-    }, []);
+    }, [holiday]);
 
     return (
         <KeyboardAvoidingView
@@ -157,7 +164,19 @@ const HolidayDetailScreen = (props: HolidayDetailScreenProps) => {
                     </Text>
                     <ProfilePicture
                         photoURL={holiday?.thumbnail!}
-                        onPress={() => {}}
+                        isLoading={isUploading}
+                        onPress={() =>
+                            openImageDialog(navigation, async (blob) => {
+                                setIsUploading(true);
+                                const url = await uploadThumbnail(
+                                    blob,
+                                    v4(),
+                                    getUserId(store.getState()),
+                                );
+                                onChange("thumbnail", url);
+                                setIsUploading(false);
+                            })
+                        }
                     />
                     {trips.length > 0 && (
                         <Text
