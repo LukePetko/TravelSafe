@@ -50,6 +50,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
     const [isOwn, setIsOwn] = useState<boolean>(
         !route.params || userID === ownUserID,
     );
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const colorScheme = useColorScheme();
 
@@ -107,12 +108,14 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                         <View style={localStyles.innerContainer}>
                             <ProfilePicture
                                 photoURL={user?.profilePicture}
+                                isLoading={isLoading}
                                 onPress={
                                     isOwn
                                         ? () =>
                                               openImageDialog(
                                                   navigation,
                                                   async (blob) => {
+                                                      setIsLoading(true);
                                                       const response =
                                                           await uploadProfileImage(
                                                               blob,
@@ -123,6 +126,7 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                                                           userID,
                                                           response,
                                                       );
+                                                      setIsLoading(false);
                                                   },
                                               )
                                         : () => {}
@@ -217,7 +221,11 @@ const ProfileScreen = (props: ProfileProps): JSX.Element => {
                 }}
                 data={posts}
                 renderItem={({ item }) => (
-                    <PostComponent post={item} navigation={navigation} />
+                    <PostComponent
+                        post={item}
+                        navigation={navigation}
+                        isOwn={isOwn}
+                    />
                 )}
                 keyExtractor={(item: Post) => `item ${item.id}`}
                 refreshControl={

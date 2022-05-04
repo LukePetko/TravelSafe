@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, useColorScheme } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Post } from "../utils/types/post";
 import { width } from "../utils/dimensions";
@@ -14,10 +14,11 @@ import Carousel, { getInputRangeFromIndexes } from "react-native-snap-carousel";
 type PostComponentProps = {
     post: Post;
     navigation?: any;
+    isOwn?: boolean;
 };
 
 const PostComponent = (props: PostComponentProps) => {
-    const { post, navigation } = props;
+    const { post, navigation, isOwn } = props;
 
     const userId = getUserId(store.getState());
     const isLiked = () => {
@@ -29,6 +30,8 @@ const PostComponent = (props: PostComponentProps) => {
     const [photoIndex, setPhotoIndex] = useState<number>(0);
 
     let carousel = useRef();
+
+    const colorScheme = useColorScheme();
 
     const scrollInterpolator = (index: number, carouselProps: any) => {
         const range = [1, 0, -1];
@@ -103,6 +106,7 @@ const PostComponent = (props: PostComponentProps) => {
             </Text>
             <View style={localStyles.buttonContainer}>
                 <Pressable
+                    style={{ backgroundColor: "transparent" }}
                     onPress={() => {
                         if (!liked) {
                             handleLike(
@@ -134,24 +138,30 @@ const PostComponent = (props: PostComponentProps) => {
                             <SFSymbol
                                 name="heart"
                                 size={32}
-                                color="#000000"
+                                color={
+                                    colorScheme === "dark" ? "white" : "black"
+                                }
                                 style={localStyles.innerIcon}
                             />
                         )}
                         <Text style={localStyles.innerText}>{likes}</Text>
                     </View>
                 </Pressable>
-                <View style={localStyles.innerContainer}>
-                    <SFSymbol
-                        name="message"
-                        size={32}
-                        color={"#000000"}
-                        style={localStyles.innerIcon}
-                    />
-                    <Text style={localStyles.innerText}>
-                        {post.comments.length}
-                    </Text>
-                </View>
+                {isOwn && (
+                    <Pressable
+                        onPress={() => {}}
+                        style={{ backgroundColor: "transparent" }}
+                    >
+                        <View style={localStyles.innerContainer}>
+                            <SFSymbol
+                                name="xmark"
+                                size={32}
+                                color={"red"}
+                                style={{ marginTop: 8 }}
+                            />
+                        </View>
+                    </Pressable>
+                )}
             </View>
             <Text style={localStyles.description}>
                 <Text style={localStyles.username}>{post.username} </Text>
@@ -182,13 +192,14 @@ const localStyles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         marginLeft: 26,
         marginTop: 20,
     },
     innerContainer: {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
         marginRight: 35,
     },
     innerIcon: {
