@@ -52,8 +52,6 @@ const ContactDetail = (props: ContactDetailProps): JSX.Element => {
 
     const dispatch = useDispatch();
 
-    console.log(contact.username);
-
     const endTripAction = () => {
         if (getTripId(store.getState())) {
             stopLocationTracking();

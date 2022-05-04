@@ -88,17 +88,10 @@ const MapScreen = (props: MapScreenProps): JSX.Element => {
         (async () => {
             const user = (await getUserById(userId!)) as User;
             setUser(user);
-
-            console.log(user);
         })();
     }, []);
 
     useEffect(() => {
-        console.log(
-            contactsTripInfo[0]?.location,
-            contactsTripInfo[0]?.username,
-        );
-
         setMarkers(
             contactsTripInfo.map((contact) => ({
                 coords: {

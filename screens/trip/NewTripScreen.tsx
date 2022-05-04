@@ -100,8 +100,6 @@ const NewTripScreen = (props: NewTripScreenProps) => {
     const onSubmit = () => {
         newTripValidation(tripState);
 
-        console.log(tripState.name);
-
         const trip: Trip & { holiday?: Holiday | null } = {
             userId: userId,
             ...tripState,

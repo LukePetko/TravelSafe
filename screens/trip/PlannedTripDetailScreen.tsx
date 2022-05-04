@@ -102,7 +102,6 @@ const PlannedTripDetailScreen = (props: EditTripScreenProps) => {
         const trip: Trip = route.params.trip;
         setTrip(trip);
         setOldImage(trip.thumbnail!);
-        console.log(trip.thumbnail);
     }, []);
 
     useEffect(() => {

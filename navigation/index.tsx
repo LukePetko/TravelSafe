@@ -60,7 +60,6 @@ const Navigation = ({
                         Notifications.addNotificationReceivedListener(
                             (notification) => {
                                 setNotification(notification);
-                                // console.log("notification", notification);
                             },
                         );
 

@@ -11,8 +11,6 @@ export const handleLike = async (
 ): Promise<boolean> => {
     likePost(userId, postId);
 
-    console.log(creatorId);
-
     const creator: PublicUser = (await getPublicUserById(
         creatorId,
     )) as PublicUser;

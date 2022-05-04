@@ -76,8 +76,6 @@ const Register = (props: RegisterProps): JSX.Element => {
                         user.user.uid,
                     );
 
-                    console.error(response);
-
                     const userId: string = user.user.uid;
                     const userData: BasicUserInfo = {
                         username: state.username,
