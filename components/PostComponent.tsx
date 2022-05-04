@@ -5,11 +5,12 @@ import { width } from "../utils/dimensions";
 import { Pressable, Text } from "./Themed";
 import { SFSymbol } from "react-native-sfsymbols";
 import { getTimeDifference } from "../utils/time";
-import { removeLikePost } from "../api/firestore/posts";
+import { deletePost, removeLikePost } from "../api/firestore/posts";
 import { getUserId } from "../redux/stores/user";
 import store from "../redux/store";
 import { handleLike } from "../utils/likes";
 import Carousel, { getInputRangeFromIndexes } from "react-native-snap-carousel";
+import { deletePostAlert } from "../utils/alers";
 
 type PostComponentProps = {
     post: Post;
@@ -149,7 +150,14 @@ const PostComponent = (props: PostComponentProps) => {
                 </Pressable>
                 {isOwn && (
                     <Pressable
-                        onPress={() => {}}
+                        onPress={() =>
+                            deletePostAlert(
+                                colorScheme as "dark" | "light" | undefined,
+                                () => {
+                                    deletePost(post.id!);
+                                },
+                            )
+                        }
                         style={{ backgroundColor: "transparent" }}
                     >
                         <View style={localStyles.innerContainer}>
